@@ -1,10 +1,7 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Roles;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -23,6 +20,7 @@ public class Borrower {
     private String lastName;
     //date of birth
     private LocalDate dob;
+    @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     private String password;
     /*
