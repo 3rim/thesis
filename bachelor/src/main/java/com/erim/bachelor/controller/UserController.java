@@ -1,11 +1,13 @@
 package com.erim.bachelor.controller;
 
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -63,9 +65,20 @@ public class UserController {
 
     }
 
-    @PostMapping(consumes = "application/json",produces = "application/json")
-    public void addUser(@RequestBody Borrower borrower){
-
+    @PostMapping()
+    public ResponseEntity<List<Borrower>> addUser(@RequestParam("file") MultipartFile file){
+        System.out.println("ererer");
+        if(CSVHelper.hasCSVFormat(file)){
+            try{
+                List<Borrower> result= userService.addUsers(file);
+                return ResponseEntity.status(HttpStatus.OK).body(result);
+            }catch (Exception e){
+                throw new ResponseStatusException(
+                        HttpStatus.EXPECTATION_FAILED, "file is not correct");
+            }
+        }
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Please upload a file");
     }
 
     @PutMapping(path ="{id}", consumes = "application/json",produces = "application/json")

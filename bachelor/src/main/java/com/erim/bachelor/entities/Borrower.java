@@ -41,4 +41,9 @@ public class Borrower {
     }
 
 
+    public Borrower(long id, String firstName, String lastName) {
+        this.borrowerID = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
