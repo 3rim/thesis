@@ -2,7 +2,9 @@ package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Roles;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +15,11 @@ import java.util.Set;
 @Data
 @Entity
 @Table
+@AllArgsConstructor
+@NoArgsConstructor
 public class Borrower {
     @Id
+    @GeneratedValue
     private Long borrowerID;
     private String firstName;
     private String lastName;
@@ -29,4 +34,11 @@ public class Borrower {
      */
     @OneToMany(mappedBy = "borrower")
     private List<Medium> mediumList = new ArrayList<>();
+
+    public Borrower(String firstName,String lastName){
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+
 }
