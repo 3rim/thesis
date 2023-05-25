@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table
-public class LendHistory {
+public class LoanHistory {
 
     @Id
     private Long lendHistoryId;
