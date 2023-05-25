@@ -1,6 +1,7 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,13 +45,14 @@ public class Medium {
      */
     @ManyToOne
     @JoinColumn(name = "borrower_id")
+    @JsonIgnoreProperties(value = {"mediumList", "handler","hibernateLazyInitializer"}, allowSetters = true)
     private Borrower borrower;
 
     /*
      CascadeType.REMOVE : if an Entity of Medium is removed, also remove the associated Entities in LendHistory.
      */
     @OneToMany(mappedBy = "lendHistoryId",cascade = CascadeType.REMOVE)
-    private List<LendHistory> lendHistories = new ArrayList<>();
+    private List<LoanHistory> lendHistories = new ArrayList<>();
 
     /**
      * Check if a Medium is borrowed or not.

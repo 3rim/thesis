@@ -1,6 +1,7 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Roles;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class Borrower {
     The mappedBy property is what we use to tell Hibernate which variable we are using to represent the parent class in our child class
      */
     @OneToMany(mappedBy = "borrower")
+    @JsonIgnoreProperties("borrower")
     private List<Medium> mediumList = new ArrayList<>();
 
     public Borrower(String firstName,String lastName){
@@ -45,5 +47,9 @@ public class Borrower {
         this.borrowerID = id;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }
