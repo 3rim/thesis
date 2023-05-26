@@ -1,11 +1,13 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,8 +53,8 @@ public class Medium {
     /*
      CascadeType.REMOVE : if an Entity of Medium is removed, also remove the associated Entities in LendHistory.
      */
-    @OneToMany(mappedBy = "lendHistoryId",cascade = CascadeType.REMOVE)
-    private List<LoanHistory> lendHistories = new ArrayList<>();
+    @OneToMany(mappedBy = "medium",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LoanHistory> loanHistories = new ArrayList<>();
 
     /**
      * Check if a Medium is borrowed or not.
@@ -62,4 +64,13 @@ public class Medium {
         return this.getStatus() == Status.RENT;
     }
 
+    public void addNewLoanHistory(LoanHistory loanHistory) {
+        this.loanHistories.add(loanHistory);
+        /*
+            https://vladmihalcea.com/jpa-hibernate-synchronize-bidirectional-entity-associations/
+            How to synchronize bidirectional entity associations with JPA and Hibernate
+         */
+        //loanHistory.setMedium(this);
+
+    }
 }
