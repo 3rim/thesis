@@ -45,14 +45,21 @@ public class InventoryService {
     }
 
     public ResponseEntity<String> deleteMedium(Long id){
-        if(inventoryRepository.findById(id).isPresent()){
-            Medium medium = inventoryRepository.findById(id).get();
-            if (!medium.isBorrowed()) {
-                inventoryRepository.deleteById(id);
-            }
-            return new ResponseEntity<>("Medium with Id:"+id+" is still borrowed to User: "+medium.getBorrower(),HttpStatus.CONFLICT);
+
+        Optional<Medium> mediumToDelete = inventoryRepository.findById(id);
+        if(mediumToDelete.isEmpty())
+            return new ResponseEntity<>("Medium with id:"+id+" not found",HttpStatus.BAD_REQUEST);
+
+        Medium medium = mediumToDelete.get();
+        if(medium.isBorrowed())
+            return new ResponseEntity<>("Medium with Id:"+id+" is still borrowed to User: "+medium.getBorrower().getFullName(),HttpStatus.CONFLICT);
+        else {
+            inventoryRepository.deleteById(id);
+            return new ResponseEntity<>("Medium with Id:"+id+" deleted ",HttpStatus.OK);
         }
-        else
-            return new ResponseEntity<>("Medium with Id:"+id+" not found",HttpStatus.NOT_FOUND);
+
+
+
+
     }
 }
