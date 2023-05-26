@@ -24,12 +24,14 @@ public class LoanHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medium_id")
-    @JsonIgnoreProperties(value = {"loanHistories"}, allowSetters = true)
+    //@JsonIgnoreProperties(value = {"loanHistories"}, allowSetters = true)
+    @JsonIgnore
     private Medium medium;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "borrower_id")
-    @JsonIgnore()
+    //@JsonIgnoreProperties(value = {"mediumList"})
+    @JsonIgnore
     private Borrower borrower;
 
 
