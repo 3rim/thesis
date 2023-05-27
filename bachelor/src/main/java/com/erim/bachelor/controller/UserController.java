@@ -1,8 +1,12 @@
 package com.erim.bachelor.controller;
 
+import com.erim.bachelor.data.MediumDTO;
+import com.erim.bachelor.data.UserDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +21,12 @@ import java.util.Optional;
 @RequestMapping(path = "api/v1/user")
 public class UserController {
     private final UserService userService;
+
+    private final ModelMapper modelMapper;
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, ModelMapper modelMapper){
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     /**
@@ -38,12 +45,12 @@ public class UserController {
      * @return The user or a Not found exeption
      */
     @GetMapping(path = "{id}")
-    public ResponseEntity<Borrower> getUserById(@PathVariable( value = "id") Long id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable( value = "id") Long id){
         Optional<Borrower> borrower = userService.getUserById(id);
         if(borrower.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found");
 
-        return new ResponseEntity<>(borrower.get(),HttpStatus.OK);
+        return new ResponseEntity<>(convertToDTO(borrower.get()),HttpStatus.OK);
     }
 
     /**
@@ -59,10 +66,7 @@ public class UserController {
             @RequestParam(required = false)String firstName,
             @RequestParam(required = false)String lastName){
 
-        System.out.println(firstName);
-        System.out.println(lastName);
         return userService.getUserByFirstNameAndOrLastName(firstName,lastName);
-
     }
 
     @PostMapping()
@@ -86,6 +90,15 @@ public class UserController {
 
     }
 
+    private UserDTO convertToDTO(Borrower borrower){
+        List<MediumDTO> mediumDTOList = borrower.getMediumList().
+                stream().
+                map(medium -> modelMapper.map(medium, MediumDTO.class)).
+                toList();
 
+        UserDTO userDTO= modelMapper.map(borrower,UserDTO.class);
+        userDTO.setMediumDTOList(mediumDTOList);
+        return userDTO;
+    }
 
 }

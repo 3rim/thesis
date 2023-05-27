@@ -4,6 +4,7 @@ import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
 import com.erim.bachelor.repositories.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,5 +37,10 @@ public class InitializeConfig {
             userRepository.saveAll(users);
 
         };
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }
