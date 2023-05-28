@@ -53,9 +53,10 @@ public class InventoryController {
      * @param medium The Medium to be added into the inventory
      * @return ResponseEntity
      */
+    //TODO: return MediumDTO instead Medium  AND request MediumDTO
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Medium> addMedium(@RequestBody Medium medium){
-        Medium newMedium = inventoryService.save(medium);
+        Medium newMedium = inventoryService.addNewMedium(medium);
         return new ResponseEntity<>(newMedium, HttpStatus.OK);
     }
 
