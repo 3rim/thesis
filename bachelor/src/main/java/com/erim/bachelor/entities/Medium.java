@@ -32,7 +32,7 @@ public class Medium {
     @ElementCollection // sonst mekert er
     private Set<Integer> year = new HashSet<>();
     @ElementCollection
-    private Set<Integer> subjects = new HashSet<>();
+    private Set<String> subjects = new HashSet<>();
     private double originalPrice;
     private String title;
 
