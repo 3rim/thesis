@@ -1,18 +1,18 @@
 package com.erim.bachelor.data;
 
-import com.erim.bachelor.entities.Medium;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MediumDTO {
+public class BorrowerDTO {
 
     private Long id;
-    private String title;
-    private String serialNr;
-
-
+    private String firstName;
+    private String lastName;
+    private List<MediumRequestDTO> mediumList;
 }
