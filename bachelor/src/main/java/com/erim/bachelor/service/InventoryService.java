@@ -1,6 +1,5 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.Status;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
-    public Medium save(Medium medium){
+    public Medium addNewMedium(Medium medium){
         return inventoryRepository.save(medium);
     }
 
