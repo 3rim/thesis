@@ -12,7 +12,9 @@ import java.util.List;
 public class BorrowerDTO {
 
     private Long id;
+    private Long borrowerNr;
     private String firstName;
     private String lastName;
     private List<MediumRequestDTO> mediumList;
+    private boolean leftTheSchool;
 }

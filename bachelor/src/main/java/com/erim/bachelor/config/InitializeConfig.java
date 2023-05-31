@@ -3,7 +3,7 @@ package com.erim.bachelor.config;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
-import com.erim.bachelor.repositories.UserRepository;
+import com.erim.bachelor.repositories.BorrowerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class InitializeConfig {
 
     @Bean
-    CommandLineRunner commandLineRunner(InventoryRepository inventoryRepository, UserRepository userRepository){
+    CommandLineRunner commandLineRunner(InventoryRepository inventoryRepository, BorrowerRepository borrowerRepository){
         return args -> {
             ArrayList<Medium> media = new ArrayList<>(
                     Arrays.asList(
@@ -34,7 +34,7 @@ public class InitializeConfig {
                             new Borrower("Max ","Maxi")
                     ));
 
-            userRepository.saveAll(users);
+            borrowerRepository.saveAll(users);
 
         };
     }

@@ -71,7 +71,7 @@ public class BorrowerController {
     public ResponseEntity<List<Borrower>> addBorrowers(@RequestParam("file") MultipartFile file){
         if(CSVHelper.hasCSVFormat(file)){
             try{
-                List<Borrower> result= borrowerService.addUsers(file);
+                List<Borrower> result= borrowerService.importUsersCSV(file);
                 return ResponseEntity.status(HttpStatus.OK).body(result);
             }catch (Exception e){
                 throw new ResponseStatusException(
@@ -85,6 +85,15 @@ public class BorrowerController {
     @PutMapping(path ="{id}", consumes = "application/json",produces = "application/json")
     public void editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Borrower borrower){
         //TODO: implement
+    }
+
+    /**
+     * Delete a Borrower by his Number (Not EntityID).
+     * @param borrowerNr The BorrowerNumber
+     */
+    @DeleteMapping(value = "{borrowerNr}")
+    public void softDeleteBorrowerByNr(@PathVariable(value = "borrowerNr")Long borrowerNr){
+        borrowerService.softDeleteBorrowerByNr(borrowerNr);
     }
 
     /**
@@ -102,5 +111,4 @@ public class BorrowerController {
         borrowerDTO.setMediumList(borrowerLendMedia);
         return borrowerDTO;
     }
-
 }
