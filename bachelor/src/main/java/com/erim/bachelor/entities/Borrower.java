@@ -22,6 +22,8 @@ public class Borrower {
     @Id
     @GeneratedValue
     private Long borrowerID;
+    @Column(unique = true)
+    private Long borrowerNr; //Fachlicher Schlüssel
     private String firstName;
     private String lastName;
     //date of birth
@@ -29,6 +31,7 @@ public class Borrower {
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     private String password;
+    private boolean leftTheSchool;
     /*
     OneToMany: One Borrower can have Many Mediums
     The mappedBy property is what we use to tell Hibernate which variable we are using to represent the parent class in our child class
@@ -44,7 +47,7 @@ public class Borrower {
 
 
     public Borrower(long id, String firstName, String lastName) {
-        this.borrowerID = id;
+        this.borrowerNr = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }

@@ -6,7 +6,7 @@ import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
 import com.erim.bachelor.repositories.LoanHistoryRepository;
-import com.erim.bachelor.repositories.UserRepository;
+import com.erim.bachelor.repositories.BorrowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,19 +15,18 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class LoanService {
 
-    private final UserRepository userRepository;
+    private final BorrowerRepository borrowerRepository;
     private final InventoryRepository inventoryRepository;
 
     private final LoanHistoryRepository loanHistoryRepository;
 
     @Autowired
-    public LoanService(UserRepository userRepository, InventoryRepository inventoryRepository, LoanHistoryRepository loanHistoryRepository) {
-        this.userRepository = userRepository;
+    public LoanService(BorrowerRepository borrowerRepository, InventoryRepository inventoryRepository, LoanHistoryRepository loanHistoryRepository) {
+        this.borrowerRepository = borrowerRepository;
         this.inventoryRepository = inventoryRepository;
         this.loanHistoryRepository = loanHistoryRepository;
     }
@@ -36,10 +35,10 @@ public class LoanService {
         Borrower borrower;
         Medium medium;
 
-        if(userRepository.findById(userID).isEmpty())
+        if(borrowerRepository.findById(userID).isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user with id: "+userID+" not found");
         else
-            borrower = userRepository.findById(userID).get();
+            borrower = borrowerRepository.findById(userID).get();
 
         if(inventoryRepository.findById(mediumID).isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "medium with id: "+mediumID+" not found");
