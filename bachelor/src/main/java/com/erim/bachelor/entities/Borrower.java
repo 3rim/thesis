@@ -46,8 +46,8 @@ public class Borrower {
     }
 
 
-    public Borrower(long id, String firstName, String lastName) {
-        this.borrowerNr = id;
+    public Borrower(long borrowerNr, String firstName, String lastName) {
+        this.borrowerNr = borrowerNr;
         this.firstName = firstName;
         this.lastName = lastName;
     }
