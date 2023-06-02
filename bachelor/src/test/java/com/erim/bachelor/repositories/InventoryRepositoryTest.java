@@ -1,12 +1,10 @@
 package com.erim.bachelor.repositories;
 
 import com.erim.bachelor.data.Status;
-import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ class InventoryRepositoryTest {
         ArrayList<Medium> media = new ArrayList<>(
                 Arrays.asList(
                         new Medium(1L,"IPad",Status.AVAILABLE,null,
-                                "FF991234ABCD",new HashSet<Integer>(),new HashSet<String>(),
+                                "FF991234ABCD",new HashSet<>(),new HashSet<>(),
                                 400.0,"IPad",null,null),
                         new Medium(2L,"Java ist auch eine Insel"),
                         new Medium(3L,"Mathe II")
