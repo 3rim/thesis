@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,16 +40,17 @@ public class BorrowerService {
     }
 
     public List<Borrower> importUsersCSV(MultipartFile file){
-
-        List<Borrower> result;
+        //TODO: vergleich der File mit dem aktuellen user stand. Die visualisierung soll client seitig sein (Wie password format check)
+        List<Borrower> currentUsers = getAllUsers();
+        List<Borrower> updatedUsers;
         try {
-            List<Borrower> borrowers = CSVHelper.csvToUsers(file.getInputStream());
-            result = borrowerRepository.saveAll(borrowers);
+            updatedUsers = CSVHelper.csvToUsers(file.getInputStream());
+
         }
         catch (IOException e) {
             throw new RuntimeException("fail to store csv data "+e.getMessage());
         }
-        return result;
+        return null;
     }
 
     /**
@@ -63,5 +67,9 @@ public class BorrowerService {
         }
         else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
+    }
+
+    public InputStream downloadUsers() {
+        return CSVHelper.usersToCSV(borrowerRepository.findAll());
     }
 }

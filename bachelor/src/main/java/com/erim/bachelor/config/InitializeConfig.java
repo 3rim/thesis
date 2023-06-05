@@ -31,7 +31,7 @@ public class InitializeConfig {
                     Arrays.asList(
                             new Borrower("TestUser","lastName"),
                             new Borrower("Max maximus","Mustermann"),
-                            new Borrower("Max ","Maxi")
+                            new Borrower("Max","Maxi")
                     ));
 
             borrowerRepository.saveAll(users);
