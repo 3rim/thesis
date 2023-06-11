@@ -35,7 +35,7 @@ public class InventoryController {
      * Get whole inventory
      * @return list of all inventory
      */
-    @GetMapping(path = "/all")
+    @GetMapping
     public List<MediumResponseDTO> getAllMedia(){
         List<Medium> allMedia = inventoryService.getAllMedia();
         return allMedia.stream().map(this::convertToDTO).toList();
