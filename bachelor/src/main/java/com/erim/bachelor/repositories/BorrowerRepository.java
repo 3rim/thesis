@@ -18,5 +18,11 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
 
     Optional<Borrower> findBorrowerByBorrowerNr(Long borrowerNr);
 
+    /**
+     * return all Borrower Entities where BorrowerNr is not null
+     * @return List of Borrowers where borrowerNr != null
+     */
+    List<Borrower> findAllByBorrowerNrIsNotNull();
+
 
 }

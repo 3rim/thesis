@@ -7,12 +7,17 @@ import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +70,18 @@ public class BorrowerController {
 
         //map each Borrower -> BorrowerDTO, store to list and return the list
         return listBorrowers.stream().map(borrower -> modelMapper.map(borrower, BorrowerDTO.class)).toList();
+    }
+
+    @GetMapping(path = "/download")
+    public ResponseEntity<Resource> getCSVFile(){
+        String filename = "users_"+LocalDate.now()+".csv";
+        InputStreamResource file = new InputStreamResource(borrowerService.downloadUsers());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(file);
+
     }
 
     @PostMapping()
