@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/user")
+@CrossOrigin
 public class BorrowerController {
     private final BorrowerService borrowerService;
     private final ModelMapper modelMapper;
