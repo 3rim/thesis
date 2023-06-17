@@ -1,3 +1,5 @@
+const { Container } = require('postcss');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -10,6 +12,10 @@ module.exports = {
         "primary": "#00668A"
       }
     },
+    container:{
+      padding:"2em",
+      center:true,
+    }, 
   },
   plugins: [],
 }
