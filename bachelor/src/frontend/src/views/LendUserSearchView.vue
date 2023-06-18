@@ -13,12 +13,17 @@
          <ul class="bg-blue-950 text-white w-full shadow-md
          py-2 px-1 top-[66px]"
          v-if="userSearchResults">
-            <li v-for="user in userSearchResults"
+            <p v-if="userSearchResults.length === 0"> Keine Ergebnisse gefunden </p> 
+            <template v-else>
+                <li v-for="user in userSearchResults"
             :key="user.id"
             class="py-2 cursor-pointer"
+            @click="getUser(user)"
             >
-            {{ user.firstName }} <!-- Typescript issue-->
+            {{ user.firstName}} {{ user.lastName}}<!-- Typescript issue-->
             </li>
+            </template>
+            
          </ul>
     </div>
 </main>
@@ -27,6 +32,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from "axios";
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
+const getUser = (user) => {
+    console.log(user);
+    console.log(user.id);
+    router.push({
+        name: 'ausleiheUser',
+        query:{
+           id: user.id,
+        }
+    })
+
+};
 
 const searchQuery = ref("");
 const queryTimeout = ref<number>();
@@ -37,16 +57,35 @@ const getSearchResults = () =>{
     clearTimeout(queryTimeout.value);
     queryTimeout.value = setTimeout(async () => {
         if(searchQuery.value !== ""){
-            const result = await axios.get('/api/v1/user',{params:{firstName:"Max"}});
+            
+            const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
+            const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
             const result2 = await axios.get('/api/v1/user/1');
             userSearchResults.value = result.data
-            console.log(userSearchResults);
-            console.log(result2.data.firstName);
-            console.log()
+            
             return;
         }
         userSearchResults.value = null;
     },300);
+}
+
+function splitFirstAndLastName(str:string){
+    const fullName = str;
+    const lastIndex = fullName.lastIndexOf(" ");
+
+    let firstName = "";
+    let lastName = "";
+    //Split Fullname on last whitespace
+    if(lastIndex !== -1){
+        firstName = fullName.slice(0,lastIndex);
+        lastName = fullName.slice(lastIndex + 1);
+    }
+    else{ //only one name entered
+        firstName = str;
+    }
+    console.log("firstName:" + firstName)
+    console.log("lastName:" + lastName)
+    return [firstName,lastName]
 }
 
 
