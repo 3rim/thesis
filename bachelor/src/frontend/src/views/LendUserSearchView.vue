@@ -15,7 +15,7 @@
          v-if="userSearchResults">
             <p v-if="userSearchResults.length === 0"> Keine Ergebnisse gefunden </p> 
             <template v-else>
-                <li v-for="user in userSearchResults"
+            <li v-for="user in userSearchResults"
             :key="user.id"
             class="py-2 cursor-pointer"
             @click="getUser(user)"
@@ -33,10 +33,11 @@
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
+import type { PropType } from "vue";
 
 
 const router = useRouter();
-const getUser = (user) => {
+const getUser = (user:any) => {
     console.log(user);
     console.log(user.id);
     router.push({
@@ -60,9 +61,8 @@ const getSearchResults = () =>{
             
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
             const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
-            const result2 = await axios.get('/api/v1/user/1');
-            userSearchResults.value = result.data
-            
+            userSearchResults.value = result.data;
+            console.log(userSearchResults.value);
             return;
         }
         userSearchResults.value = null;
