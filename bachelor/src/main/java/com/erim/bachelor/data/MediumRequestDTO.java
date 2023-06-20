@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class MediumRequestDTO {
 
+    private Long mediumID;
     private String mediumTyp;
     @Enumerated(EnumType.STRING)
     private String ISBN;
