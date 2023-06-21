@@ -37,11 +37,7 @@ import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { ref } from 'vue';
 
-const componentKey = ref(0);
 
-const forceRerender = () => {
-  componentKey.value += 1;
-};
 
 const route = useRoute();
 const mediaList = ref(null);

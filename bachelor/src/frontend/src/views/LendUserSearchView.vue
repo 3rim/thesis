@@ -86,10 +86,4 @@ function splitFirstAndLastName(str:string){
     console.log("lastName:" + lastName)
     return [firstName,lastName]
 }
-
-
 </script>
-
-<style scoped>
-
-</style>

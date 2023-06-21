@@ -36,7 +36,6 @@ const componentKey = ref(0);
 //Re-render component if necessary
 const forceRerender = () => {
   componentKey.value += 1;
-  console.log("rerender"+componentKey)
 };
 
 
