@@ -1,5 +1,6 @@
 package com.erim.bachelor.entities;
 
+import com.erim.bachelor.data.InventoryDTO;
 import com.erim.bachelor.data.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,6 +20,18 @@ import java.util.Set;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedNativeQuery(
+        name = "Medium.getInventoryDTO",
+        query = "SELECT Title,count(*) as amount,count (CASE WHEN status='AVAILABLE' THEN 1 END) as available from medium group by 1",
+        resultSetMapping = "Mapping.InventoryDTO" )
+@SqlResultSetMapping(name = "Mapping.InventoryDTO",classes = {
+        @ConstructorResult(
+                targetClass = InventoryDTO.class,
+                columns = {
+                        @ColumnResult(name = "Title"),
+                        @ColumnResult(name = "amount",type = Integer.class),
+                        @ColumnResult(name = "available",type = Integer.class)})
+})
 public class Medium {
 
     @Id
