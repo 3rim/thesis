@@ -17,4 +17,6 @@ public interface InventoryRepository extends JpaRepository<Medium,Long> {
     @Query(nativeQuery = true)
     List<InventoryDTO> getInventoryDTO();
 
+    List<Medium> findAllByTitle(String title);
+
 }

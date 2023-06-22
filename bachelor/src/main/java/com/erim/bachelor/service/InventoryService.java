@@ -1,5 +1,6 @@
 package com.erim.bachelor.service;
 
+import com.erim.bachelor.data.InventoryDTO;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,13 @@ public class InventoryService {
 
 
 
+    }
+
+    public List<Medium> getAllMediaByTitle(String title) {
+        return inventoryRepository.findAllByTitle(title);
+    }
+
+    public List<InventoryDTO> getInventoryDTO() {
+        return inventoryRepository.getInventoryDTO();
     }
 }

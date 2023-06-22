@@ -9,13 +9,24 @@
                 </tr>
             </thead>
             <tbody>
-
-            <tr v-for="medium in inventoryList" :key="medium.title"
-                  class="bg-slate-500">
+                <tr v-for="medium in testData" @click="goTo(medium.title)">
                     <td>{{ medium.title }}</td>
                     <td>{{ medium.amount }}</td>
                     <td>{{ medium.available }}</td>
-                  </tr>
+                                 
+                </tr>
+
+             <!-- 
+                <router-link 
+                v-for="medium in testData" 
+                    :to="{ name: 'inventory', params: { title: medium.title} }"
+                    tag="tr"
+                    >
+                    <td>{{ medium.title }}</td>
+                    <td>{{ medium.amount }}</td>
+                    <td>{{ medium.available }}</td>               
+                </router-link>
+                -->
                 </tbody>
         </table>
     </div>
@@ -24,7 +35,14 @@
 <script setup>
 import axios from 'axios' ;
 import {useRoute} from "vue-router";
+import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+
+const router = useRouter();
+const goTo = (title) => {
+    console.log(title);
+    router.push(`/inventory/title/${title}`)
+} 
 
 const route = useRoute();
 const inventoryList = ref(null);

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LendUserSearchView from '../views/LendUserSearchView.vue'
 import LendView from '../views/LendView.vue'
 import InventoryView from '../views/InventoryView.vue'
+import InventoryDetailsView from '../views/InventoryDetailsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,7 +26,10 @@ const router = createRouter({
     {
       path: '/inventory',
       name: 'inventory',
-      component: InventoryView
+      component: InventoryView,
+      children:[
+        {path: 'title/:title' ,component: InventoryDetailsView}
+      ]
     }
   ]
 })

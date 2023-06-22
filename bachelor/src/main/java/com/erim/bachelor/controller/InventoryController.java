@@ -29,17 +29,6 @@ public class InventoryController {
         this.repository = repository;
     }
 
-
-    /**
-     * Get whole inventory
-     * @return list of all inventory
-     */
-    @GetMapping(path = "/allMedia")
-    public List<MediumResponseDTO> getAllMedia(){
-        List<Medium> allMedia = inventoryService.getAllMedia();
-        return allMedia.stream().map(this::convertToDTO).toList();
-    }
-
     /**
      * Get list of inventoryDTO´s
      * Title| Amount | Available
@@ -50,8 +39,29 @@ public class InventoryController {
      */
     @GetMapping()
     public List<InventoryDTO> getInventory(){
-        return repository.getInventoryDTO();
+        return inventoryService.getInventoryDTO();
     }
+
+    /**
+     * Get whole inventory
+     * @return list of all inventory
+     */
+    @GetMapping(path = "/allMedia")
+    public List<MediumResponseDTO> getAllMedia(){
+        List<Medium> allMedia = inventoryService.getAllMedia();
+        return allMedia.stream().map(this::convertToDTO).toList();
+    }
+    /**
+     * Get whole inventory
+     * @return list of all inventory
+     */
+    @GetMapping(path = "title/{title}")
+    public List<MediumResponseDTO> getAllMediaByTitle(@PathVariable(value = "title") String title){
+        List<Medium> allMediaByTitle = inventoryService.getAllMediaByTitle(title);
+        return allMediaByTitle.stream().map(this::convertToDTO).toList();
+    }
+
+
 
     /**
      * Get medium by id
