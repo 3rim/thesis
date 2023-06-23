@@ -9,7 +9,9 @@ module.exports = {
   theme: {
     extend: {
       colors:{
-        "primary": "#00668A"
+        "primary": "#ecf0f1",
+        "navbar": "#f7f3e3",
+        "navbar-buttons" :"#e4d4ba"
       }
     },
     container:{

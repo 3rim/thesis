@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="medium in testData" @click="goTo(medium.title)">
+                <tr v-for="medium in inventoryList" @click="goTo(medium.title)">
                     <td>{{ medium.title }}</td>
                     <td>{{ medium.amount }}</td>
                     <td>{{ medium.available }}</td>

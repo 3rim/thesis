@@ -13,7 +13,5 @@
 
 <script setup>
 import AsyncInventoryList from '@/components/AsyncInventoryList.vue';
-import { computed, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
 
 </script>
