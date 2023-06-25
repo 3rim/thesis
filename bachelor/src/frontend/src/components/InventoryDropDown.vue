@@ -4,13 +4,13 @@
         <button v-if="isOpen" @click="isOpen = false" tabindex="-1" class="fixed bg-black inset-0 h-full w-full opacity-40"></button>
         <div v-if="isOpen" class="absolute left-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white">
             <RouterLink to="/inventory">
-                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Liste</p>
+                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Übersicht</p>
             </RouterLink>
             <RouterLink to="/inventory">
-                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Aufnehmen +</p>
+                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Aufnehmen </p>
             </RouterLink>
             <RouterLink to="">
-                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Entfernen -</p>
+                <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Entfernen </p>
             </RouterLink>
         </div>
     </div>
