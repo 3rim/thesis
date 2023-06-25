@@ -41,8 +41,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const getUser = (user:any) => {
-    console.log(user);
-    console.log(user.id);
     router.push({
         name: 'ausleiheUser',
         query:{
@@ -57,7 +55,6 @@ const queryTimeout = ref<number>();
 const userSearchResults = ref(null);
 
 const getSearchResults = () =>{
-    console.log("getResults");
     clearTimeout(queryTimeout.value);
     queryTimeout.value = setTimeout(async () => {
         if(searchQuery.value !== ""){
@@ -65,7 +62,6 @@ const getSearchResults = () =>{
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
             const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
             userSearchResults.value = result.data;
-            console.log(userSearchResults.value);
             return;
         }
         userSearchResults.value = null;
@@ -86,8 +82,6 @@ function splitFirstAndLastName(str:string){
     else{ //only one name entered
         firstName = str;
     }
-    console.log("firstName:" + firstName)
-    console.log("lastName:" + lastName)
     return [firstName,lastName]
 }
 </script>
