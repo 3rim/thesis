@@ -1,6 +1,11 @@
 <template>
     <div>
-        Hellooo
+        <Suspense>
+        <InventoryDetails />
+        <template #fallback>
+            <p>loadning...</p>
+        </template>
+        </Suspense>
 
         <button @click="router.back()">Go Back </button>
     </div>
@@ -9,6 +14,7 @@
 <script setup>
 
 import { useRouter, useRoute } from 'vue-router';
+import InventoryDetails from '@/components/InventoryDetails.vue';
 
 const router = useRouter();
 

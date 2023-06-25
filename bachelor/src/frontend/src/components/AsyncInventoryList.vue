@@ -1,21 +1,22 @@
 <template>
-    <div>
+    <div class="flex flex-col flex-1 items-center py-8">
         <table>
-            <thead>
+            <thead class="bg-[#E4D4BA]">
                 <tr>
-                    <th>Titel</th>
-                    <th>Gesamtanzahl</th>
-                    <th>Verfügbar</th>
+                    <th class="px-2">Titel</th>
+                    <th class="px-2">Gesamtanzahl</th>
+                    <th class="px-2">Verfügbar</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="medium in inventoryList" @click="goTo(medium.title)">
-                    <td>{{ medium.title }}</td>
-                    <td>{{ medium.amount }}</td>
-                    <td>{{ medium.available }}</td>
+                <tr v-for="medium in inventoryList"
+                 @click="goTo(medium.title)"
+                 class="bg-[#F7F3E3] border-b-2 cursor-pointer">
+                    <td class="text-center">{{ medium.title }}</td>
+                    <td class="text-center">{{ medium.amount }}</td>
+                    <td class="text-center">{{ medium.available }}</td>
                                  
                 </tr>
-
              <!-- 
                 <router-link 
                 v-for="medium in testData" 
@@ -40,7 +41,6 @@ import { ref } from 'vue';
 
 const router = useRouter();
 const goTo = (title) => {
-    console.log(title);
     router.push(`/inventory/title/${title}`)
 } 
 
