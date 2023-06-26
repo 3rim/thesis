@@ -45,18 +45,13 @@ class InventoryServiceTest {
 
     @Test
     void addNewMedium() {
-        Medium medium =new Medium(
-                5L,
-                "IPad",
-                Status.AVAILABLE,
-                null,
-                "FFFF1234ABCD",
-                new HashSet<Integer>(),
-                new HashSet<String>(),
-                400.0,
-                "IPad",
-                null,
-                null);
+        Medium medium = Medium.
+                builder().
+                title("IPad").
+                mediumID(5L).
+                status(Status.AVAILABLE).
+                serialNr("FFFF1234ABCD").
+                build();
         //when
         inventoryService.addNewMedium(medium);
         //then

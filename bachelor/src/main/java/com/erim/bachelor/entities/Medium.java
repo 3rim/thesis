@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,7 @@ public class Medium {
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
     private String title;
+    private LocalDate dateOfLend;
 
     public Medium(Long mediumID,String title) {
         this.mediumID = mediumID;

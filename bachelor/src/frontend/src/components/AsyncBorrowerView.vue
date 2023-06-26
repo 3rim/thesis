@@ -15,6 +15,7 @@
                         <th class="px-2">MediumTyp</th>
                         <th class="px-2">ISBN</th>
                         <th class="px-2">Seriennummer</th>
+                        <th class="px-2">Ausgegeben am</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +26,7 @@
                     <td class="border-collapse border border-slate-400">{{ medium.mediumTyp }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.isbn }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.serialNr }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.dateOfLend }}</td>
                   </tr>
                 </tbody>
             </table>

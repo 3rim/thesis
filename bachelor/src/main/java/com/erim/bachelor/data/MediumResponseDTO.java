@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,11 +24,14 @@ public class MediumResponseDTO {
     private Status status;
     private String ISBN;
     private String serialNr;
-    @ElementCollection // sonst mekert er
+    @ElementCollection
     private Set<Integer> year = new HashSet<>();
     @ElementCollection
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
     private String title;
     private String currentBorrower;
+    //Currently lend since
+    private LocalDate dateOfLend;
+    private List<LoanHistory> loanHistories;
 }

@@ -4,6 +4,7 @@ import LendUserSearchView from '../views/LendUserSearchView.vue'
 import LendView from '../views/LendView.vue'
 import InventoryView from '../views/InventoryView.vue'
 import InventoryDetailsView from '../views/InventoryDetailsView.vue'
+import MediumView from '../views/MediumView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,7 @@ const router = createRouter({
       name: 'inventory',
       component: InventoryView,
       children:[
+        {path: ':mediumID' , component: MediumView},
         {path: 'title/:title' ,component: InventoryDetailsView}
       ]
     }

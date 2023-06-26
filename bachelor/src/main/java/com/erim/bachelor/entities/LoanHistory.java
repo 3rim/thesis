@@ -30,8 +30,7 @@ public class LoanHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "borrower_id")
-    //@JsonIgnoreProperties(value = {"mediumList"})
-    @JsonIgnore
+    @JsonIgnoreProperties(value = {"mediumList" ,"hibernateLazyInitializer", "handler"})
     private Borrower borrower;
 
 
