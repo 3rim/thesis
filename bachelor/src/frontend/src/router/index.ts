@@ -5,6 +5,7 @@ import LendView from '../views/LendView.vue'
 import InventoryView from '../views/InventoryView.vue'
 import InventoryDetailsView from '../views/InventoryDetailsView.vue'
 import MediumView from '../views/MediumView.vue'
+import InventoryAddView from '../views/InventoryAddView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
         {path: ':mediumID' , component: MediumView},
         {path: 'title/:title' ,component: InventoryDetailsView}
       ]
+    },
+    {
+      path: '/inventory/add',
+      name: 'inventoryAdd',
+      component: InventoryAddView,
     }
   ]
 })

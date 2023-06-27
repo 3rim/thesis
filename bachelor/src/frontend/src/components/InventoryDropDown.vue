@@ -6,7 +6,7 @@
             <RouterLink to="/inventory">
                 <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Übersicht</p>
             </RouterLink>
-            <RouterLink to="/inventory">
+            <RouterLink to="/inventory/add">
                 <p @click="isOpen = false" class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-slate-500">Aufnehmen </p>
             </RouterLink>
             <RouterLink to="">
