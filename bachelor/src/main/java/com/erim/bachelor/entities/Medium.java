@@ -34,7 +34,6 @@ import java.util.Set;
 public class Medium {
 
     @Id
-    @GeneratedValue
     private Long mediumID;
     private String mediumTyp;
     @Enumerated(EnumType.STRING)

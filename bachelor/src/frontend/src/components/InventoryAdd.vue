@@ -59,33 +59,84 @@
                 <!-- Preis -->
                 <div class="w-full md:w-1/2 px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="originalPrice">
-                    Originaler Preiss €
+                    Originaler Preis €
                 </label>
                 <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="originalPrice" type="number"  min="0" step="0.01" placeholder="Originaler Preis"
                 v-model="originalPrice">
                 </div>        
             </div>
+            <!--Divider -->
+            <hr class="my-8 bg-gray-300 border-0 dark:bg-gray-500 h-1">
+            <!--Dynamic Infos-->
+            <p  class="container flex flex-col items-center" >Einzigartige Infos</p>
+
+            <input type="checkbox" id="checkbox" v-model="checked" />
+            <label for="checkbox"> Mit Seriennummer inventarisieren</label>
+
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <!-- MediumID -->
+                <div class="w-full md:w-1/2 px-3">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mediumID">
+                    Medium ID
+                </label>
+                <input class="uppercase appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="mediumID" type="text" placeholder="medium ID"
+                v-model="mediumID">
+                </div>
+                
+                <!-- SerialNr -->
+                <div class="w-full md:w-1/2 px-3" v-if="checked">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="serialNr">
+                    Seriennummer
+                </label>
+                <input class=" uppercase appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 focus:uppercase" id="serialNr" type="text" placeholder="Seriennummer"
+                v-model="serialNr" >
+                </div>
+                
+            </div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hinzufügen</button>
-            
         </form>
     </div>
+    
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import axios from "axios";
 
 const title =ref("");
 const ISBN =ref("");
 const mediumTyp =ref("");
-const originalPrice =ref<Number>(0.0);
+const mediumID =ref("");
+const serialNr =ref("");
+const originalPrice =ref(0.0);
 
 const tempSubject = ref("");
 const tempVintage =ref("");
 const vintageArray =ref([]);
 const subjectsArray =ref([]);
 
+const checked =ref(false);
+
+
 const submitForm = () => {
     console.log("submit form");
+    axios.post('/api/v1/inventory',
+    {
+        "mediumID": mediumID.value,
+        "mediumTyp": mediumTyp.value,
+        "serialNr": serialNr.value,
+        "year": vintageArray.value,
+        "subjects": subjectsArray.value,
+        "originalPrice": originalPrice.value,
+        "title": title.value,
+        "dateOfLend": "",
+        "isbn": ISBN.value
+    })
+
+
+    //Reset mediumID and serialNr
+    mediumID.value = "";
+    serialNr.value = "";
 
 }
 

@@ -21,12 +21,12 @@ public class InitializeConfig {
         return args -> {
             ArrayList<Medium> media = new ArrayList<>(
                     Arrays.asList(
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                            Medium.builder().mediumID(1L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                            Medium.builder().mediumID(2L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build()
+                            /*Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),*/
 
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F9FFABCDQ1GC").build(),
+                            /*Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F9FFABCDQ1GC").build(),
                             Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F8FFABCDQ1GC").build(),
                             Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F7FFABCDQ1GC").build(),
                             Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F6FFABCDQ1GC").build(),
@@ -34,7 +34,7 @@ public class InitializeConfig {
                             Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
                             Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
                             Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build()
+                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build()*/
 
                     ));
 
