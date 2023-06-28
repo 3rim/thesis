@@ -95,6 +95,26 @@
             </div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hinzufügen</button>
         </form>
+
+        <!-- List -->
+        <p v-if="inventoriedMediaArray.length"> Inventarisierte Medien </p>
+        <div class=" max-w-lg w-full py-2"
+        v-if="inventoriedMediaArray.length">
+            <div class="flex flex-row text-gray-700 text-s font-bold">
+                <span class="w-1/2"> Medien ID</span> <span class="w-1/2"> Seriennummer</span>
+            </div>
+            <ul class="bg-gray-200  w-full shadow-md py-2 px-1 top-[66px]">
+                <li v-for="medium in inventoriedMediaArray"
+                class="py-2 ">
+                    <div class="flex flex-row">
+                        <div class="w-5/6 flex flex-row" >                                  <!--flex justify-end => position right -->
+                            <div class="w-1/2 "> {{ medium.mediumID}}</div> <div class="w-1/2 pl-10 "> {{ medium.serialNr}}</div>
+                        </div>
+                      <button @click="deleteMedium(medium.mediumID)" class="w-1/6  hover:bg-slate-100">Löschen</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
     
 </template>
@@ -116,11 +136,23 @@ const vintageArray =ref([]);
 const subjectsArray =ref([]);
 
 const checked =ref(false);
+const inventoriedMediaArray = ref([]);
+
+const deleteMedium = (mediumID) =>{
+    console.log(mediumID)
+    const response = axios.delete(`/api/v1/inventory/${mediumID}`)
+    .then(res => {
+        console.log(res)
+        let i = inventoriedMediaArray.value.map(item => item.mediumID).indexOf(mediumID)
+        console.log(i)
+        inventoriedMediaArray.value.splice(i,1)
+        console.log(inventoriedMediaArray.value)
+    })
+}
 
 
 const submitForm = () => {
-    console.log("submit form");
-    axios.post('/api/v1/inventory',
+    const response = axios.post('/api/v1/inventory',
     {
         "mediumID": mediumID.value,
         "mediumTyp": mediumTyp.value,
@@ -131,8 +163,21 @@ const submitForm = () => {
         "title": title.value,
         "dateOfLend": "",
         "isbn": ISBN.value
+    }).then(res => {
+        const data = res.data;
+        console.log(data.mediumID)
+        const medium = {
+            mediumID : data.mediumID,
+            serialNr : data.serialNr,
+        }
+        //Unshift => put element at the beginning of array
+        console.log("Medium:")
+        console.log(medium)
+        inventoriedMediaArray.value.unshift(medium);
+        console.log("inventoriedMediaArray.value")
+        console.log(inventoriedMediaArray.value)
     })
-
+    
 
     //Reset mediumID and serialNr
     mediumID.value = "";
