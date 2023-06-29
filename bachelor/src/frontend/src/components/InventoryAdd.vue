@@ -9,9 +9,9 @@
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="title">
                     Titel
                 </label>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Titel des Medium"
-                v-model="title">
-                <p class="text-red-500 text-xs italic">Bitte Feld ausfüllen.</p>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Titel des Medium"
+                v-model="title" required>
+                
                 </div>
                 <!-- ISBN -->
                 <div class="w-full md:w-1/2 px-3">
@@ -21,33 +21,7 @@
                 <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="isbn" type="text" placeholder="ISBN / EAN"
                 v-model="ISBN">
                 </div>
-                <!-- Jahrgänge -->
-                <div class="w-full md:w-1/2 px-3">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="vintage">
-                    Jahrgang
-                </label>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="vintage" type="text" placeholder="Jahrgang"
-                v-model="tempVintage"
-                @keyup.enter="addVintage">
-                    <div v-for="vintage in vintageArray" 
-                    class="text-xs font-semibold inline-block py-1 px-2  rounded-full text-sky-600 bg-sky-200  last:mr-0 mr-1 hover:cursor-pointer"> 
-                        <span @click="deleteVintage(vintage)">{{ vintage }}</span>
-                    </div>
-                </div>
-
-                <!-- Fächer -->
-                <div class="w-full md:w-1/2 px-3">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-subjects">
-                    Fächer
-                </label>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-subjects" type="text" placeholder="Fächer" 
-                v-model="tempSubject"
-                @keyup.enter="addSubject">
-                    <div v-for="subject in subjectsArray" 
-                    class="text-xs font-semibold inline-block py-1 px-2  rounded-full text-sky-600 bg-sky-200  last:mr-0 mr-1 hover:cursor-pointer"> 
-                        <span @click="deleteSubject(subject)">{{ subject }}</span>
-                    </div>
-                </div>
+                
                 <!-- MediumTyp -->
                 <div class="w-full md:w-1/2 px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mediumTyp">
@@ -63,7 +37,34 @@
                 </label>
                 <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="originalPrice" type="number"  min="0" step="0.01" placeholder="Originaler Preis"
                 v-model="originalPrice">
-                </div>        
+                </div>     
+                <!-- Jahrgänge -->
+                <div class="w-full md:w-1/2 px-3">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="vintage">
+                    Jahrgang
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="vintage" type="text" placeholder="Jahrgang"
+                v-model="tempVintage">
+                <p v-if="tempVintage.length">{{ tempVintage }} <button @click="addVintage" class="font-bold"> hinzufügen </button></p>
+                    <div v-for="vintage in vintageArray" 
+                    class="text-xs font-semibold inline-block py-1 px-2  rounded-full text-sky-600 bg-sky-200  last:mr-0 mr-1 hover:cursor-pointer"> 
+                        <span @click="deleteVintage(vintage)">{{ vintage }}</span>
+                    </div>
+                </div>
+
+                <!-- Fächer -->
+                <div class="w-full md:w-1/2 px-3">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-subjects">
+                    Fächer
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-subjects" type="text" placeholder="Fächer" 
+                v-model="tempSubject">
+                <p v-if="tempSubject.length">{{ tempSubject }} <button @click="addSubject" class="font-bold"> hinzufügen </button></p>
+                    <div v-for="subject in subjectsArray" 
+                    class="text-xs font-semibold inline-block py-1 px-2  rounded-full text-sky-600 bg-sky-200  last:mr-0 mr-1 hover:cursor-pointer"> 
+                        <span @click="deleteSubject(subject)">{{ subject }}</span>
+                    </div>
+                </div>   
             </div>
             <!--Divider -->
             <hr class="my-8 bg-gray-300 border-0 dark:bg-gray-500 h-1">
@@ -80,7 +81,7 @@
                     Medium ID
                 </label>
                 <input class="uppercase appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="mediumID" type="text" placeholder="medium ID"
-                v-model="mediumID">
+                v-model="mediumID" required>
                 </div>
                 
                 <!-- SerialNr -->
@@ -152,6 +153,9 @@ const deleteMedium = (mediumID) =>{
 
 
 const submitForm = () => {
+    if(mediumID.value.length){
+
+    }
     const response = axios.post('/api/v1/inventory',
     {
         "mediumID": mediumID.value,
