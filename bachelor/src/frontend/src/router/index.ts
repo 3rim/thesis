@@ -6,6 +6,7 @@ import InventoryView from '../views/InventoryView.vue'
 import InventoryDetailsView from '../views/InventoryDetailsView.vue'
 import MediumView from '../views/MediumView.vue'
 import InventoryAddView from '../views/InventoryAddView.vue'
+import InventoryDeleteView from '../views/InventoryDeleteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/inventory/add',
       name: 'inventoryAdd',
       component: InventoryAddView,
+    },
+    {
+      path: '/inventory/delete',
+      name: 'inventoryDelete',
+      component: InventoryDeleteView,
     }
   ]
 })
