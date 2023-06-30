@@ -88,7 +88,12 @@ public class InventoryController {
     public ResponseEntity<MediumResponseDTO> addMedium(@RequestBody MediumRequestDTO mediumRequestDTO){
         Medium medium = convertToMedium(mediumRequestDTO);
         Medium mediumCreated = inventoryService.addNewMedium(medium);
-        return new ResponseEntity<>(convertToDTO(mediumCreated), HttpStatus.OK);
+
+        if(mediumCreated == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
+        }else {
+            return new ResponseEntity<>(convertToDTO(mediumCreated), HttpStatus.OK);
+        }
     }
 
     /**

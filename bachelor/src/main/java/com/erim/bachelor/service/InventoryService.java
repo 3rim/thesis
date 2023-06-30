@@ -26,8 +26,18 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
+    /**
+     * Add new Medium to inventory if id does not exist already otherwise return null
+     *
+     * @param medium The new Medium to be added
+     * @return null or the added Medium
+     */
     public Medium addNewMedium(Medium medium){
-        return inventoryRepository.save(medium);
+        if(!inventoryRepository.existsById(medium.getMediumID()))
+            return inventoryRepository.save(medium);
+        else {
+            return null;
+        }
     }
 
     public Optional<Medium> getMediumById(Long id) {
