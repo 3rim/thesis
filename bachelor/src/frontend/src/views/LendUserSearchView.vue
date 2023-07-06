@@ -1,30 +1,34 @@
 <template>
-<main class="container text-white">
+<main class="container text-black">
     <!--nicht relativ machen sonst klappt der dropdown overlay nicht -->
-    <div class=" pt-4 mb-8 "> 
-        <input 
+    
+    <div class=" pt-4 mb-8 flex"> 
+        <font-awesome-icon class="py-2 px-1" icon="a-solid fa fa-user" size="2x"></font-awesome-icon>
+        <div class="w-full">
+            <input 
         type="text" 
         placeholder="Suche User"
         v-model="searchQuery"
         @input="getSearchResults()"
         class="py-2 px-1 w-full bg-transparent border-b
-         focus:border-b-gray-600 
+         focus:border-b-gray-800 
          focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]"/>
-         <ul class="bg-blue-950 text-white w-full shadow-md
+         <ul class="bg-[#D0B591] text-white w-full shadow-md
          py-2 px-1 top-[66px]"
          v-if="userSearchResults">
             <p v-if="userSearchResults.length === 0"> Keine Ergebnisse gefunden </p> 
             <template v-else>
             <li v-for="user in userSearchResults"
             :key="user.id"
-            class="py-2 cursor-pointer"
+            class="py-2 cursor-pointer hover:bg-[#A8763E] "
             @click="getUser(user)"
             >
             {{ user.firstName}} {{ user.lastName}}<!-- Typescript issue-->
             </li>
             </template>
-            
          </ul>
+        </div>
+       
     </div>
 </main>
 </template>
@@ -37,8 +41,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const getUser = (user:any) => {
-    console.log(user);
-    console.log(user.id);
     router.push({
         name: 'ausleiheUser',
         query:{
@@ -53,7 +55,6 @@ const queryTimeout = ref<number>();
 const userSearchResults = ref(null);
 
 const getSearchResults = () =>{
-    console.log("getResults");
     clearTimeout(queryTimeout.value);
     queryTimeout.value = setTimeout(async () => {
         if(searchQuery.value !== ""){
@@ -61,7 +62,6 @@ const getSearchResults = () =>{
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
             const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
             userSearchResults.value = result.data;
-            console.log(userSearchResults.value);
             return;
         }
         userSearchResults.value = null;
@@ -82,14 +82,6 @@ function splitFirstAndLastName(str:string){
     else{ //only one name entered
         firstName = str;
     }
-    console.log("firstName:" + firstName)
-    console.log("lastName:" + lastName)
     return [firstName,lastName]
 }
-
-
 </script>
-
-<style scoped>
-
-</style>

@@ -1,28 +1,39 @@
 package com.erim.bachelor.entities;
 
+import com.erim.bachelor.data.InventoryDTO;
 import com.erim.bachelor.data.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedNativeQuery(
+        name = "Medium.getInventoryDTO",
+        query = "SELECT Title,count(*) as amount,count (CASE WHEN status='AVAILABLE' THEN 1 END) as available from medium group by 1",
+        resultSetMapping = "Mapping.InventoryDTO" )
+@SqlResultSetMapping(name = "Mapping.InventoryDTO",classes = {
+        @ConstructorResult(
+                targetClass = InventoryDTO.class,
+                columns = {
+                        @ColumnResult(name = "Title"),
+                        @ColumnResult(name = "amount",type = Integer.class),
+                        @ColumnResult(name = "available",type = Integer.class)})
+})
 public class Medium {
 
     @Id
-    @GeneratedValue
     private Long mediumID;
     private String mediumTyp;
     @Enumerated(EnumType.STRING)
@@ -35,6 +46,7 @@ public class Medium {
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
     private String title;
+    private LocalDate dateOfLend;
 
     public Medium(Long mediumID,String title) {
         this.mediumID = mediumID;

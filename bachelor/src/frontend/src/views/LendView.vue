@@ -1,19 +1,30 @@
 <template>
     <div class="container">
-        <div class=" pt-4 mb-8 ">
-        
+        <div class=" pt-4 mb-8  flex">
+            <font-awesome-icon class="py-2 px-1" icon="fa-solid fa fa-barcode" size="2x" />
+            <div>
+            </div>
+            <div class="w-full">
                 <input 
-        type="text" 
-        placeholder="Mediencode einscannen oder tippen"
-        v-model="mediaID"
-        class="py-2 px-1 w-full bg-transparent border-b
-         focus:border-b-gray-600 
-         focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]"/> 
-         
-         <button @click="lendMedia" type="submit" class="bg-white">Ausleihen</button>
-    
+                type="text" 
+                placeholder="Mediencode einscannen oder tippen"
+                v-model="mediaID"
+                @keyup.enter="lendMedia"
+                class="py-2 px-1 w-full bg-transparent border-b
+                focus:border-b-gray-600 
+                focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]"/> 
+            </div>
+            <div>
+                <button 
+                @click="lendMedia" 
+                type="submit" 
+                class="py-2 px-1 bg-[#AE857C] text-white hover:bg-[#6F1A07]">Ausleihen</button>
+            </div>    
         </div>
-       
+       <div v-if="err"
+        class=" flex flex-col flex-1 items-center">
+        <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ errorMessage }}</p>
+       </div>
         <Suspense>
         <AsyncBorrowerView :key="componentKey" />
         <template #fallback>
@@ -31,12 +42,13 @@ import axios from "axios";
 import { useRouter } from 'vue-router';
 import {useRoute} from "vue-router";
 
+const err = ref(false);
+const errorMessage = ref("")
 
 const componentKey = ref(0);
 //Re-render component if necessary
 const forceRerender = () => {
   componentKey.value += 1;
-  console.log("rerender"+componentKey)
 };
 
 
@@ -49,10 +61,20 @@ const queryTimeout = ref<number>();
 
 
 const lendMedia = () =>{
+    err.value = false
     queryTimeout.value = setTimeout(async () => {
         if(mediaID.value !== ""){
             const borrowerID = route.query.id;
-            const result = await axios.post('/api/v1/loan',null,{params:{borrowerID:borrowerID,mediumID:mediaID.value}});
+            const result = 
+                await axios.post('/api/v1/loan',null,{params:{borrowerID:borrowerID,mediumID:mediaID.value}})
+                .catch(function (error){
+                    if(error.response){
+                        console.log(error.response.data)
+                        err.value = true;
+                        console.log(error.response.data.message)
+                        errorMessage.value = error.response.data.message
+                    }
+                });
             forceRerender();
             //reset mediaID to blank
             mediaID.value = "";

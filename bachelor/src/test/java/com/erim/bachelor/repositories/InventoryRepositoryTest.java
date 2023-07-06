@@ -28,13 +28,13 @@ class InventoryRepositoryTest {
     @BeforeEach
     void setUp() {
         inventoryRepository.deleteAll();
+
         ArrayList<Medium> media = new ArrayList<>(
                 Arrays.asList(
-                        new Medium(1L,"IPad",Status.AVAILABLE,null,
-                                "FF991234ABCD",new HashSet<>(),new HashSet<>(),
-                                400.0,"IPad",null,null),
-                        new Medium(2L,"Java ist auch eine Insel"),
-                        new Medium(3L,"Mathe II")
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build()
                 ));
         inventoryRepository.saveAll(media);
     }
@@ -42,7 +42,7 @@ class InventoryRepositoryTest {
     @Test
     void InitMediaExists(){
         List<Medium> actual = inventoryRepository.findAll();
-        assertThat(actual.size()).isEqualTo(3);
+        assertThat(actual.size()).isEqualTo(4);
     }
 
 

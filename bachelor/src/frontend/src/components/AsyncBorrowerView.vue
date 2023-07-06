@@ -2,28 +2,31 @@
     <div class="flex flex-col flex-1 items-center">
         <!-- User  -->
         <div>
-            <p class="py-1 text-white font-bold"> {{borrowerData.data.firstName}} {{borrowerData.data.lastName}}</p>
+            <p class="py-1  font-bold"> {{borrowerData.data.firstName}} {{borrowerData.data.lastName}}</p>
         </div>
 
         <!-- Medialist-->
         <div>
             <table class="">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th >MediumID</th>
-                        <th >MediumTyp</th>
-                        <th >ISBN</th>
-                        <th >Seriennummer</th>
+                <thead class="bg-[#E4D4BA]">
+                    <tr class="">
+                        <th class="px-2" >MediumID</th>
+                        <th class="px-2">Medium Titel</th>
+                        <th class="px-2">MediumTyp</th>
+                        <th class="px-2">ISBN</th>
+                        <th class="px-2">Seriennummer</th>
+                        <th class="px-2">Ausgegeben am</th>
                     </tr>
                 </thead>
                 <tbody>
                   <tr v-for="medium in mediaList" :key="medium.id"
-                  class="bg-slate-500">
-                    <td>{{ medium.mediumID }}</td>
-                    <td>{{ medium.title }}</td>
-                    <td>{{ medium.mediumTyp }}</td>
-                    <td>{{ medium.isbn }}</td>
-                    <td>{{ medium.serialNr }}</td>
+                  class="bg-[#F7F3E3]">
+                    <td class="border-collapse border border-slate-400">{{ medium.mediumID }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.title }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.mediumTyp }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.isbn }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.serialNr }}</td>
+                    <td class="border-collapse border border-slate-400">{{ medium.dateOfLend }}</td>
                   </tr>
                 </tbody>
             </table>
@@ -37,11 +40,7 @@ import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { ref } from 'vue';
 
-const componentKey = ref(0);
 
-const forceRerender = () => {
-  componentKey.value += 1;
-};
 
 const route = useRoute();
 const mediaList = ref(null);

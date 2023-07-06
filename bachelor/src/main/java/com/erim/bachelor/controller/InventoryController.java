@@ -1,11 +1,8 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.data.BorrowerDTO;
-import com.erim.bachelor.data.MediumRequestDTO;
-import com.erim.bachelor.data.MediumResponseDTO;
-import com.erim.bachelor.data.Status;
-import com.erim.bachelor.entities.LoanHistory;
+import com.erim.bachelor.data.*;
 import com.erim.bachelor.entities.Medium;
+import com.erim.bachelor.repositories.InventoryRepository;
 import com.erim.bachelor.service.InventoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +20,48 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
+    private final InventoryRepository repository;
 
     @Autowired
-    public InventoryController(InventoryService inventoryService, ModelMapper modelMapper) {
+    public InventoryController(InventoryService inventoryService, ModelMapper modelMapper, InventoryRepository repository) {
         this.inventoryService = inventoryService;
         this.modelMapper = modelMapper;
+        this.repository = repository;
     }
 
+    /**
+     * Get list of inventoryDTO´s
+     * Title| Amount | Available
+     * IPad     4          2
+     * Book1    15         0
+     *
+     * @return list of InventoryDTO´s
+     */
+    @GetMapping()
+    public List<InventoryDTO> getInventory(){
+        return inventoryService.getInventoryDTO();
+    }
 
     /**
      * Get whole inventory
      * @return list of all inventory
      */
-    @GetMapping
+    @GetMapping(path = "/allMedia")
     public List<MediumResponseDTO> getAllMedia(){
         List<Medium> allMedia = inventoryService.getAllMedia();
         return allMedia.stream().map(this::convertToDTO).toList();
     }
+    /**
+     * Get whole inventory
+     * @return list of all inventory
+     */
+    @GetMapping(path = "title/{title}")
+    public List<MediumResponseDTO> getAllMediaByTitle(@PathVariable(value = "title") String title){
+        List<Medium> allMediaByTitle = inventoryService.getAllMediaByTitle(title);
+        return allMediaByTitle.stream().map(this::convertToDTO).toList();
+    }
+
+
 
     /**
      * Get medium by id
@@ -66,7 +88,12 @@ public class InventoryController {
     public ResponseEntity<MediumResponseDTO> addMedium(@RequestBody MediumRequestDTO mediumRequestDTO){
         Medium medium = convertToMedium(mediumRequestDTO);
         Medium mediumCreated = inventoryService.addNewMedium(medium);
-        return new ResponseEntity<>(convertToDTO(mediumCreated), HttpStatus.OK);
+
+        if(mediumCreated == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
+        }else {
+            return new ResponseEntity<>(convertToDTO(mediumCreated), HttpStatus.OK);
+        }
     }
 
     /**
