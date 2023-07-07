@@ -82,8 +82,10 @@ public class LoanService {
     private Borrower loanToUser(Borrower borrower, Medium medium) {
         medium.setStatus(Status.RENT);
         medium.setBorrower(borrower);
+        LocalDate now = LocalDate.now();
+        medium.setDateOfLend(now);
 
-        LoanHistory loanHistory = new LoanHistory(LocalDate.now(),borrower,medium);
+        LoanHistory loanHistory = new LoanHistory(now,borrower,medium);
         medium.addNewLoanHistory(loanHistory);
         inventoryRepository.save(medium);
 

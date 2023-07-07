@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class MediumRequestDTO {
 
+    private Long mediumID;
     private String mediumTyp;
     @Enumerated(EnumType.STRING)
     private String ISBN;
@@ -23,6 +25,8 @@ public class MediumRequestDTO {
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
     private String title;
+    //Currently lend since
+    private LocalDate dateOfLend;
 
 
 }
