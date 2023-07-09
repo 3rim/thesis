@@ -7,6 +7,7 @@ import InventoryDetailsView from '../views/InventoryDetailsView.vue'
 import MediumView from '../views/MediumView.vue'
 import InventoryAddView from '../views/InventoryAddView.vue'
 import InventoryDeleteView from '../views/InventoryDeleteView.vue'
+import UserImportView from '../views/UserImportView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/inventory/delete',
       name: 'inventoryDelete',
       component: InventoryDeleteView,
+    },
+    {
+      path: '/admin/userImport',
+      name: 'userImport',
+      component: UserImportView,
     }
   ]
 })
