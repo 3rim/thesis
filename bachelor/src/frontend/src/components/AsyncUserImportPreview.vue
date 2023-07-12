@@ -20,6 +20,7 @@
                             <th class="px-2">Vorname</th>
                             <th class="px-2">Nachname</th>
                             <th class="px-2">Gruppe</th>
+                            <th class="px-2">Geb.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +29,8 @@
                         <td class="">{{ user[idIndex] }}</td>
                         <td class="">{{ user[firstNameIndex] }}</td>
                         <td class="">{{ user[lastNameIndex] }}</td>
-                        <td class="">{{ user[lastNameIndex] }}</td>
+                        <td class="">{{ user[groupIndex] }}</td>
+                        <td class="">{{ user[dateOfBirthIndex] }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -47,6 +49,7 @@
                             <th class="px-2">Vorname</th>
                             <th class="px-2">Nachname</th>
                             <th class="px-2">Gruppe</th>
+                            <th class="px-2">Geb.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,11 +81,19 @@
                         </td>
 
                         <td class="">
-                            <div v-if="user.new[lastNameIndex] === user.old[lastNameIndex]">
-                                {{ user.new[lastNameIndex] }}
+                            <div v-if="user.new[groupIndex] === user.old[groupIndex]">
+                                {{ user.new[groupIndex] }}
                             </div>
                             <div v-else>
-                                <p class=" inline line-through">{{ user.old[lastNameIndex] }}</p> -> <p class="inline">{{ user.new[firstNameIndex] }}</p> 
+                                <p class=" inline line-through">{{ user.old[groupIndex] }}</p> -> <p class="inline">{{ user.new[groupIndex] }}</p> 
+                            </div>
+                        </td>
+                        <td class="">
+                            <div v-if="user.new[dateOfBirthIndex] === user.old[dateOfBirthIndex]">
+                                {{ user.new[dateOfBirthIndex] }}
+                            </div>
+                            <div v-else>
+                                <p class=" inline line-through">{{ user.old[dateOfBirthIndex] }}</p> -> <p class="inline">{{ user.new[dateOfBirthIndex] }}</p> 
                             </div>
                         </td>
                     </tr>
@@ -103,6 +114,8 @@
                             <th class="px-2">Vorname</th>
                             <th class="px-2">Nachname</th>
                             <th class="px-2">Gruppe</th>
+                            <th class="px-2">Geb.</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -111,7 +124,8 @@
                         <td class="">{{ user[idIndex] }}</td>
                         <td class="">{{ user[firstNameIndex] }}</td>
                         <td class="">{{ user[lastNameIndex] }}</td>
-                        <td class="">{{ user[lastNameIndex] }}</td>
+                        <td class="">{{ user[groupIndex] }}</td>
+                        <td class="">{{ user[dateOfBirthIndex] }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -133,7 +147,8 @@ const deactiveUsers = ref([]);
 const idIndex = 0;
 const firstNameIndex = 1;
 const lastNameIndex = 2;
-
+const groupIndex=3;
+const dateOfBirthIndex = 4;
 
 const previewData = async () =>{
     // test loading preview
