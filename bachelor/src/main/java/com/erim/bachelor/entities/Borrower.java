@@ -1,6 +1,7 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.Roles;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,18 @@ public class Borrower {
     private Long borrowerNr; //Fachlicher Schlüssel
     private String firstName;
     private String lastName;
+
     //date of birth
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate dob;
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     private String password;
     private boolean leftTheSchool;
+
+    @Column(name = "class")
+    private String borrowerGroup;
+
     /*
     OneToMany: One Borrower can have Many Mediums
     The mappedBy property is what we use to tell Hibernate which variable we are using to represent the parent class in our child class
@@ -45,12 +52,21 @@ public class Borrower {
         this.lastName = lastName;
     }
 
-
     public Borrower(long borrowerNr, String firstName, String lastName) {
+        this(borrowerNr,firstName,lastName,"none",LocalDate.now());
+    }
+
+    public Borrower(long borrowerNr, String firstName, String lastName,String borrowerGroup) {
+        this(borrowerNr,firstName,lastName,borrowerGroup,LocalDate.now());
+    }
+    public Borrower(long borrowerNr, String firstName, String lastName,String borrowerGroup,LocalDate dob) {
         this.borrowerNr = borrowerNr;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.borrowerGroup = borrowerGroup;
+        this.dob = dob;
     }
+
 
     public String getFullName() {
         return firstName + " " + lastName;

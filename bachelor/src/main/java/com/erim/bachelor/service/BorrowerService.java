@@ -40,7 +40,6 @@ public class BorrowerService {
     }
 
     public List<Borrower> importUsersCSV(MultipartFile file){
-        //TODO: vergleich der File mit dem aktuellen user stand. Die visualisierung soll client seitig sein (Wie password format check)
         List<Borrower> allActiveUsers = getAllActiveUsers();
         try {
             List<Borrower> importedCSVUsers = CSVHelper.csvToUsers(file.getInputStream());
