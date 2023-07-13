@@ -87,6 +87,7 @@ public class BorrowerController {
 
     @PostMapping()
     public ResponseEntity<List<Borrower>> addBorrowers(@RequestParam("file") MultipartFile file){
+        System.out.println(file);
         if(CSVHelper.hasCSVFormat(file)){
             try{
                 List<Borrower> result= borrowerService.importUsersCSV(file);

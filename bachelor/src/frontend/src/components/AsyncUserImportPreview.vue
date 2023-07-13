@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <!--Todo: remove the last blank line in deactivateUsers-->
+    <div class=""
+    v-if="newUsers.length >0 || changedUsers.length >0 || deactiveUsers.length >1">
 
         <!-- Info Message -->
         <div class="flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3" role="alert">
@@ -67,7 +69,7 @@
                             </div>
                             <div v-else>
                                 <p class=" inline line-through">{{ user.old[firstNameIndex] }}</p> 
-                                <font-awesome-icon class="px-1" icon="a-solid fa fa-arrow-right" size="x"></font-awesome-icon>
+                                <font-awesome-icon class="px-1" icon="a-solid fa fa-arrow-right" ></font-awesome-icon>
                                 <p class="inline">{{ user.new[firstNameIndex] }}</p> 
                             </div>
                         </td>
@@ -103,7 +105,7 @@
 
         <!-- deactive Users -->
         <div class="max-w-lg w-full py-2"
-            v-if="deactiveUsers.length">
+            v-if="deactiveUsers.length >1">
                 <div class="py-2 bg-red-100  text-gray-700 text-s font-bold rounded-t-lg">
                     <div class="px-1"> Users werden deaktiviert </div>
                 </div>
@@ -130,6 +132,23 @@
                     </tbody>
                 </table>
         </div>
+        <button
+        @click="postFile"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded ">
+            Änderungen übernehmen
+        </button>
+    </div>
+    <div class="mt-10"
+    v-else="newUsers.length == 0 && changedUsers.length == 0 && deactiveUsers.length ==1">
+    <div class="bg-blue-100  border-t-4 border-blue-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
+        <div class="flex">
+            <div class="py-1"><svg class="fill-current h-6 w-6 text-blue-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+            <div>
+                <p class="font-bold">Keine Änderungen festgestellt!</p>
+                <p class="text-sm">Daten sind aktuell.</p>
+            </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -137,8 +156,9 @@
 import axios from 'axios' ;
 import { ref } from 'vue';
 import Papa from 'papaparse';
+import FormData from 'form-data';
 
-const props = defineProps(['csvFile']);
+const props = defineProps(['csvFile','file']);
 const currentUsers = ref();
 const newUsers = ref([]);
 const changedUsers = ref([]);
@@ -163,6 +183,26 @@ const getUsers = async () => {
     var results = Papa.parse(response.data);
     currentUsers.value = results;
 };
+
+function postFile() {
+    const file = props.file
+    let formData = new FormData();
+    formData.append('file', file);
+
+    axios.post('/api/v1/user',formData,{
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    ).then(function (response) {
+    //handle success
+    console.log(response);
+  })
+  .catch(function (response) {
+    //handle error
+    console.log(response);
+  });
+}
 
 await previewData();
 await getUsers();
@@ -197,16 +237,6 @@ const analyseChanges =() =>{
     });
     //Remaining users to be deactivated
     deactiveUsers.value = dataBaseUsersArray;
-
-    console.log("newUsers.value")
-    console.log(newUsers.value)
-
-    console.log("changedUsers.value")
-    console.log(changedUsers.value)
-
-    console.log("deactiveUsers.value")
-    console.log(deactiveUsers.value)
-
 }
 
 function changeDetected(a,b) {
@@ -224,9 +254,6 @@ function changeDetected(a,b) {
             }
         return false;
         }
-}
-function compareValues(oldValue,newValue){
-
 }
 analyseChanges();
 </script>

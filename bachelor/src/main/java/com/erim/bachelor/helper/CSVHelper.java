@@ -44,8 +44,6 @@ public class CSVHelper {
                 DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.GERMAN);
                 String germanDate = dateTime.format(formatter);
 
-                System.out.println(germanDate);
-
                 List<String> data = Arrays.asList(
                         String.valueOf(borrower.getBorrowerNr()),
                         String.valueOf(borrower.getFirstName()),

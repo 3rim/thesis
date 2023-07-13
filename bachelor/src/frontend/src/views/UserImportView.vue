@@ -36,44 +36,49 @@
                         </tbody>
                     </table>
                 </div>
-                <label for="userFile">User-csv : </label>
-                <input type="file" accept=".csv" @change="handeFileUploud($event)" id="userFile">
-                <button 
-                @click="showPreview = !showPreview" 
                 
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
-                    Vorschau anzeigen
-                </button>
             </div>
             <!-- CSV-Schema -->
-            <div class=" bg-gray-300 p-3 m-1 w-2/5">
-                <p>CSV-Format</p>
+            <div class=" bg-[#E4D4BA] p-3 m-1 rounded-lg w-2/5">
+                <p class=" text-center underline font-bold">CSV-Format Beispiel</p>
+                <p>Die CSV-Datei muss in dem Format wie im Beispiel sein!</p>
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Vorname</th>
                             <th>Nachname</th>
+                            <th>Gruppe</th>
                             <th>Geb.</th>
-                            <th>Adresse</th>
                         </tr>
                     </thead>
                     <tbody>
                     <tr v-for="dummyData in dummyDataList"
                   class="">
-                    <td >{{ dummyData.borrowerNr }}</td>
+                    <td class="border-collapse border border-slate-400">{{ dummyData.borrowerNr }}</td>
                     <td class="border-collapse border border-slate-400">{{ dummyData.firstName }}</td>
                     <td class="border-collapse border border-slate-400">{{ dummyData.lastName }}</td>
+                    <td class="border-collapse border border-slate-400">{{ dummyData.group }}</td>
                     <td class="border-collapse border border-slate-400">{{ dummyData.dob }}</td>
-                    <td class="border-collapse border border-slate-400">{{ dummyData.adress }}</td>
                   </tr>
                 </tbody>
                 </table>
             </div>
+            
         </div>
+        <div class=" px-2 py-2 mb-3 bg-slate-300 rounded-lg">
+                    <label for="userFile">User-csv hochladen </label>
+                    <input type="file" accept=".csv" @change="handeFileUploud($event)" id="userFile">
+                    <button
+                    @click="showPreview = !showPreview"
+                    :disabled="(file ==null)"
+                    class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded disabled:opacity-25 ">
+                        Vorschau anzeigen
+                    </button>
+                </div>
 
         <Suspense v-if="showPreview">
-                <AsyncUserImportPreview :csv-file="fileContent" :name="myName" /> 
+                <AsyncUserImportPreview :csv-file="fileContent" :file="file"/> 
                 <template #fallback>
                         Loading...
                 </template>
@@ -89,17 +94,14 @@ import Papa from 'papaparse';
 import AsyncUserImportPreview from '../components/AsyncUserImportPreview.vue'
 
 
-const file = ref();
+const file = ref(null);
 const fileContent = ref();
-const currentUsers = ref();
 const showPreview = ref(false);
-const myName = ref("erim");
 
 const handeFileUploud = (event) => {
     file.value = event.target.files[0]
     console.log(file.value);
     parseFile()
-    
 }
 
 
@@ -125,28 +127,10 @@ const parseFile = () =>{
 }
 
 
-
-const previewChanges = async () => {
-	const response = await axios.get(
-		`/api/v1/user/download`
-	);
-
-    console.log(response);
-    var results = Papa.parse(response.data);
-    currentUsers.value = results;
-    console.log(results);
-    console.log(currentUsers.value);
-
-
-
-};
-
-
-
 const dummyDataList = ref([
-            { borrowerNr: 5, firstName: 'Erim', lastName: 'Medi', dob: '21.02.1996',adress:'My adress' },
-            { borrowerNr: 15, firstName: 'Ensar', lastName: 'Medi', dob: '21.02.1996',adress:'My adress' },
-            { borrowerNr: 201, firstName: 'Sarah', lastName: 'Schmidt', dob: '21.02.1996',adress:'My adress' },
+            { borrowerNr: 5, firstName: 'Erim', lastName: 'Medi', dob: '21.02.1996',group:'Lehrer' },
+            { borrowerNr: 15, firstName: 'Ensar', lastName: 'Medi', dob: '21.02.1996',group:'5a' },
+            { borrowerNr: 201, firstName: 'Sarah', lastName: 'Schmidt', dob: '21.02.1996',group:'Beliebig' },
             
         ]);
 </script>

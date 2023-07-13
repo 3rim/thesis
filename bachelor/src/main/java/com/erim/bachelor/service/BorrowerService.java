@@ -81,6 +81,8 @@ public class BorrowerService {
     private void updateBorrowerInformation(Borrower borrower, Borrower borrowerCSV) {
         borrower.setFirstName(borrowerCSV.getFirstName());
         borrower.setLastName(borrowerCSV.getLastName());
+        borrower.setBorrowerGroup(borrowerCSV.getBorrowerGroup());
+        borrower.setDob(borrowerCSV.getDob());
 
         borrowerRepository.save(borrower);
     }
