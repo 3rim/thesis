@@ -1,18 +1,52 @@
 <template>
     <div class="container pt-4 mb-8  flex flex-col items-center">
-        AdminView
         <!-- Generall Infos about Import -->
         <div class="flex flex-row ">
-            <div class="bg-slate-400 p-3 m-1">
-                <p class="text-center">Nutzer-Import</p>
+            <div class="flex flex-col bg-[#E4D4BA] p-3 m-1 w-3/5 rounded-lg ">
+                <div>
+                    <p class="text-center font-bold underline">Nutzer-Import Hinweise</p>
+                    <p class="">
+                        Für den Nutzer-Import muss eine .csv Datei (CSV durch Komma getrennt) hochgeladen werden. Jene CSV-Datei wird
+                        mit den aktuellen aktiven Nutzern verglichen. Die Zuordnung eines Nutzers geschieht anhand seiner eindeutigen ID!
+                    </p>
+                    <table class="w-full ">
+                        <thead class="text-gray-700 text-s font-bold">
+                            <tr>
+                                <th class="px-2"> Funktion </th>
+                                <th class="px-2">Nutzer in CSV vorhanden</th>
+                                <th class="px-2">Nutzer in Datenbank vorhanden </th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr>
+                                <th class="">Neuen User anlegen</th>
+                                <th><font-awesome-icon :icon="['fas', 'check']" style="color: #089131;" /> </th>
+                                <th><font-awesome-icon :icon="['fas', 'x']" style="color: #f51000;" /></th>
+                            </tr>
+                            <tr>
+                                <th>Änderungen</th>
+                                <th><font-awesome-icon :icon="['fas', 'check']" style="color: #089131;" /></th>
+                                <th><font-awesome-icon :icon="['fas', 'check']" style="color: #089131;" /></th>
+                            </tr>
+                            <tr>
+                                <th>Nutzer deaktivieren</th>
+                                <th><font-awesome-icon :icon="['fas', 'x']" style="color: #f51000;" /></th>
+                                <th><font-awesome-icon :icon="['fas', 'check']" style="color: #089131;" /></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <label for="userFile">User-csv : </label>
                 <input type="file" accept=".csv" @change="handeFileUploud($event)" id="userFile">
-                <button @click="showPreview = !showPreview" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                <button 
+                @click="showPreview = !showPreview" 
+                
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
                     Vorschau anzeigen
                 </button>
             </div>
             <!-- CSV-Schema -->
-            <div class=" bg-slate-400 p-3 m-1">
+            <div class=" bg-gray-300 p-3 m-1 w-2/5">
                 <p>CSV-Format</p>
                 <table>
                     <thead>
@@ -53,6 +87,7 @@ import {useRoute} from "vue-router";
 import { ref } from 'vue';
 import Papa from 'papaparse';
 import AsyncUserImportPreview from '../components/AsyncUserImportPreview.vue'
+
 
 const file = ref();
 const fileContent = ref();
