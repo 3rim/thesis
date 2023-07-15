@@ -64,34 +64,50 @@
                 </tbody>
                 </table>
             </div>
-            
         </div>
-        <div class=" px-2 py-2 mb-3 bg-slate-300 rounded-lg">
-                    <label for="userFile">User-csv hochladen </label>
-                    <input type="file" accept=".csv" @change="handeFileUploud($event)" id="userFile">
-                    <button
-                    @click="showPreview = !showPreview"
-                    :disabled="(file ==null)"
-                    class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded disabled:opacity-25 ">
-                        Vorschau anzeigen
-                    </button>
-                </div>
 
-        <Suspense v-if="showPreview">
-                <AsyncUserImportPreview :csv-file="fileContent" :file="file"/> 
-                <template #fallback>
-                        Loading...
-                </template>
+        <div class=" px-2 py-2 mb-3 bg-slate-300 rounded-lg">
+            <label for="userFile">User-csv hochladen </label>
+            <input type="file" accept=".csv" @change="handeFileUploud($event)" id="userFile">
+            <button
+            @click="previewData"
+            :disabled="(file ==null)"
+            class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded disabled:opacity-25 ">
+                Vorschau anzeigen
+            </button>
+        </div>
+        
+        <!--timeout=0 forces suspense to use the fallback Content-->
+        <Suspense v-if="showPreview" timeout="0">
+          <AsyncUserImportPreview :key="componentKey" :csv-file="fileContent" :file="file"/>
+          <template #fallback>
+            Loading...
+          </template>
         </Suspense>
+    
     </div>
 </template>
 
 <script setup>
-import axios from 'axios' ;
-import {useRoute} from "vue-router";
 import { ref } from 'vue';
 import Papa from 'papaparse';
 import AsyncUserImportPreview from '../components/AsyncUserImportPreview.vue'
+
+
+const componentKey = ref(0);
+//Re-render component if necessary
+const forceRerender = () => {
+    componentKey.value += 1;
+    console.log(componentKey.value)
+  };
+  
+
+const previewData = () => {
+    if(showPreview.value === false){
+        showPreview.value = true;
+    }
+    forceRerender();
+}
 
 
 const file = ref(null);

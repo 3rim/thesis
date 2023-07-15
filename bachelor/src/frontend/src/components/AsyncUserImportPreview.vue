@@ -1,7 +1,7 @@
 <template>
     <!--Todo: remove the last blank line in deactivateUsers-->
-    <div class=""
-    v-if="newUsers.length >0 || changedUsers.length >0 || deactiveUsers.length >1">
+    <div
+    v-if="showPreview">
 
         <!-- Info Message -->
         <div class="flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3" role="alert">
@@ -78,7 +78,9 @@
                                 {{ user.new[lastNameIndex] }}
                             </div>
                             <div v-else>
-                                <p class=" inline line-through">{{ user.old[lastNameIndex] }}</p> -> <p class="inline">{{ user.new[lastNameIndex] }}</p> 
+                                <p class=" inline line-through">{{ user.old[lastNameIndex] }}</p> 
+                                <font-awesome-icon class="px-1" icon="a-solid fa fa-arrow-right" ></font-awesome-icon> 
+                                <p class="inline">{{ user.new[lastNameIndex] }}</p> 
                             </div>
                         </td>
 
@@ -87,7 +89,9 @@
                                 {{ user.new[groupIndex] }}
                             </div>
                             <div v-else>
-                                <p class=" inline line-through">{{ user.old[groupIndex] }}</p> -> <p class="inline">{{ user.new[groupIndex] }}</p> 
+                                <p class=" inline line-through">{{ user.old[groupIndex] }}</p>
+                                <font-awesome-icon class="px-1" icon="a-solid fa fa-arrow-right" ></font-awesome-icon>
+                                <p class="inline">{{ user.new[groupIndex] }}</p> 
                             </div>
                         </td>
                         <td class="">
@@ -95,7 +99,9 @@
                                 {{ user.new[dateOfBirthIndex] }}
                             </div>
                             <div v-else>
-                                <p class=" inline line-through">{{ user.old[dateOfBirthIndex] }}</p> -> <p class="inline">{{ user.new[dateOfBirthIndex] }}</p> 
+                                <p class=" inline line-through">{{ user.old[dateOfBirthIndex] }}</p> 
+                                <font-awesome-icon class="px-1" icon="a-solid fa fa-arrow-right" ></font-awesome-icon>
+                                <p class="inline">{{ user.new[dateOfBirthIndex] }}</p> 
                             </div>
                         </td>
                     </tr>
@@ -138,18 +144,36 @@
             Änderungen übernehmen
         </button>
     </div>
-    <div class="mt-10"
-    v-else="newUsers.length == 0 && changedUsers.length == 0 && deactiveUsers.length ==1">
-    <div class="bg-blue-100  border-t-4 border-blue-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
-        <div class="flex">
-            <div class="py-1"><svg class="fill-current h-6 w-6 text-blue-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-            <div>
-                <p class="font-bold">Keine Änderungen festgestellt!</p>
-                <p class="text-sm">Daten sind aktuell.</p>
-            </div>
-            </div>
+
+    <!-- No change Message -->
+    <div class="mt-10 bg-blue-100  border-t-4 border-blue-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+    v-if="noChange">
+    <div class="flex">
+        <div class="py-1"><svg class="fill-current h-6 w-6 text-blue-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+        <div>
+            <p class="font-bold">Keine Änderungen festgestellt!</p>
+            <p class="text-sm">Daten sind aktuell.</p>
+        </div>
+        </div>
+    </div>    
+
+    <!--SuccesMessage-->
+    <div class="mt-10 bg-teal-200  border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+    v-if="success">
+    <div class="flex">
+        <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+         <div>
+            <p class="font-bold">Änderungen übernommen</p>
         </div>
     </div>
+    </div> 
+   
+    <!--ErrorMessage-->
+    <div v-if="err"
+        class=" flex flex-col flex-1 items-center">
+        <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ errorMessage }}</p>
+    </div>
+    
 </template>
 
 <script setup>
@@ -164,24 +188,28 @@ const newUsers = ref([]);
 const changedUsers = ref([]);
 const deactiveUsers = ref([]);
 
+const success = ref(false);
+const showPreview = ref(false);
+const err = ref(false);
+const noChange = ref(false);
+
 const idIndex = 0;
 const firstNameIndex = 1;
 const lastNameIndex = 2;
 const groupIndex=3;
 const dateOfBirthIndex = 4;
 
-const previewData = async () =>{
-    // test loading preview
-    await new Promise ((resolve) => setTimeout(resolve,3000));
-    
-}
 
 const getUsers = async () => {
+    
 	const response = await axios.get(
 		`/api/v1/user/download`
 	);
     var results = Papa.parse(response.data);
     currentUsers.value = results;
+
+    //Delay renedering by 1 sec
+    await new Promise((res)=> setTimeout(res,1000));
 };
 
 function postFile() {
@@ -196,15 +224,21 @@ function postFile() {
     }
     ).then(function (response) {
     //handle success
-    console.log(response);
+    success.value = true;
+    showPreview.value= false;
+    noChange.value = false;
+    err.value = false;
   })
   .catch(function (response) {
     //handle error
-    console.log(response);
+    success.value= false;
+    showPreview.value =false;
+    noChange.value = false;
+    err.value = true;
   });
 }
 
-await previewData();
+
 await getUsers();
 
 const analyseChanges =() =>{
@@ -225,7 +259,6 @@ const analyseChanges =() =>{
         }
         //User found ==> changeDetected = true
         else if(changeDetected(dataBaseUsersArray[index],csvUser)){
-            console.log("changeee")
             changedUsers.value.push({old: result, new: csvUser});
             dataBaseUsersArray.splice(index,1)
         }
@@ -237,6 +270,16 @@ const analyseChanges =() =>{
     });
     //Remaining users to be deactivated
     deactiveUsers.value = dataBaseUsersArray;
+
+    //if csv and database have differeces show the preview
+    if(newUsers.value.length > 0 || changedUsers.value.length >0 || deactiveUsers.value.length >1){
+        showPreview.value = true;
+        noChange.value = false;
+    }
+    else{
+        showPreview.value = false;
+        noChange.value = true;
+    }
 }
 
 function changeDetected(a,b) {
