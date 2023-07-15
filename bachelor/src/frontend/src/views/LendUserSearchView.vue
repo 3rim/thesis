@@ -23,7 +23,10 @@
             class="py-2 cursor-pointer hover:bg-[#A8763E] "
             @click="getUser(user)"
             >
-            {{ user.firstName}} {{ user.lastName}}<!-- Typescript issue-->
+            {{ user.firstName}} {{ user.lastName}} {{ user.borrowerGroup }} 
+            <span v-if="user.leftTheSchool === true"
+            class="text-[#6F1A07] font-bold px-3">
+                 Hat die Schule verlassen</span>
             </li>
             </template>
          </ul>
@@ -62,6 +65,7 @@ const getSearchResults = () =>{
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
             const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
             userSearchResults.value = result.data;
+            console.log(userSearchResults.value)
             return;
         }
         userSearchResults.value = null;

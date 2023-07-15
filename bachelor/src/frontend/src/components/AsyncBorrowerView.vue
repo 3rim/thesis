@@ -1,8 +1,14 @@
 <template>
     <div class="flex flex-col flex-1 items-center">
         <!-- User  -->
-        <div>
-            <p class="py-1  font-bold"> {{borrowerData.data.firstName}} {{borrowerData.data.lastName}}</p>
+        <div v-if="borrowerData.data.leftTheSchool ===true">
+            <p class="text-[#6F1A07] font-bold underline">Nicht mehr auf der Schule!</p>
+        </div>
+        <div class="py-1 ">
+            <p class=""><span class="font-bold">Vorname: </span> {{borrowerData.data.firstName}}</p>
+            <p class=""><span class="font-bold">Nachname: </span> {{borrowerData.data.lastName}}</p>
+            <p class=""><span class="font-bold">Gruppe: </span> {{borrowerData.data.borrowerGroup}}</p>
+            <p class=""><span class="font-bold">Geb.: </span> {{borrowerData.data.dob}}</p>
         </div>
 
         <!-- Medialist-->
