@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import HomeComponent from '@/components/HomeComponent.vue';
 import UserCard from '@/components/UserCard.vue';
 </script>

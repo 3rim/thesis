@@ -15,9 +15,9 @@
     </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import AdminDropDownVue from './AdminDropDown.vue';
-import InvetoryDropDown from './InventoryDropDown.vue'
+import InvetoryDropDown from './InventoryDropDown.vue';
 
 
 </script>

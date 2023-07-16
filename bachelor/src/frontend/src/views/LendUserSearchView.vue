@@ -36,14 +36,14 @@
 </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
 
 
 const router = useRouter();
-const getUser = (user:any) => {
+const getUser = (user) => {
     router.push({
         name: 'ausleiheUser',
         query:{
@@ -54,7 +54,7 @@ const getUser = (user:any) => {
 };
 
 const searchQuery = ref("");
-const queryTimeout = ref<number>();
+const queryTimeout = ref();
 const userSearchResults = ref(null);
 
 const getSearchResults = () =>{
@@ -72,7 +72,7 @@ const getSearchResults = () =>{
     },300);
 }
 
-function splitFirstAndLastName(str:string){
+function splitFirstAndLastName(str){
     const fullName = str;
     const lastIndex = fullName.lastIndexOf(" ");
 

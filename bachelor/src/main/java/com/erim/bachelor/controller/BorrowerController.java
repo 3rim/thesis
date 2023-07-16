@@ -132,11 +132,7 @@ public class BorrowerController {
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);
         borrowerDTO.setMediumList(borrowerLendMedia);
 
-        LocalDate dateTime = borrower.getDob();
-        // using short german date/time formatting (01.04.14 10:45)
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.GERMAN);
-        String germanDate = dateTime.format(formatter);
-        borrowerDTO.setDob(germanDate);
+        
         return borrowerDTO;
     }
 }
