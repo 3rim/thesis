@@ -9,9 +9,11 @@ import { faUserSecret,faBarcode,faUser, faArrowRight,faCheck, faX } from '@forta
 
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import helper from './helper/dateFormatter'
 
 library.add(faUserSecret,faBarcode,faUser,faArrowRight,faCheck,faX)
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon);
 
 app.use(router)
+app.use(helper)
 app.mount('#app')

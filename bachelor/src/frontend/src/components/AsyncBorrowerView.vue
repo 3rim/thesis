@@ -8,7 +8,7 @@
             <p class=""><span class="font-bold">Vorname: </span> {{borrowerData.data.firstName}}</p>
             <p class=""><span class="font-bold">Nachname: </span> {{borrowerData.data.lastName}}</p>
             <p class=""><span class="font-bold">Gruppe: </span> {{borrowerData.data.borrowerGroup}}</p>
-            <p class=""><span class="font-bold">Geb.: </span> {{borrowerData.data.dob}}</p>
+            <p class=""><span class="font-bold">Geb.: </span> {{ $dateStringToGermanFormat(  borrowerData.data.dob)}}</p>
         </div>
 
         <!-- Medialist-->
@@ -32,7 +32,7 @@
                     <td class="border-collapse border border-slate-400">{{ medium.mediumTyp }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.isbn }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.serialNr }}</td>
-                    <td class="border-collapse border border-slate-400">{{ medium.dateOfLend }}</td>
+                    <td class="border-collapse border border-slate-400">{{ $dateStringToGermanFormat(medium.dateOfLend) }}</td>
                   </tr>
                 </tbody>
             </table>

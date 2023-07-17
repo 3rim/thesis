@@ -132,7 +132,7 @@ public class BorrowerController {
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);
         borrowerDTO.setMediumList(borrowerLendMedia);
 
-        
+
         return borrowerDTO;
     }
 }

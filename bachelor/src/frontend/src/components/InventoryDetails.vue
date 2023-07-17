@@ -27,7 +27,7 @@
                     <td class="text-center">{{ medium.serialNr }}</td>
                     <td class="text-center">{{ medium.status }}</td>
                     <td class="text-center cursor-pointer">{{ medium.currentBorrower }}</td>
-                    <td class="text-center">{{ medium.dateOfLend }}</td>
+                    <td class="text-center">{{ $dateStringToGermanFormat(medium.dateOfLend) }}</td>
                   </tr>
                 </tbody>
             </table>
