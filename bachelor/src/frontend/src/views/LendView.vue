@@ -34,7 +34,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
 
 import { ref } from 'vue';
@@ -56,7 +56,7 @@ const router = useRouter();
 const route = useRoute();
 
 const mediaID = ref("");
-const queryTimeout = ref<number>();
+const queryTimeout = ref();
 
 
 

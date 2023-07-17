@@ -40,7 +40,6 @@ public class BorrowerService {
     }
 
     public List<Borrower> importUsersCSV(MultipartFile file){
-        //TODO: vergleich der File mit dem aktuellen user stand. Die visualisierung soll client seitig sein (Wie password format check)
         List<Borrower> allActiveUsers = getAllActiveUsers();
         try {
             List<Borrower> importedCSVUsers = CSVHelper.csvToUsers(file.getInputStream());
@@ -82,6 +81,8 @@ public class BorrowerService {
     private void updateBorrowerInformation(Borrower borrower, Borrower borrowerCSV) {
         borrower.setFirstName(borrowerCSV.getFirstName());
         borrower.setLastName(borrowerCSV.getLastName());
+        borrower.setBorrowerGroup(borrowerCSV.getBorrowerGroup());
+        borrower.setDob(borrowerCSV.getDob());
 
         borrowerRepository.save(borrower);
     }

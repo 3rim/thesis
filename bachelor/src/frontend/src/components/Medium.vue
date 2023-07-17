@@ -25,8 +25,8 @@
             <tbody>
                 <tr v-for="loanHistorie in loanHistories"
                  class="bg-[#F7F3E3] border-b-2 cursor-pointer">
-                    <td class="text-center">{{ loanHistorie.dateOfLend }}</td>
-                    <td class="text-center">{{ loanHistorie.dateOfReturn }}</td>
+                    <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfLend) }}</td>
+                    <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfReturn) }}</td>
                     <td class="text-center">{{ loanHistorie.borrower.firstName }}</td>
                                  
                 </tr>

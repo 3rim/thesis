@@ -1,5 +1,3 @@
-const { Container } = require('postcss');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [

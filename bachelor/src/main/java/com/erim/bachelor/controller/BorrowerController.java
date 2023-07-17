@@ -18,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RestController
@@ -87,6 +90,7 @@ public class BorrowerController {
 
     @PostMapping()
     public ResponseEntity<List<Borrower>> addBorrowers(@RequestParam("file") MultipartFile file){
+        System.out.println(file);
         if(CSVHelper.hasCSVFormat(file)){
             try{
                 List<Borrower> result= borrowerService.importUsersCSV(file);
@@ -127,6 +131,8 @@ public class BorrowerController {
 
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);
         borrowerDTO.setMediumList(borrowerLendMedia);
+
+
         return borrowerDTO;
     }
 }

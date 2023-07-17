@@ -23,7 +23,10 @@
             class="py-2 cursor-pointer hover:bg-[#A8763E] "
             @click="getUser(user)"
             >
-            {{ user.firstName}} {{ user.lastName}}<!-- Typescript issue-->
+            {{ user.firstName}} {{ user.lastName}} {{ user.borrowerGroup }} 
+            <span v-if="user.leftTheSchool === true"
+            class="text-[#6F1A07] font-bold px-3">
+                 Hat die Schule verlassen</span>
             </li>
             </template>
          </ul>
@@ -33,14 +36,14 @@
 </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
 
 
 const router = useRouter();
-const getUser = (user:any) => {
+const getUser = (user) => {
     router.push({
         name: 'ausleiheUser',
         query:{
@@ -51,7 +54,7 @@ const getUser = (user:any) => {
 };
 
 const searchQuery = ref("");
-const queryTimeout = ref<number>();
+const queryTimeout = ref();
 const userSearchResults = ref(null);
 
 const getSearchResults = () =>{
@@ -62,13 +65,14 @@ const getSearchResults = () =>{
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
             const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
             userSearchResults.value = result.data;
+            console.log(userSearchResults.value)
             return;
         }
         userSearchResults.value = null;
     },300);
 }
 
-function splitFirstAndLastName(str:string){
+function splitFirstAndLastName(str){
     const fullName = str;
     const lastIndex = fullName.lastIndexOf(" ");
 

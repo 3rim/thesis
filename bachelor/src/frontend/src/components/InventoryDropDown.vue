@@ -16,7 +16,7 @@
     </div>
 </template>
 
-<script  lang="ts">
+<script  >
 
 
 export default {
@@ -26,7 +26,7 @@ export default {
         }
     },
     created(){
-        const handleEscape = (e:KeyboardEvent) =>{
+        const handleEscape = (e) =>{
             if(e.key=== 'Esc' || e.key === 'Escape'){
                 this.isOpen = false
             }

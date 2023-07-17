@@ -5,12 +5,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { RouterView } from 'vue-router';
-import Navbar from './components/Navbar.vue';
+import Navbar from './components/Navbar.vue'
 
 </script>
-
-<style scoped>
-
-</style>

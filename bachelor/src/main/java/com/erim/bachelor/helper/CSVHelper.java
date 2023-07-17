@@ -6,9 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class CSVHelper {
 
@@ -32,10 +37,19 @@ public class CSVHelper {
                 //Skip borrower if he has no BorrowerNr
                 if(borrower.getBorrowerNr() == null)
                     continue;
+
+                LocalDate dateTime = borrower.getDob();
+
+                // using short german date/time formatting (01.04.14 10:45)
+                DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.GERMAN);
+                String germanDate = dateTime.format(formatter);
+
                 List<String> data = Arrays.asList(
                         String.valueOf(borrower.getBorrowerNr()),
                         String.valueOf(borrower.getFirstName()),
-                        String.valueOf(borrower.getLastName())
+                        String.valueOf(borrower.getLastName()),
+                        String.valueOf(borrower.getBorrowerGroup()),
+                        germanDate
                 );
 
                 csvPrinter.printRecord(data);
@@ -57,11 +71,29 @@ public class CSVHelper {
 
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
+            int indexID ,indexFirstName,indexLastName,indexGroup,indexDateOfBirth;
+            indexID=0;
+            indexFirstName=1;
+            indexLastName=2;
+            indexGroup=3;
+            indexDateOfBirth=4;
+
             for (CSVRecord csvRecord : csvRecords) {
+                String csvDOB = csvRecord.get(indexDateOfBirth);
+                /*
+                 * LocalDate standard is: yyyy-MM-dd. Read german format and parse it to the ISO-Standard
+                 * The string must represent a valid date in the format of ISO LocalDate
+                 */
+                DateTimeFormatter germanFormatter = DateTimeFormatter.ofLocalizedDate(
+                        FormatStyle.MEDIUM).withLocale(Locale.GERMAN);
+                LocalDate dob = LocalDate.parse(csvDOB, germanFormatter);
+
                 Borrower borrower = new Borrower(
-                        Long.parseLong(csvRecord.get("Id")),
-                        csvRecord.get("firstName"),
-                        csvRecord.get("lastName")
+                        Long.parseLong(csvRecord.get(indexID)),
+                        csvRecord.get(indexFirstName),
+                        csvRecord.get(indexLastName),
+                        csvRecord.get(indexGroup),
+                        dob
                 );
 
                 borrowers.add(borrower);
