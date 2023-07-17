@@ -24,5 +24,7 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
      */
     List<Borrower> findAllByBorrowerNrIsNotNull();
 
+    Optional<Borrower> findBorrowerByEmail(String email);
+
 
 }
