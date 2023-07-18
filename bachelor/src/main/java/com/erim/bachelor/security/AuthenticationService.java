@@ -35,7 +35,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateJwt(extraClaims,borrower);
         System.out.println(jwtToken);
         return AuthenticationResponse.builder()
-                .jwtToken(jwtToken)
+                .jwt(jwtToken)
                 .build();
     }
 }
