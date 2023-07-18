@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class AuthenticationService {
         Set<Role> roleList = borrower.getRoles();
         Map<String,Object> extraClaims = new HashMap<>();
         extraClaims.put("Roles",roleList);
-        String jwtToken = jwtService.generateJwtToken(extraClaims,borrower);
+        String jwtToken = jwtService.generateJwt(extraClaims,borrower);
         System.out.println(jwtToken);
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)

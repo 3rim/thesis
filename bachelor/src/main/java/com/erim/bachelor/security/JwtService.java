@@ -19,20 +19,20 @@ import java.util.function.Function;
 public class JwtService {
     private static final String SECRET_KEY = "qXKI5D9qY6r3hPEAmcOVKJ06152kFOhx6mtVb8huykWCKSZ8TFWHxrZZx1/lbEN2" ;
 
-    public String extractUsername(String jwtToken) {
-        return extractClaim(jwtToken,Claims::getSubject);
+    public String extractUsername(String jwt) {
+        return extractClaim(jwt,Claims::getSubject);
     }
 
-    public <T> T extractClaim(String jwtToken, Function<Claims,T> claimsResolver) {
-        final Claims claims = extractAllClaims(jwtToken);
+    public <T> T extractClaim(String jwt, Function<Claims,T> claimsResolver) {
+        final Claims claims = extractAllClaims(jwt);
         return claimsResolver.apply(claims);
     }
 
 
-    public String generateJwtToken( UserDetails userDetails){
-        return  generateJwtToken(new HashMap<>(),userDetails);
+    public String generateJwt(UserDetails userDetails){
+        return  generateJwt(new HashMap<>(),userDetails);
     }
-    public String generateJwtToken(Map<String,Object> extraClaims, UserDetails userDetails){
+    public String generateJwt(Map<String,Object> extraClaims, UserDetails userDetails){
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
@@ -43,25 +43,25 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isJwtTokenValid(String jwtToken,UserDetails userDetails){
-        final String username = extractUsername(jwtToken);
-        return (username.equals(userDetails.getUsername())) && !isJwtTokenExpired(jwtToken);
+    public boolean isJwtValid(String jwt, UserDetails userDetails){
+        final String username = extractUsername(jwt);
+        return (username.equals(userDetails.getUsername())) && !isJwtExpired(jwt);
     }
 
-    private boolean isJwtTokenExpired(String jwtToken) {
-        return extractExpiration(jwtToken).before(new Date());
+    private boolean isJwtExpired(String jwt) {
+        return extractExpiration(jwt).before(new Date());
     }
 
-    private Date extractExpiration(String jwtToken) {
-       return extractClaim(jwtToken, Claims::getExpiration);
+    private Date extractExpiration(String jwt) {
+       return extractClaim(jwt, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String jwtToken) {
+    private Claims extractAllClaims(String jwt) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
-                .parseClaimsJws(jwtToken)
+                .parseClaimsJws(jwt)
                 .getBody();
     }
 
