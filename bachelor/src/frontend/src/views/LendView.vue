@@ -26,7 +26,7 @@
         <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ errorMessage }}</p>
        </div>
         <Suspense>
-        <AsyncBorrowerView :key="componentKey" />
+        <AsyncBorrowerView :key="componentKey" :user-id="route.query.id" />
         <template #fallback>
             <p>loadning...</p>
         </template>
@@ -41,6 +41,8 @@ import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
 import {useRoute} from "vue-router";
+import authHeader from '../services/authHeader';
+
 
 const err = ref(false);
 const errorMessage = ref("")
@@ -65,8 +67,12 @@ const lendMedia = () =>{
     queryTimeout.value = setTimeout(async () => {
         if(mediaID.value !== ""){
             const borrowerID = route.query.id;
+            let config = {
+                headers: authHeader(),
+                params: {borrowerID:borrowerID,mediumID:mediaID.value}
+            }
             const result = 
-                await axios.post('/api/v1/loan',null,{params:{borrowerID:borrowerID,mediumID:mediaID.value}})
+                await axios.post('/api/v1/loan',null,config)
                 .catch(function (error){
                     if(error.response){
                         console.log(error.response.data)

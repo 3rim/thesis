@@ -92,7 +92,7 @@
 import { ref } from 'vue';
 import Papa from 'papaparse';
 import AsyncUserImportPreview from '../components/AsyncUserImportPreview.vue'
-
+import authHeader from '../services/authHeader';
 
 const componentKey = ref(0);
 //Re-render component if necessary

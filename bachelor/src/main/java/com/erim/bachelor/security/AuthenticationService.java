@@ -29,13 +29,15 @@ public class AuthenticationService {
         //user is authenticated
         Borrower borrower = repository.findBorrowerByEmail(request.getEmail()).orElseThrow();
         System.out.println(borrower);
-        Set<Role> roleList = borrower.getRoles();
+        Set<Role> roleSet = borrower.getRoles();
         Map<String,Object> extraClaims = new HashMap<>();
-        extraClaims.put("Roles",roleList);
+        extraClaims.put("Roles",roleSet);
         String jwtToken = jwtService.generateJwt(extraClaims,borrower);
         System.out.println(jwtToken);
         return AuthenticationResponse.builder()
                 .jwt(jwtToken)
+                .roles(roleSet)
+                .id(borrower.getBorrowerID())
                 .build();
     }
 }

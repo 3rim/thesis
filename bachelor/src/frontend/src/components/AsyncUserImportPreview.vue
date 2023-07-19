@@ -181,6 +181,7 @@ import axios from 'axios' ;
 import { ref } from 'vue';
 import Papa from 'papaparse';
 import FormData from 'form-data';
+import authHeader from '../services/authHeader';
 
 const props = defineProps(['csvFile','file']);
 const currentUsers = ref();
@@ -203,7 +204,7 @@ const dateOfBirthIndex = 4;
 const getUsers = async () => {
     
 	const response = await axios.get(
-		`/api/v1/user/download`
+		`/api/v1/user/download`,{headers:authHeader()}
 	);
     var results = Papa.parse(response.data);
     currentUsers.value = results;
@@ -216,10 +217,11 @@ function postFile() {
     const file = props.file
     let formData = new FormData();
     formData.append('file', file);
-
+    let user = JSON.parse(localStorage.getItem('user'));
     axios.post('/api/v1/user',formData,{
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'Authorization': 'Bearer '+ user.jwt
         }
     }
     ).then(function (response) {

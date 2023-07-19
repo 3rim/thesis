@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -78,11 +79,15 @@ public class InitializeConfig {
             inventoryRepository.saveAll(media);
             Set<Role> roleSet = new HashSet<>();
             roleSet.add(Role.ADMIN);
+            roleSet.add(Role.USER);
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
-                            Borrower.builder().borrowerID(1L).borrowerNr(1L).email("user@user")
+                            Borrower.builder().borrowerID(1L).borrowerNr(100L).email("user@user")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(roleSet)
+                                    .firstName("user")
+                                    .lastName("user")
+                                    .dob(LocalDate.now())
                                     .build()
                     ));
 

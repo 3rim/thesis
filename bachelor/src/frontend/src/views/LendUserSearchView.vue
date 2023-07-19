@@ -40,7 +40,7 @@
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
-
+import authHeader from '../services/authHeader';
 
 const router = useRouter();
 const getUser = (user) => {
@@ -63,7 +63,11 @@ const getSearchResults = () =>{
         if(searchQuery.value !== ""){
             
             const [firstName, lastName] = splitFirstAndLastName(searchQuery.value);
-            const result = await axios.get('/api/v1/user',{params:{firstName:firstName,lastName:lastName}});
+            let config = {
+                headers: authHeader(),
+                params: {firstName:firstName,lastName:lastName}
+            }
+            const result = await axios.get('/api/v1/user',config);
             userSearchResults.value = result.data;
             console.log(userSearchResults.value)
             return;

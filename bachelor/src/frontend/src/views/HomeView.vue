@@ -1,12 +1,17 @@
 <script setup>
-import HomeComponent from '@/components/HomeComponent.vue';
-import UserCard from '@/components/UserCard.vue';
+import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
+
 </script>
 
 <template>
   <main class="">
     <div>sdsa</div>
-    <UserCard/>
+    <Suspense>
+    <AsyncBorrowerView :user-id="1"/>
+    <template #fallback>
+            <p>loadning...</p>
+        </template>
+   </Suspense>
     
   </main>
 </template>
