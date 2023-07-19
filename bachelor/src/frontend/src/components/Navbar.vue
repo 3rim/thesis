@@ -1,5 +1,5 @@
-<template>
-    <header class="sticky top-0 shadow-lg bg-navbar">
+<template >
+    <header class="sticky top-0 shadow-lg bg-navbar" v-show="loggedIn">
         <nav class="container flex flex-col sm:flex-row items-center gap-4  ">
         <div class="px-2 pt-2 sm:flex">
             <RouterLink :to="{name:'home'}">
@@ -18,6 +18,16 @@
 <script setup>
 import AdminDropDownVue from './AdminDropDown.vue';
 import InvetoryDropDown from './InventoryDropDown.vue';
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+
+
+const loggedIn = computed(() =>{
+    return store.state.auth.status.loggedIn;
+})
+
 
 
 </script>
