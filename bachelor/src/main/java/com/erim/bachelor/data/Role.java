@@ -2,5 +2,9 @@ package com.erim.bachelor.data;
 
 public enum Role {
     USER,
-    ADMIN
+    ADMIN,
+    LIBRARIAN,
+    INVENTORY_HELPER,
+    LOAN_HELPER
+
 }
