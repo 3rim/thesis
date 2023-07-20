@@ -45,7 +45,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from "axios";
-
+import authHeader from '../services/authHeader';
 const err = ref(false);
 const errorMessage = ref("")
 const success = ref(false);
@@ -57,7 +57,10 @@ const mediumID =ref("");
 
 
 const deleteMedium = (ID) =>{
-    axios.delete(`/api/v1/inventory/${ID}`)
+    let config = {
+                headers: authHeader(),
+            }
+    axios.delete(`/api/v1/inventory/${ID}`,config)
     .then(res => {
         successMessage.value = res.data;
         success.value = true;

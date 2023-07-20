@@ -38,6 +38,7 @@ import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import authHeader from '../services/authHeader';
 
 const router = useRouter();
 const goTo = (title) => {
@@ -48,9 +49,12 @@ const route = useRoute();
 const inventoryList = ref(null);
 
 const getInventoryData =async () => {
+    let config = {
+                headers: authHeader()
+            }
     try {
         const inventoryData = await axios.get(
-            `/api/v1/inventory`
+            `/api/v1/inventory`,config
         );
         console.log(inventoryData);
         inventoryList.value = inventoryData.data

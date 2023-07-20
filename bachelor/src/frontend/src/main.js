@@ -14,7 +14,6 @@ import helper from './helper/dateFormatter'
 /*Impor Vuex for state management*/
 import store from './store'
 
-
 library.add(faUserSecret,faBarcode,faUser,faArrowRight,faCheck,faX)
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon);
 

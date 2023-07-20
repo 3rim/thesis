@@ -52,7 +52,6 @@ const route = useRoute();
 const mediaList = ref(null);
 const getBorrowerData =async () => {
     try {
-        console.log(props.userId)
         const borrowerData = await axios.get(
             `/api/v1/user/${props.userId}`,
             {headers:authHeader()}

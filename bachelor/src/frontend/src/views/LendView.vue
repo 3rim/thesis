@@ -74,8 +74,8 @@ const lendMedia = () =>{
             const result = 
                 await axios.post('/api/v1/loan',null,config)
                 .catch(function (error){
-                    if(error.response){
-                        console.log(error.response.data)
+                    if(error){
+                        console.log(error)
                         err.value = true;
                         console.log(error.response.data.message)
                         errorMessage.value = error.response.data.message

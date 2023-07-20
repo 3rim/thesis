@@ -4,8 +4,7 @@ import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
 </script>
 
 <template>
-  <main class="">
-    <div>sdsa</div>
+  <main class="mt-5">
     <Suspense>
     <AsyncBorrowerView :user-id="1"/>
     <template #fallback>

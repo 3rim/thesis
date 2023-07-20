@@ -11,7 +11,9 @@ class AuthService {
       .then(response => {
         console.log(response.data)
         if (response.data.jwt) {
-          //unparse payload
+          
+         /*
+         //unparse payload
           var base64Payload = response.data.jwt.split(".")[1];
           var payload = decodeURIComponent(
             atob(base64Payload)
@@ -21,8 +23,7 @@ class AuthService {
               })
               .join("")
           );
-          console.log(JSON.parse(payload));
-
+          console.log(JSON.parse(payload));*/
           localStorage.setItem('user', JSON.stringify(response.data));
         }
 

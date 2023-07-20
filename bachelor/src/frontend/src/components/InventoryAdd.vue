@@ -132,6 +132,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from "axios";
+import authHeader from '../services/authHeader';
 
 const err = ref(false);
 const errorMessage = ref("")
@@ -154,7 +155,10 @@ const inventoriedMediaArray = ref([]);
 
 const deleteMedium = (mediumID) =>{
     console.log(mediumID)
-    const response = axios.delete(`/api/v1/inventory/${mediumID}`)
+    let config = {
+                headers: authHeader()
+            }
+    const response = axios.delete(`/api/v1/inventory/${mediumID}`,config)
     .then(res => {
         console.log(res)
         let i = inventoriedMediaArray.value.map(item => item.mediumID).indexOf(mediumID)
@@ -166,6 +170,9 @@ const deleteMedium = (mediumID) =>{
 
 
 const submitForm = () => {
+    let config = {
+                headers: authHeader(),
+            }
     const response = axios.post('/api/v1/inventory',
     {
         "mediumID": mediumID.value,
@@ -177,7 +184,7 @@ const submitForm = () => {
         "title": title.value,
         "dateOfLend": "",
         "isbn": ISBN.value
-    }).then(res => {
+    },config).then(res => {
         const data = res.data;
         console.log(data.mediumID)
         const medium = {
