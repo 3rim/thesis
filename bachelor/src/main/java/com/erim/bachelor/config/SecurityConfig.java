@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**")
                 .permitAll()
+                .requestMatchers("/error").permitAll() //<-- Fix: ResponseStatusException always 403 due to latest spring version
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -39,6 +40,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
 }
