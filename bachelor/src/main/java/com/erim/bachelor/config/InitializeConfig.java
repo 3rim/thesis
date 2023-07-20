@@ -77,16 +77,56 @@ public class InitializeConfig {
                     ));
 
             inventoryRepository.saveAll(media);
-            Set<Role> roleSet = new HashSet<>();
-            roleSet.add(Role.ADMIN);
-            roleSet.add(Role.USER);
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
-                            Borrower.builder().borrowerID(1L).borrowerNr(100L).email("user@user")
+                            //User
+                            Borrower.builder().borrowerID(100L).borrowerNr(100L).email("user@user")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(roleSet)
+                                    .roles(new HashSet<Role>(){{
+                                        add(Role.USER);
+                                    }})
                                     .firstName("user")
                                     .lastName("user")
+                                    .dob(LocalDate.now())
+                                    .build(),
+                            //Admin
+                            Borrower.builder().borrowerID(101L).borrowerNr(101L).email("admin@user")
+                                    .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
+                                    .roles(new HashSet<Role>(){{
+                                        add(Role.ADMIN);
+                                    }})
+                                    .firstName("admin")
+                                    .lastName("admin")
+                                    .dob(LocalDate.now())
+                                    .build(),
+                            //Librarian
+                            Borrower.builder().borrowerID(102L).borrowerNr(102L).email("librarian@user")
+                                    .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
+                                    .roles(new HashSet<Role>(){{
+                                        add(Role.LIBRARIAN);
+                                    }})
+                                    .firstName("Librarian")
+                                    .lastName("librarian")
+                                    .dob(LocalDate.now())
+                                    .build(),
+                            //Inventory_Helper
+                            Borrower.builder().borrowerID(103L).borrowerNr(103L).email("inventoryHelper@user")
+                                    .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
+                                    .roles(new HashSet<Role>(){{
+                                        add(Role.INVENTORY_HELPER);
+                                    }})
+                                    .firstName("inventoryHelper")
+                                    .lastName("helper")
+                                    .dob(LocalDate.now())
+                                    .build(),
+
+                            Borrower.builder().borrowerID(104L).borrowerNr(104L).email("loanHelper@user")
+                                    .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
+                                    .roles(new HashSet<Role>(){{
+                                        add(Role.LOAN_HELPER);
+                                    }})
+                                    .firstName("loanHelper")
+                                    .lastName("helper")
                                     .dob(LocalDate.now())
                                     .build()
                     ));
