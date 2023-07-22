@@ -40,6 +40,7 @@
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter, useRoute } from 'vue-router';
+import authHeader from '../services/authHeader';
 
 const err = ref(false);
 const errorMessage = ref("")
@@ -48,9 +49,12 @@ const errorMessage = ref("")
 const route = useRoute();
 const loanHistories = ref(""); 
 const getMediaData =async () => {
+    let config = {
+                headers: authHeader(),
+            }
     try {
         const response = await axios.get(
-            `/api/v1/inventory/${route.params.mediumID}`
+            `/api/v1/inventory/${route.params.mediumID}`,config
         ).catch(function (error){
                     if(error.response){
                         console.log(error.response.data)
