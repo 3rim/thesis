@@ -1,5 +1,6 @@
 package com.erim.bachelor.controller;
 
+import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.data.MediumRequestDTO;
 import com.erim.bachelor.data.BorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
@@ -89,11 +90,10 @@ public class BorrowerController {
     }
 
     @PostMapping()
-    public ResponseEntity<List<Borrower>> addBorrowers(@RequestParam("file") MultipartFile file){
-        System.out.println(file);
+    public ResponseEntity<List<InitBorrowerDTO>> importCSV(@RequestParam("file") MultipartFile file){
         if(CSVHelper.hasCSVFormat(file)){
             try{
-                List<Borrower> result= borrowerService.importUsersCSV(file);
+                List<InitBorrowerDTO> result= borrowerService.importUsersCSV(file);
                 return ResponseEntity.status(HttpStatus.OK).body(result);
             }catch (Exception e){
                 throw new ResponseStatusException(

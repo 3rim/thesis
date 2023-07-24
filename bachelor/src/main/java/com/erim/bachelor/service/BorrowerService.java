@@ -1,16 +1,22 @@
 package com.erim.bachelor.service;
 
+import com.erim.bachelor.data.BorrowerState;
+import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.helper.CSVHelper;
+import com.erim.bachelor.helper.PasswordGenerator;
 import com.erim.bachelor.repositories.BorrowerRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,10 +26,14 @@ import java.util.Optional;
 public class BorrowerService {
 
     private final BorrowerRepository borrowerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public BorrowerService(BorrowerRepository borrowerRepository) {
+    public BorrowerService(BorrowerRepository borrowerRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.borrowerRepository = borrowerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
     }
 
     public List<Borrower> getAllUsers() {
@@ -39,41 +49,102 @@ public class BorrowerService {
         return borrowerRepository.searchByFirstAndOrLastName(firstName,lastName);
     }
 
-    public List<Borrower> importUsersCSV(MultipartFile file){
+    public List<InitBorrowerDTO> importUsersCSV(MultipartFile file){
         List<Borrower> allActiveUsers = getAllActiveUsers();
+        List<InitBorrowerDTO> newBorrowerDTOs = new ArrayList<>();
         try {
             List<Borrower> importedCSVUsers = CSVHelper.csvToUsers(file.getInputStream());
             for (Borrower borrowerCSV: importedCSVUsers) {
-                //Suche borrower über die borrowerNr
+                //Search borrower with borrowerNr
                 Borrower borrower = allActiveUsers.stream()
                         .filter(activeBorrower -> Objects.equals(borrowerCSV.getBorrowerNr(), activeBorrower.getBorrowerNr()))
                         .findAny()
-                        .orElse(null); // nicht gefunden ==> neuer borrower
+                        .orElse(null);
 
                 if(borrower !=null){
-                    //User vorhanden ==> updaten
+                    //Borrower present ==> update borrower
                     updateBorrowerInformation(borrower,borrowerCSV);
                     allActiveUsers.remove(borrower);
                 }
                 else {
-                    //Neuer User
-                    borrowerRepository.save(borrowerCSV);
+                    //Borrower not present ==> new borrower
+                    //store new borrower as DTO
+                    newBorrowerDTOs.add(createNewBorrowerDTO(borrowerCSV));
                 }
             }
-            //übrig gebliebene user löschen
-            softDelete(allActiveUsers);
+            //Remaining borrowers will be deactivated
+            softDelete(allActiveUsers); //TODO: Use thread for better performance?
         }
         catch (IOException e) {
             throw new RuntimeException("fail to store csv data "+e.getMessage());
         }
-        return null;
+
+        /*
+            passwordEncoder ist resource heavy, so use a separate thread for storing the new borrower entities
+         */
+        Thread safeNewBorrowers = new Thread(() ->
+                newBorrowerDTOs.forEach(dto -> {
+                    Borrower newBorrower = modelMapper.map(dto, Borrower.class);
+                    newBorrower.setPassword(passwordEncoder.encode(dto.getOneTimePassword()));
+                    newBorrower.setBorrowerState(BorrowerState.INITIALIZED);
+                    newBorrower.setDob(LocalDate.parse(dto.getDob()));
+                    System.out.println(newBorrower);
+                    borrowerRepository.save(newBorrower);
+        }));
+        safeNewBorrowers.start();
+        return newBorrowerDTOs;
     }
 
-    private void softDelete(List<Borrower> inActiveUsers) {
-        inActiveUsers.forEach(
+    /**
+     * Soft Delete a borrower. The borrower entity will still be in the database but marked as deleted or rather as "left the school".
+     * @param borrowerNr The borrower number.
+     */
+    public void softDeleteBorrowerByNr(Long borrowerNr) {
+        //TODO:No usage: individually deleting borrowers can lead to conflicts ?
+        Optional<Borrower> toDeleteBorrower = borrowerRepository.findBorrowerByBorrowerNr(borrowerNr);
+        if(toDeleteBorrower.isPresent()){
+            Borrower borrower = toDeleteBorrower.get();
+            borrower.setLeftTheSchool(true);
+            borrower.setBorrowerNr(null);
+            borrower.setEmail(null);
+            borrower.setBorrowerState(BorrowerState.DEACTIVATED);
+            borrower.setRoles(null);
+
+            borrowerRepository.save(borrower);
+        }
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
+    }
+
+    public InputStream downloadUsers() {
+        return CSVHelper.usersToCSV(borrowerRepository.findAll());
+    }
+
+    /**
+     * Creates a new Borrower Entity and stores it to  the Database.
+     * @param newBorrower The new BorrowerEntity to be created
+     * @return InitBorrowerDTO
+     */
+    private InitBorrowerDTO createNewBorrowerDTO(Borrower newBorrower) {
+        String oneTimePassword = PasswordGenerator.generateInitialPassword();
+        InitBorrowerDTO newBorrowerDTO = modelMapper.map(newBorrower, InitBorrowerDTO.class);
+        System.out.println(newBorrowerDTO);
+        newBorrowerDTO.setOneTimePassword(oneTimePassword);
+        return newBorrowerDTO;
+    }
+
+    /**
+     * Each Borrower in the list will be deactivated
+     * @param inActiveBorrowers The User to be deactivated
+     */
+    private void softDelete(List<Borrower> inActiveBorrowers) {
+        inActiveBorrowers.forEach(
                 borrower -> {
                     borrower.setBorrowerNr(null);
                     borrower.setLeftTheSchool(true);
+                    borrower.setEmail(null);
+                    borrower.setBorrowerState(BorrowerState.DEACTIVATED);
+
                     borrowerRepository.save(borrower);
                 });
     }
@@ -83,10 +154,10 @@ public class BorrowerService {
         borrower.setLastName(borrowerCSV.getLastName());
         borrower.setBorrowerGroup(borrowerCSV.getBorrowerGroup());
         borrower.setDob(borrowerCSV.getDob());
+        borrower.setEmail(borrowerCSV.getEmail());
 
         borrowerRepository.save(borrower);
     }
-
 
     /**
      * Returns all Users which did not leave the school.
@@ -94,25 +165,5 @@ public class BorrowerService {
      */
     private List<Borrower> getAllActiveUsers() {
         return borrowerRepository.findAllByBorrowerNrIsNotNull();
-    }
-
-    /**
-     * Soft Delete a borrower. The borrower entity will still be in the database but marked as deleted or rather as "left the school".
-     * @param borrowerNr The borrower number.
-     */
-    public void softDeleteBorrowerByNr(Long borrowerNr) {
-        Optional<Borrower> toDeleteBorrower = borrowerRepository.findBorrowerByBorrowerNr(borrowerNr);
-        if(toDeleteBorrower.isPresent()){
-            Borrower borrower = toDeleteBorrower.get();
-            borrower.setLeftTheSchool(true);
-            borrower.setBorrowerNr(null);
-            borrowerRepository.save(borrower);
-        }
-        else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
-    }
-
-    public InputStream downloadUsers() {
-        return CSVHelper.usersToCSV(borrowerRepository.findAll());
     }
 }
