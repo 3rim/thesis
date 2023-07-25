@@ -1,5 +1,6 @@
 package com.erim.bachelor.config;
 
+import com.erim.bachelor.data.BorrowerState;
 import com.erim.bachelor.data.Role;
 import com.erim.bachelor.data.Status;
 import com.erim.bachelor.entities.Borrower;
@@ -98,6 +99,7 @@ public class InitializeConfig {
                                     .firstName("admin")
                                     .lastName("admin")
                                     .dob(LocalDate.now())
+                                    .borrowerState(BorrowerState.ACTIVE)
                                     .build(),
                             //Librarian
                             Borrower.builder().borrowerID(102L).borrowerNr(102L).email("librarian@user")

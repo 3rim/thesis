@@ -2,7 +2,7 @@
     <header class="sticky top-0 shadow-lg bg-navbar" v-show="loggedIn">
         <nav class="container flex flex-col sm:flex-row items-center gap-4  ">
         <div class="px-2 pt-2 sm:flex">
-            <RouterLink :to="{name:'home'}">
+            <RouterLink :to="{name:'profile'}">
                 <p class=" mt-1 block px-2 py-1 font-semibold rounded hover:bg-navbar-buttons " >Meine Medien</p>
             </RouterLink>
             <RouterLink v-if="showLoanBoard" :to="{name:'ausleihe'}">

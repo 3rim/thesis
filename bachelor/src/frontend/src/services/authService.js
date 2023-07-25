@@ -5,11 +5,9 @@ const API_URL = '/api/v1/auth/';
 
 class AuthService {
   login(user) {
-    console.log(user)
     return axios
       .post(API_URL + 'login', user)
       .then(response => {
-        console.log(response.data)
         if (response.data.jwt) {
           
          /*

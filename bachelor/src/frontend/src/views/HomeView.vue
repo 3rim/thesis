@@ -1,13 +1,28 @@
 <script setup>
 import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
 import { useStore } from 'vuex';
+import { onBeforeMount ,computed} from 'vue';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
+
+const currentUser = computed(() =>{
+    return store.state.auth.user;
+})
+
+/*If not logged in route to login page */
+onBeforeMount(() => {
+  if(!currentUser.value){
+    router.push('/login');
+  }
+})
+
 </script>
 
 <template>
   <main class="mt-5">
-    <Suspense>
+    <Suspense v-if="currentUser">
     <AsyncBorrowerView :user-id="store.state.auth.user.id"/>
     <template #fallback>
             <p>loadning...</p>
