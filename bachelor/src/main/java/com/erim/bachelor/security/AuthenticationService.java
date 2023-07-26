@@ -27,7 +27,6 @@ public class AuthenticationService {
 
         //user is authenticated
         Borrower borrower = repository.findBorrowerByEmail(request.getEmail()).orElseThrow();
-        System.out.println(borrower);
         //Check for initialLogin
         if(borrower.getBorrowerState().equals(BorrowerState.INITIALIZED)){
             return AuthenticationResponse.builder()
@@ -39,7 +38,6 @@ public class AuthenticationService {
             Map<String, Object> extraClaims = new HashMap<>();
             extraClaims.put("Roles", roleSet);
             String jwtToken = jwtService.generateJwt(extraClaims, borrower);
-            System.out.println(jwtToken);
             return AuthenticationResponse.builder()
                     .jwt(jwtToken)
                     .roles(roleSet)

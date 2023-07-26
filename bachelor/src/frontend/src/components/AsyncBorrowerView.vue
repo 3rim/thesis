@@ -53,7 +53,7 @@ const mediaList = ref(null);
 const getBorrowerData =async () => {
     try {
         const borrowerData = await axios.get(
-            `/api/v1/user/${props.userId}`,
+            `/api/v1/borrowers/${props.userId}`,
             {headers:authHeader()}
         );
         console.log(borrowerData);

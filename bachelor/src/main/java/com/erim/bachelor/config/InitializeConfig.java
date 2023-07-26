@@ -81,7 +81,7 @@ public class InitializeConfig {
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
                             //User
-                            Borrower.builder().borrowerID(100L).borrowerNr(100L).email("user@user")
+                            Borrower.builder().borrowerID(100L).borrowerNr(100L).email("user")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(new HashSet<Role>(){{
                                         add(Role.USER);
@@ -92,7 +92,7 @@ public class InitializeConfig {
                                     .borrowerState(BorrowerState.ACTIVE)
                                     .build(),
                             //Admin
-                            Borrower.builder().borrowerID(101L).borrowerNr(101L).email("admin@user")
+                            Borrower.builder().borrowerID(101L).borrowerNr(101L).email("admin")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(new HashSet<Role>(){{
                                         add(Role.ADMIN);
@@ -103,7 +103,7 @@ public class InitializeConfig {
                                     .borrowerState(BorrowerState.ACTIVE)
                                     .build(),
                             //Librarian
-                            Borrower.builder().borrowerID(102L).borrowerNr(102L).email("librarian@user")
+                            Borrower.builder().borrowerID(102L).borrowerNr(102L).email("librarian")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(new HashSet<Role>(){{
                                         add(Role.LIBRARIAN);
@@ -114,18 +114,18 @@ public class InitializeConfig {
                                     .dob(LocalDate.now())
                                     .build(),
                             //Inventory_Helper
-                            Borrower.builder().borrowerID(103L).borrowerNr(103L).email("inventoryHelper@user")
+                            Borrower.builder().borrowerID(103L).borrowerNr(103L).email("inventoryHelper")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(new HashSet<Role>(){{
                                         add(Role.INVENTORY_HELPER);
                                     }})
                                     .firstName("inventoryHelper")
-                                    .lastName("helper")
+                                    .lastName("inventoryHelper")
                                     .borrowerState(BorrowerState.ACTIVE)
                                     .dob(LocalDate.now())
                                     .build(),
 
-                            Borrower.builder().borrowerID(104L).borrowerNr(104L).email("loanHelper@user")
+                            Borrower.builder().borrowerID(104L).borrowerNr(104L).email("loanHelper")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
                                     .roles(new HashSet<Role>(){{
                                         add(Role.LOAN_HELPER);

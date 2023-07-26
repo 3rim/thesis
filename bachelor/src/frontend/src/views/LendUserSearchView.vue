@@ -67,7 +67,7 @@ const getSearchResults = () =>{
                 headers: authHeader(),
                 params: {firstName:firstName,lastName:lastName}
             }
-            const result = await axios.get('/api/v1/user',config);
+            const result = await axios.get('/api/v1/borrowers/name',config);
             userSearchResults.value = result.data;
             console.log(userSearchResults.value)
             return;

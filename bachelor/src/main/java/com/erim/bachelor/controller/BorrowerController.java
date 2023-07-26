@@ -69,7 +69,7 @@ public class BorrowerController {
      * @param lastName last name of Borrowers
      * @return A list with matched Borrowers or an empty list
      */
-    @GetMapping(path = "byName")
+    @GetMapping(path = "name")
     public List<BorrowerDTO>getBorrowersByName(
             @RequestParam(required = false)String firstName,
             @RequestParam(required = false)String lastName){

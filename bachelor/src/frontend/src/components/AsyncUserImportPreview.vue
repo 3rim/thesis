@@ -213,7 +213,7 @@ const newUsersLength = ref();
 const getUsers = async () => {
     
 	const response = await axios.get(
-		`/api/v1/user/download`,{headers:authHeader()}
+		`/api/v1/borrowers/csvFile`,{headers:authHeader()}
 	);
     var results = Papa.parse(response.data);
     currentUsers.value = results;
@@ -227,7 +227,7 @@ function postFile() {
     let formData = new FormData();
     formData.append('file', file);
     let user = JSON.parse(localStorage.getItem('user'));
-    axios.post('/api/v1/user',formData,{
+    axios.post('/api/v1/borrowers',formData,{
         headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer '+ user.jwt
