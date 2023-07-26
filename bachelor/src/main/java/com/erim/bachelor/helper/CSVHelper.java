@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -15,18 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class CSVHelper {
 
+public class CSVHelper {
     public static String TYPE = "text/csv";
-    static String[] HEADERS = { "Id", "firstName", "lastName" };
 
     public static boolean hasCSVFormat(MultipartFile file) {
 
-        if (!TYPE.equals(file.getContentType())) {
-            return false;
-        }
-
-        return true;
+        return TYPE.equals(file.getContentType());
     }
 
     public static ByteArrayInputStream usersToCSV(List<Borrower> borrowers){
@@ -49,7 +43,8 @@ public class CSVHelper {
                         String.valueOf(borrower.getFirstName()),
                         String.valueOf(borrower.getLastName()),
                         String.valueOf(borrower.getBorrowerGroup()),
-                        germanDate
+                        germanDate,
+                        String.valueOf(borrower.getEmail())
                 );
 
                 csvPrinter.printRecord(data);
@@ -63,20 +58,27 @@ public class CSVHelper {
     }
 
     public static List<Borrower> csvToUsers(InputStream is) {
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-             CSVParser csvParser = new CSVParser(fileReader,
-                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));) {
+            char delimiter;
+            String header = fileReader.readLine();
+            if(header.indexOf(';') != -1)
+                delimiter = ';';
+            else
+                delimiter = ',';
 
+            CSVParser csvParser = new CSVParser(fileReader,
+                    CSVFormat.DEFAULT.withDelimiter(delimiter).withTrim());
             List<Borrower> borrowers = new ArrayList<>();
 
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
-            int indexID ,indexFirstName,indexLastName,indexGroup,indexDateOfBirth;
+            int indexID ,indexFirstName,indexLastName,indexGroup,indexDateOfBirth,indexEmail;
             indexID=0;
             indexFirstName=1;
             indexLastName=2;
             indexGroup=3;
             indexDateOfBirth=4;
+            indexEmail=5;
 
             for (CSVRecord csvRecord : csvRecords) {
                 String csvDOB = csvRecord.get(indexDateOfBirth);
@@ -93,7 +95,8 @@ public class CSVHelper {
                         csvRecord.get(indexFirstName),
                         csvRecord.get(indexLastName),
                         csvRecord.get(indexGroup),
-                        dob
+                        dob,
+                        csvRecord.get(indexEmail)
                 );
 
                 borrowers.add(borrower);

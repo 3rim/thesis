@@ -40,7 +40,7 @@
 import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import authHeader from '../services/authHeader';
 
 const router = useRouter();
 const route = useRoute();
@@ -54,11 +54,13 @@ const sort = () =>{
 
 
 const getMediaDataByTitle =async () => {
+    let config = {
+                headers: authHeader(),
+            }
     try {
         const title = route.params.title
         const result = await axios.get(
-            `/api/v1/inventory/title/${title}`
-        );
+            `/api/v1/inventory/title/${title}`,config);
         //Hier haben wir ein JSON- Array mit mehreren Elementen,
         console.log(result.data[0].mediumID)
         console.log(result.data)

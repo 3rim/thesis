@@ -6,7 +6,7 @@
                 <div>
                     <p class="text-center font-bold underline">Nutzer-Import Hinweise</p>
                     <p class="">
-                        Für den Nutzer-Import muss eine .csv Datei (CSV durch Komma getrennt) hochgeladen werden. Jene CSV-Datei wird
+                        Für den Nutzer-Import muss eine .csv Datei (CSV durch ; oder , getrennt) hochgeladen werden. Jene CSV-Datei wird
                         mit den aktuellen aktiven Nutzern verglichen. Die Zuordnung eines Nutzers geschieht anhand seiner eindeutigen ID!
                     </p>
                     <table class="w-full ">
@@ -92,8 +92,6 @@
 import { ref } from 'vue';
 import Papa from 'papaparse';
 import AsyncUserImportPreview from '../components/AsyncUserImportPreview.vue'
-
-
 const componentKey = ref(0);
 //Re-render component if necessary
 const forceRerender = () => {

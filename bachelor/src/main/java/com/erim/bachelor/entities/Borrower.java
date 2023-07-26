@@ -1,25 +1,28 @@
 package com.erim.bachelor.entities;
 
-import com.erim.bachelor.data.Roles;
+import com.erim.bachelor.data.BorrowerState;
+import com.erim.bachelor.data.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class Borrower {
+@Builder
+public class Borrower implements UserDetails {
     @Id
     @GeneratedValue
     private Long borrowerID;
@@ -27,12 +30,16 @@ public class Borrower {
     private Long borrowerNr; //Fachlicher Schlüssel
     private String firstName;
     private String lastName;
+    private String email;
 
     //date of birth
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate dob;
     @Enumerated(EnumType.STRING)
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private BorrowerState borrowerState;
     private String password;
     private boolean leftTheSchool;
 
@@ -53,22 +60,62 @@ public class Borrower {
     }
 
     public Borrower(long borrowerNr, String firstName, String lastName) {
-        this(borrowerNr,firstName,lastName,"none",LocalDate.now());
+        this(borrowerNr,firstName,lastName,"none",LocalDate.now(),"dummy@mail");
     }
 
     public Borrower(long borrowerNr, String firstName, String lastName,String borrowerGroup) {
-        this(borrowerNr,firstName,lastName,borrowerGroup,LocalDate.now());
+        this(borrowerNr,firstName,lastName,borrowerGroup,LocalDate.now(),"dummy@mail");
     }
-    public Borrower(long borrowerNr, String firstName, String lastName,String borrowerGroup,LocalDate dob) {
+    public Borrower(long borrowerNr, String firstName, String lastName,String borrowerGroup,LocalDate dob,String email) {
         this.borrowerNr = borrowerNr;
         this.firstName = firstName;
         this.lastName = lastName;
         this.borrowerGroup = borrowerGroup;
         this.dob = dob;
+        this.email = email;
     }
 
 
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role: roles) {
+            authorities.add(new SimpleGrantedAuthority(role.name()));
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword(){
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

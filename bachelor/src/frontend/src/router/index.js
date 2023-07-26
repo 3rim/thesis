@@ -8,14 +8,25 @@ import MediumView from '../views/MediumView.vue'
 import InventoryAddView from '../views/InventoryAddView.vue'
 import InventoryDeleteView from '../views/InventoryDeleteView.vue'
 import UserImportView from '../views/UserImportView.vue'
+import LoginView from '../views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/myProfil',
+      path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/myProfile',
+      name: 'profile',
+      component: HomeView
+    },
+    {
+      path: '/login',
+      name: "login",
+      component: LoginView
     },
     {
       path: '/ausleihe',

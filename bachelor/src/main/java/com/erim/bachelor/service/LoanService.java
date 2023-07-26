@@ -48,10 +48,11 @@ public class LoanService {
         if(medium.isBorrowed()){
             //Borrower != medium.getBorrower
             if(!Objects.equals(medium.getBorrower().getBorrowerID(), borrower.getBorrowerID()))
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "medium with id:"+mediumID+ " already loaned to "+medium.getBorrower().getFullName());
-            else // Medium is already loan to this borrower ==> take it back from him
+            else{ // Medium is already loan to this borrower ==> take it back from him
                 return unloanFromUser(borrower,medium);
+            }
         }
         else {
             return loanToUser(borrower,medium);

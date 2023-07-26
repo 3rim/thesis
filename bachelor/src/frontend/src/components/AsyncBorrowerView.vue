@@ -45,15 +45,16 @@
 import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { ref } from 'vue';
+import authHeader from '../services/authHeader';
 
-
-
+const props = defineProps(['userId']);
 const route = useRoute();
 const mediaList = ref(null);
 const getBorrowerData =async () => {
     try {
         const borrowerData = await axios.get(
-            `/api/v1/user/${route.query.id}`
+            `/api/v1/borrowers/${props.userId}`,
+            {headers:authHeader()}
         );
         console.log(borrowerData);
         mediaList.value = borrowerData.data.mediumList
@@ -64,6 +65,7 @@ const getBorrowerData =async () => {
 };
 
 const borrowerData = await getBorrowerData();   
+
 
 const testData = ref([
             { mediumID: 0, mediumTyp: 'mediumTyp', serialNr: 'frank.murphy@test.com', isbn: 'User' },
