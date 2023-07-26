@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,7 +27,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/v1/user")
+@RequestMapping(path = "api/v1/borrowers")
 @CrossOrigin
 public class BorrowerController {
     private final BorrowerService borrowerService;
@@ -42,7 +43,7 @@ public class BorrowerController {
      *
      * @return A List which is either empty or contains all Borrowers
      */
-    @GetMapping(path = "all")
+    @GetMapping()
     public List<Borrower> getAllBorrowers(){return borrowerService.getAllUsers();}
 
     /**
@@ -51,6 +52,7 @@ public class BorrowerController {
      * @return The Borrowers or a Not found exception
      */
     @GetMapping(path = "{id}")
+    @PreAuthorize("#id == authentication.principal.borrowerID or hasAnyAuthority('ADMIN','LIBRARIAN','LOAN_HELPER')")
     public ResponseEntity<BorrowerDTO> getBorrowerById(@PathVariable( value = "id") Long id){
         Optional<Borrower> borrower = borrowerService.getUserById(id);
         if(borrower.isEmpty())
@@ -67,7 +69,7 @@ public class BorrowerController {
      * @param lastName last name of Borrowers
      * @return A list with matched Borrowers or an empty list
      */
-    @GetMapping
+    @GetMapping(path = "byName")
     public List<BorrowerDTO>getBorrowersByName(
             @RequestParam(required = false)String firstName,
             @RequestParam(required = false)String lastName){
@@ -77,7 +79,7 @@ public class BorrowerController {
         return listBorrowers.stream().map(borrower -> modelMapper.map(borrower, BorrowerDTO.class)).toList();
     }
 
-    @GetMapping(path = "/download")
+    @GetMapping(path = "/csvFile")
     public ResponseEntity<Resource> getCSVFile(){
         String filename = "users_"+LocalDate.now()+".csv";
         InputStreamResource file = new InputStreamResource(borrowerService.downloadUsers());

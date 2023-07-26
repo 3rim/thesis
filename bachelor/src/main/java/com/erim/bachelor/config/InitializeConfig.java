@@ -89,6 +89,7 @@ public class InitializeConfig {
                                     .firstName("user")
                                     .lastName("user")
                                     .dob(LocalDate.now())
+                                    .borrowerState(BorrowerState.ACTIVE)
                                     .build(),
                             //Admin
                             Borrower.builder().borrowerID(101L).borrowerNr(101L).email("admin@user")
@@ -109,6 +110,7 @@ public class InitializeConfig {
                                     }})
                                     .firstName("Librarian")
                                     .lastName("librarian")
+                                    .borrowerState(BorrowerState.ACTIVE)
                                     .dob(LocalDate.now())
                                     .build(),
                             //Inventory_Helper
@@ -119,6 +121,7 @@ public class InitializeConfig {
                                     }})
                                     .firstName("inventoryHelper")
                                     .lastName("helper")
+                                    .borrowerState(BorrowerState.ACTIVE)
                                     .dob(LocalDate.now())
                                     .build(),
 
@@ -128,6 +131,7 @@ public class InitializeConfig {
                                         add(Role.LOAN_HELPER);
                                     }})
                                     .firstName("loanHelper")
+                                    .borrowerState(BorrowerState.ACTIVE)
                                     .lastName("helper")
                                     .dob(LocalDate.now())
                                     .build()
