@@ -8,8 +8,10 @@
         <!-- Generell infos about this Medium -->
         <div class="py-3">
             <p>Medium-ID: {{ route.params.mediumID }}</p>
-            <p>Titel: {{ mediumData.data.title }}</p>
-            <p>Aktueller Ausleiher: {{ mediumData.data.currentBorrower }}</p>
+            <p>Titel: {{ mediumData.title }}</p>
+            <p>Aktueller Ausleiher: {{ mediumData.currentBorrower }}</p>
+            <p>Status: {{ mediumData.status }}</p>
+            <p v-if="mediumData.serialNr">Status: {{ mediumData.serialNr }}</p>
         </div>
         <!-- The loan histories -->
         <p>Ausleihhistorie</p>
@@ -27,7 +29,7 @@
                  class="bg-[#F7F3E3] border-b-2 cursor-pointer">
                     <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfLend) }}</td>
                     <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfReturn) }}</td>
-                    <td class="text-center">{{ loanHistorie.borrower.firstName }}</td>
+                    <td class="text-center">{{ loanHistorie.borrower }}</td>
                                  
                 </tr>
                 </tbody>
@@ -48,13 +50,14 @@ const errorMessage = ref("")
 
 const route = useRoute();
 const loanHistories = ref(""); 
-const getMediaData =async () => {
+const mediumData = ref();
+const getLoanHistories =async () => {
     let config = {
                 headers: authHeader(),
             }
     try {
         const response = await axios.get(
-            `/api/v1/inventory/${route.params.mediumID}`,config
+            `/api/v1/loan/histories/${route.params.mediumID}`,config
         ).catch(function (error){
                     if(error.response){
                         console.log(error.response.data)
@@ -63,17 +66,20 @@ const getMediaData =async () => {
                         errorMessage.value = error.response.data.message
                     }
                 });
-
-
-
-        console.log(response);
-        loanHistories.value = response.data.loanHistories
-        console.log(loanHistories.value)
-        return response;
+        return response.data;
     } catch (error) {
         console.log(error);
     }
 };
-const mediumData = await getMediaData();
+loanHistories.value = await getLoanHistories();
 
+
+const getMediumData = async () =>{
+    let config = {
+                headers: authHeader(),
+            }
+    const response = await axios.get( `/api/v1/inventory/${route.params.mediumID}`,config);
+    return response.data;
+}
+mediumData.value = await getMediumData();
 </script>

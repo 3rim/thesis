@@ -34,5 +34,5 @@ public class MediumResponseDTO {
     private String currentBorrower;
     //Currently lend since
     private LocalDate dateOfLend;
-    private List<LoanHistory> loanHistories;
+    //private List<LoanHistory> loanHistories;
 }

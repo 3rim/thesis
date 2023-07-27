@@ -1,17 +1,16 @@
 package com.erim.bachelor.controller;
 
+import com.erim.bachelor.data.LoanHistoriesDTO;
 import com.erim.bachelor.data.MediumRequestDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.service.LoanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +23,17 @@ public class LoanController {
     public LoanController(LoanService loanService, ModelMapper modelMapper) {
         this.loanService = loanService;
         this.modelMapper = modelMapper;
+    }
+
+    @GetMapping(path = "/histories/{mediumID}")
+    public ResponseEntity<List<LoanHistoriesDTO>> getLoanHistories(@PathVariable Long mediumID){
+
+        List<LoanHistory> loanHistories = loanService.getLoanHistories(mediumID);
+        List<LoanHistoriesDTO> loanHistoriesDTOS = loanHistories.
+                stream().
+                map(this::convertToDTO).
+                toList();
+        return new ResponseEntity<>(loanHistoriesDTOS,HttpStatus.OK);
     }
 
     /**
@@ -51,5 +61,18 @@ public class LoanController {
      */
     private MediumRequestDTO convertToDTO(Medium medium){
         return modelMapper.map(medium, MediumRequestDTO.class);
+    }
+
+    /**
+     * Converts a LoanHistory into a DTO
+     * @param loanHistory the loanHistory to be converted into DTO
+     * @return LoanHistoryDTO
+     */
+    private LoanHistoriesDTO convertToDTO(LoanHistory loanHistory){
+
+        LoanHistoriesDTO dto = modelMapper.map(loanHistory, LoanHistoriesDTO.class);
+        dto.setBorrower(loanHistory.getBorrower().getFullName());
+        dto.setMedium(loanHistory.getMedium().getTitle());
+        return dto;
     }
 }
