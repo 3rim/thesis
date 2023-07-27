@@ -8,6 +8,8 @@ import com.erim.bachelor.helper.PasswordGenerator;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,9 @@ public class BorrowerService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Borrower> getAllUsers() {
-        return borrowerRepository.findAll();
+    public Page<Borrower> getAllUsers(Pageable pageable) {
+        System.out.println("service ");
+        return borrowerRepository.findAll(pageable);
     }
 
     public Optional<Borrower> getUserById(Long id) {

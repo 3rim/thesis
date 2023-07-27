@@ -4,12 +4,16 @@ import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.data.MediumRequestDTO;
 import com.erim.bachelor.data.BorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +22,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
@@ -44,7 +46,48 @@ public class BorrowerController {
      * @return A List which is either empty or contains all Borrowers
      */
     @GetMapping()
-    public List<Borrower> getAllBorrowers(){return borrowerService.getAllUsers();}
+    public ResponseEntity<Map<String,Object >> getAllBorrowers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "borrowerID,desc")String[] sort
+            ){
+        try {
+            List<Order> orders = new ArrayList<>();
+            if (sort[0].contains(",")) {
+                // will sort more than 2 fields
+                // sortOrder="field, direction"
+                for (String sortOrder : sort) {
+                    String[] _sort = sortOrder.split(",");
+                    orders.add(new Order(getSortDirection(_sort[1]), _sort[0]));
+                }
+            } else {
+                // sort=[field, direction]
+                orders.add(new Order(getSortDirection(sort[1]), sort[0]));
+            }
+
+            List<Borrower> borrowers = new ArrayList<>();
+            //Create pageSort by page,size and given sorts in orders
+            Pageable pageSort = PageRequest.of(page,size,Sort.by(orders));
+            Page<Borrower> pageBorrowers = borrowerService.getAllUsers(pageSort);
+
+            borrowers = pageBorrowers.getContent();
+            if(borrowers.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            System.out.println("controller");
+            Map<String,Object> response = new HashMap<>();
+            response.put("borrowers",borrowers);
+            response.put("currentPage", pageBorrowers.getNumber());
+            response.put("totalItems", pageBorrowers.getTotalElements());
+            response.put("totalPages", pageBorrowers.getTotalPages());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+
+        }catch (Exception e){
+            System.out.println(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Get Borrower by id
@@ -136,5 +179,15 @@ public class BorrowerController {
 
 
         return borrowerDTO;
+    }
+
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        return Sort.Direction.ASC;
     }
 }
