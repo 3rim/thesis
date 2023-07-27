@@ -1,6 +1,6 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.Status;
+import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;

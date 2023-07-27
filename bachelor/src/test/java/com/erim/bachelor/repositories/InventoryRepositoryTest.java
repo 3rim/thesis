@@ -1,6 +1,6 @@
 package com.erim.bachelor.repositories;
 
-import com.erim.bachelor.data.Status;
+import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Medium;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

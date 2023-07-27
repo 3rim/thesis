@@ -1,7 +1,7 @@
 package com.erim.bachelor.entities;
 
-import com.erim.bachelor.data.BorrowerState;
-import com.erim.bachelor.data.Role;
+import com.erim.bachelor.enums.BorrowerState;
+import com.erim.bachelor.enums.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

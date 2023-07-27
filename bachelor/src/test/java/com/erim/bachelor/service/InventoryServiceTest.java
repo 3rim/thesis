@@ -1,6 +1,6 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.Status;
+import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.HashSet;
 
 import static org.mockito.Mockito.verify;
 

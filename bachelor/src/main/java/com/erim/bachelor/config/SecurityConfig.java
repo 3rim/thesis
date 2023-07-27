@@ -1,6 +1,6 @@
 package com.erim.bachelor.config;
 
-import com.erim.bachelor.data.Role;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
