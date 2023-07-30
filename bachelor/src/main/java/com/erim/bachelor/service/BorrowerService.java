@@ -38,9 +38,16 @@ public class BorrowerService {
         this.modelMapper = modelMapper;
     }
 
-    public Page<Borrower> getAllUsers(Pageable pageable) {
-        System.out.println("service ");
+    public Page<Borrower> getUsers(Pageable pageable) {
         return borrowerRepository.findAll(pageable);
+    }
+
+    public Page<Borrower> getUsersByState(Pageable pageable,BorrowerState state){
+        return borrowerRepository.findAllByBorrowerState(state,pageable);
+    }
+    public Page<Borrower> getUsersByFirstName(Pageable pageable,BorrowerState state,String firstName){
+        String wildcard ="%"+firstName+"%";
+        return borrowerRepository.findAllByBorrowerStateAndFirstNameLike(state,wildcard,pageable);
     }
 
     public Optional<Borrower> getUserById(Long id) {

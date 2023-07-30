@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
@@ -47,6 +48,8 @@ public class BorrowerController {
      */
     @GetMapping()
     public ResponseEntity<Map<String,Object >> getAllBorrowers(
+            @RequestParam(required = false) BorrowerState borrowerState,
+            @RequestParam(required = false) String firstName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
             @RequestParam(defaultValue = "borrowerID,desc")String[] sort
@@ -65,18 +68,29 @@ public class BorrowerController {
                 orders.add(new Order(getSortDirection(sort[1]), sort[0]));
             }
 
-            List<Borrower> borrowers = new ArrayList<>();
+            List<Borrower> borrowers;
             //Create pageSort by page,size and given sorts in orders
-            Pageable pageSort = PageRequest.of(page,size,Sort.by(orders));
-            Page<Borrower> pageBorrowers = borrowerService.getAllUsers(pageSort);
+            Pageable pageable = PageRequest.of(page,size,Sort.by(orders));
+            Page<Borrower> pageBorrowers;
+
+            if(borrowerState == null && firstName == null)
+                pageBorrowers = borrowerService.getUsers(pageable);
+            else if(firstName != null && borrowerState != null )
+                pageBorrowers = borrowerService.getUsersByFirstName(pageable,borrowerState,firstName);
+            else
+                pageBorrowers = borrowerService.getUsersByState(pageable,borrowerState);
 
             borrowers = pageBorrowers.getContent();
             if(borrowers.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-            System.out.println("controller");
+            List<BorrowerDTO> borrowerDTOS = borrowers
+                    .stream()
+                    .map(this::convertToDTO)
+                    .toList();
+            //Create Response
             Map<String,Object> response = new HashMap<>();
-            response.put("borrowers",borrowers);
+            response.put("borrowers",borrowerDTOS);
             response.put("currentPage", pageBorrowers.getNumber());
             response.put("totalItems", pageBorrowers.getTotalElements());
             response.put("totalPages", pageBorrowers.getTotalPages());

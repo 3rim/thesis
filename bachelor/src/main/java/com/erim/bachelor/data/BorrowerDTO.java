@@ -1,5 +1,6 @@
 package com.erim.bachelor.data;
 
+import com.erim.bachelor.enums.BorrowerState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,6 @@ public class BorrowerDTO {
     private String borrowerGroup;
     private List<MediumRequestDTO> mediumList;
     private boolean leftTheSchool;
+    private BorrowerState borrowerState;
     private String dob;
 }

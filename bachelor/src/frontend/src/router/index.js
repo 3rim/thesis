@@ -8,7 +8,10 @@ import MediumView from '../views/MediumView.vue'
 import InventoryAddView from '../views/InventoryAddView.vue'
 import InventoryDeleteView from '../views/InventoryDeleteView.vue'
 import UserImportView from '../views/UserImportView.vue'
+import UserView from '../views/UserView.vue'
 import LoginView from '../views/LoginView.vue'
+import qs from 'qs'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,8 +64,16 @@ const router = createRouter({
       path: '/admin/userImport',
       name: 'userImport',
       component: UserImportView,
+    },
+    {
+      path: '/admin/users',
+      name: 'users',
+      component: UserView,
     }
-  ]
+  ],
+  parseQuery: qs.parse,
+  stringifyQuery: qs.stringify,
+ 
 })
 
 export default router

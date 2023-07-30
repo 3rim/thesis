@@ -1,6 +1,9 @@
 package com.erim.bachelor.repositories;
 
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.BorrowerState;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +26,9 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
      * @return List of Borrowers where borrowerNr != null
      */
     List<Borrower> findAllByBorrowerNrIsNotNull();
+
+    Page<Borrower> findAllByBorrowerState(BorrowerState borrowerState, Pageable pageable);
+    Page<Borrower> findAllByBorrowerStateAndFirstNameLike(BorrowerState borrowerState, String firstName,Pageable pageable);
 
     Optional<Borrower> findBorrowerByEmail(String email);
 
