@@ -43,11 +43,10 @@ public class BorrowerService {
     }
 
     public Page<Borrower> getUsersByState(Pageable pageable,BorrowerState state){
-        return borrowerRepository.findAllByBorrowerState(state,pageable);
+        return borrowerRepository.findAllByBorrowerState(pageable,state);
     }
-    public Page<Borrower> getUsersByFirstName(Pageable pageable,BorrowerState state,String firstName){
-        String wildcard ="%"+firstName+"%";
-        return borrowerRepository.findAllByBorrowerStateAndFirstNameLike(state,wildcard,pageable);
+    public Page<Borrower> getUsersByFirstName(Pageable pageable,BorrowerState state,String firstName,String lastName){
+        return borrowerRepository.findAllByStateAndFirstNameAndLastName(pageable,state,firstName,lastName);
     }
 
     public Optional<Borrower> getUserById(Long id) {

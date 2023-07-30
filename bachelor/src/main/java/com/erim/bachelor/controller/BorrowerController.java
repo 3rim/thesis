@@ -76,7 +76,7 @@ public class BorrowerController {
             if(borrowerState == null && firstName == null)
                 pageBorrowers = borrowerService.getUsers(pageable);
             else if(firstName != null && borrowerState != null )
-                pageBorrowers = borrowerService.getUsersByFirstName(pageable,borrowerState,firstName);
+                pageBorrowers = borrowerService.getUsersByFirstName(pageable,borrowerState,firstName,null);
             else
                 pageBorrowers = borrowerService.getUsersByState(pageable,borrowerState);
 
