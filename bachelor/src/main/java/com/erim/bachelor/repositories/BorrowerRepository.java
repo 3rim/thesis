@@ -30,8 +30,12 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
     Page<Borrower> findAllByBorrowerState(Pageable pageable,BorrowerState borrowerState );
 
     @Query("select u from Borrower u where (:firstName is null or u.firstName like %:firstName%)"
+            +" and (:lastName is null or u.lastName  like %:lastName%)")
+    Page<Borrower> findAllByName(Pageable pageable, @Param("firstName") String firstName, @Param("lastName") String lastName);
+
+    @Query("select u from Borrower u where (:firstName is null or u.firstName like %:firstName%)"
             +" and (:lastName is null or u.lastName  like %:lastName%) and u.borrowerState=:borrowerState")
-    Page<Borrower> findAllByStateAndFirstNameAndLastName(Pageable pageable, BorrowerState borrowerState, @Param("firstName") String firstName, @Param("lastName") String lastName);
+    Page<Borrower> findAllByStateAndName(Pageable pageable, BorrowerState borrowerState, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
     Optional<Borrower> findBorrowerByEmail(String email);
 

@@ -1,38 +1,7 @@
 <template>
-    <p>dasd</p>
-    <!--Filter -->
-    <div class="container flex flex-col items-center">
-        <form class="flex flex-wrap" @submit.prevent="filter" @keyup.enter="filter">
-            <!-- firstName -->
-            <div class=" px-3 mb-6 md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="firstName">
-                    Vorname
-                </label>
-                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="firstName" type="text" placeholder="Vorname"
-                v-model="firstName" >
-            </div>
-            <!--lastName-->
-            <div class=" px-3 mb-6 md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="lastName">
-                    Nachname
-                </label>
-                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="lastName" type="text" placeholder="Nachname"
-                v-model="lastName" >
-            </div>
-            <div class=" px-3 mb-6 md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="userState">Status</label>
-                <select v-model="userState" class=" block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-                    <option disabled value hidden="">Please select one</option>
-                    <option>INITIALIZED</option>
-                    <option>ACTIV</option>
-                    <option>INACTIV</option>
-                </select>
-            </div>
-        </form>
-
         <!--Users-->
-    <div class="mt-20">
-        <table>
+    <div class="mt-20 flex flex-col items-center">
+        <table  v-if="borrowers" >
             <thead>
                 <tr>
                     <th class="px-4">
@@ -47,7 +16,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="borrower in data.borrowers"
+                <tr v-for="borrower in borrowers"
                 class="text-center">
                     <td>
                     <input type="checkbox" class="checkbox" v-model="borrower.selected"/>
@@ -63,23 +32,17 @@
         </table>
         <p v-if="currentSelections">Selection:{{ currentSelections }}</p>
     </div>
-
-    </div>
-
-    
-
 </template>
 
 <script setup>
 import axios from 'axios' ;
 import {  ref, watch } from 'vue';
-import {onMounted ,computed} from 'vue';
+import {onMounted,onBeforeMount ,computed} from 'vue';
 import authHeader from '../services/authHeader';
 import { useRoute,useRouter } from 'vue-router';
 
-const firstName = ref();
-const lastName = ref();
-const userState = ref();
+const props = defineProps(['page','data']);
+
 const currentSelections =ref();
 
 const route = useRoute();
@@ -88,44 +51,45 @@ const currentPage = ref();
 const totalPage = ref();
 const data = ref();
 const queryParams = ref();
+const borrowers = ref();
 
 // When the items change the value of the selected flag, the computed allSelected is recalculated. It's reactive so the :checked will change as that computed value changes.
 const allSelected = computed(() =>{
-    return data.value.borrowers.every(borrower => borrower.selected);
+    return borrowers.value.every(borrower => borrower.selected);
 })
 
 const selectAll = () =>{
     let all_s = allSelected.value;
-    data.value.borrowers.forEach( borrower => borrower.selected = !all_s );   
+    borrowers.value.forEach( borrower => borrower.selected = !all_s );   
 }
 
 watch(
-  () => data,
+  () => borrowers,
   (newData) => {
     // Note: `newValue` will be equal to `oldValue` here
     // *unless* state.someObject has been replaced
-    currentSelections.value = newData.value.borrowers
+    currentSelections.value = borrowers.value
           .filter( borrower => borrower.selected )
           .map( borrower => borrower.id )
   },
   { deep: true }
 )
 
-
+/**
 const getData = async() =>{
     let config = {
                 headers: authHeader(),
                 params: {
-                    page:0,
-                    borrowerState: ''
+                    page:props.page,
+                    borrowerState: props.state,
+                    firstName: props.firstName,
+                    lastNameName: props.lastName,
+                    size: 2
                 }
             }
   let myParams = config.params;
-  console.log(myParams)
   const response = await axios.get('/api/v1/borrowers',config);
   router.push({name:'users',query:myParams})
-  console.log(response);
-  console.log(response.data.borrowers)
   if(response.data.currentPage){
 
   }
@@ -133,12 +97,12 @@ const getData = async() =>{
 }
 data.value = await getData();
 
-const filter = () =>{
-    console.log("submit")
-}
-
-
-onMounted(() => {
-    data.value.borrowers.forEach(borrower =>borrower["selected"]= false);
+ */
+ onBeforeMount(() => {
+    borrowers.value = props.data.borrowers
+    if(borrowers.value){
+        borrowers.value.forEach(borrower =>borrower["selected"]= false);
+    }
+    
 })
 </script>

@@ -50,6 +50,7 @@ public class BorrowerController {
     public ResponseEntity<Map<String,Object >> getAllBorrowers(
             @RequestParam(required = false) BorrowerState borrowerState,
             @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
             @RequestParam(defaultValue = "borrowerID,desc")String[] sort
@@ -72,13 +73,19 @@ public class BorrowerController {
             //Create pageSort by page,size and given sorts in orders
             Pageable pageable = PageRequest.of(page,size,Sort.by(orders));
             Page<Borrower> pageBorrowers;
-
-            if(borrowerState == null && firstName == null)
+            boolean filterByName = firstName !=null || lastName != null;
+            //No Filter => getAll
+            if(borrowerState == null && !filterByName)
                 pageBorrowers = borrowerService.getUsers(pageable);
-            else if(firstName != null && borrowerState != null )
-                pageBorrowers = borrowerService.getUsersByFirstName(pageable,borrowerState,firstName,null);
+            //state and name
+            else if(borrowerState != null && filterByName )
+                pageBorrowers = borrowerService.getAllByStateAndName(pageable,borrowerState,firstName,lastName);
+            //name
+            else if(filterByName)
+                pageBorrowers = borrowerService.getAllByName(pageable,firstName,lastName);
+            //state
             else
-                pageBorrowers = borrowerService.getUsersByState(pageable,borrowerState);
+                pageBorrowers = borrowerService.getByState(pageable,borrowerState);
 
             borrowers = pageBorrowers.getContent();
             if(borrowers.isEmpty())

@@ -42,12 +42,18 @@ public class BorrowerService {
         return borrowerRepository.findAll(pageable);
     }
 
-    public Page<Borrower> getUsersByState(Pageable pageable,BorrowerState state){
+    public Page<Borrower> getByState(Pageable pageable,BorrowerState state){
         return borrowerRepository.findAllByBorrowerState(pageable,state);
     }
-    public Page<Borrower> getUsersByFirstName(Pageable pageable,BorrowerState state,String firstName,String lastName){
-        return borrowerRepository.findAllByStateAndFirstNameAndLastName(pageable,state,firstName,lastName);
+
+    public Page<Borrower> getAllByName(Pageable pageable,String firstName,String lastName){
+        return borrowerRepository.findAllByName(pageable,firstName,lastName);
     }
+
+    public Page<Borrower> getAllByStateAndName(Pageable pageable,BorrowerState state,String firstName,String lastName){
+        return borrowerRepository.findAllByStateAndName(pageable,state,firstName,lastName);
+    }
+
 
     public Optional<Borrower> getUserById(Long id) {
         return borrowerRepository.findById(id);
