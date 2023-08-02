@@ -185,6 +185,15 @@ public class BorrowerController {
     }
 
     /**
+     * Deletes Borrowers by ID if the borrower has no lend media
+     * @param ids The BorrowerIDs to be deleted
+     */
+    @DeleteMapping()
+    public void deleteBorrowersById(@RequestBody List<Long> ids){
+        borrowerService.deleteBorrowersByID(ids);
+    }
+
+    /**
      * Converts a Borrower to BorrowerDTO
      * @param borrower the borrower
      * @return BorrowerDTO

@@ -29,7 +29,8 @@
                  class="bg-[#F7F3E3] border-b-2 cursor-pointer">
                     <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfLend) }}</td>
                     <td class="text-center">{{ $dateStringToGermanFormat(loanHistorie.dateOfReturn) }}</td>
-                    <td class="text-center">{{ loanHistorie.borrower }}</td>
+                    <td v-if="loanHistorie.borrower" class="text-center">{{ loanHistorie.borrower }}</td>
+                    <td v-else class="text-center"> Nutzer gelöscht</td>
                                  
                 </tr>
                 </tbody>

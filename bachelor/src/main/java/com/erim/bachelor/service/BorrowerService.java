@@ -131,6 +131,23 @@ public class BorrowerService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
     }
 
+    /**
+     * Permanent delete borrowers if nothing is borrowed by them.
+     * @param borrowerIDs List of Ids to be deleted
+     */
+    public void deleteBorrowersByID(List<Long> borrowerIDs){
+        for(Long id : borrowerIDs){
+            Optional<Borrower> borrower = borrowerRepository.findById(id);
+            if(borrower.isPresent()){
+                Borrower b = borrower.get();
+                if(b.getMediumList().isEmpty()){
+                    b.getLoanHistories().forEach(loanHistory -> loanHistory.setBorrower(null));
+                    borrowerRepository.deleteById(id);
+                }
+            }
+        }
+    }
+
     public InputStream downloadUsers() {
         return CSVHelper.usersToCSV(borrowerRepository.findAll());
     }

@@ -71,8 +71,10 @@ public class LoanController {
     private LoanHistoriesDTO convertToDTO(LoanHistory loanHistory){
 
         LoanHistoriesDTO dto = modelMapper.map(loanHistory, LoanHistoriesDTO.class);
-        dto.setBorrower(loanHistory.getBorrower().getFullName());
-        dto.setMedium(loanHistory.getMedium().getTitle());
+        if(loanHistory.getBorrower() !=null)
+            dto.setBorrower(loanHistory.getBorrower().getFullName());
+        if(loanHistory.getMedium()!=null)
+            dto.setMedium(loanHistory.getMedium().getTitle());
         return dto;
     }
 }

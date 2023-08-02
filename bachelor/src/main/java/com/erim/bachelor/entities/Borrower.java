@@ -54,6 +54,10 @@ public class Borrower implements UserDetails {
     @JsonIgnoreProperties("borrower")
     private List<Medium> mediumList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "borrower")
+    @JsonIgnoreProperties("borrower")
+    private List<LoanHistory> loanHistories = new ArrayList<>();
+
     public Borrower(String firstName,String lastName){
         this.firstName = firstName;
         this.lastName = lastName;
