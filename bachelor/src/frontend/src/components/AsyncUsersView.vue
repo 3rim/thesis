@@ -1,7 +1,6 @@
 <template>
-        <!--Users-->
     <div class="mt-20 flex flex-col items-center">
-
+        <!--Buttons-->
         <div v-if="borrowers" class="w-full ">
             <button @click="deleteUsers" class="mr-1 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                 Auswahl Löschen
@@ -12,23 +11,25 @@
             
         </div>
         <!--SuccesMessage-->
-    <div class=" max-w-lg w-full: mt-1 mb-3 bg-teal-200  border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
-    v-if="success">
-    <div class="flex">
-        <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-         <div>
-            <p class="font-bold">Passwörter zurückgesetzt</p>
-            <div v-if="success > 0">
-                <p>Laden Sie die CSV-Datei herunter, um den Nutzer ihr Einmal-Passwort zu geben</p>
-                <button 
-                class=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded" 
-                @click="downloadBlob">download csv
-                </button>
+        <div class=" max-w-lg w-full: mt-1 mb-3 bg-teal-200  border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+        v-if="success">
+            <div class="flex">
+                <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-700 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+                <div>
+                    <p class="font-bold">Passwörter zurückgesetzt</p>
+                    <div v-if="success > 0">
+                        <p>Laden Sie die CSV-Datei herunter, um den Nutzer ihr Einmal-Passwort zu geben</p>
+                        <button 
+                        class=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded" 
+                        @click="downloadBlob">download csv
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    </div> 
-        <table v-if="borrowers" >
+        </div> 
+        <!-- table -->
+        <div v-if="borrowers">
+            <table>
             <thead>
                 <tr>
                     <th class="px-4">
@@ -56,8 +57,12 @@
                     <td>{{ borrower.borrowerState }}</td>
                 </tr>
             </tbody>
-        </table>
-        <p v-if="currentSelections">Selection:{{ currentSelections }}</p>
+            </table>
+        </div>
+        <div v-else>
+            <p>Kein Inhalt</p>
+        </div>
+        
     </div>
 </template>
 

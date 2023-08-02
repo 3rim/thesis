@@ -52,9 +52,11 @@
     <div v-if="data">
       <AsyncUsersView :key="componentKey" :data="data" />
     </div>
-    <div v-else>No Content</div>
-  </div>
+    <div v-else>
+      <p>Kein Ergebnis</p>
+    </div>
   
+  </div>
 </template>
 
 <script setup>
@@ -112,12 +114,13 @@ const loadData = () =>{
             console.log(config)
             let myParams = config.params;
             
-  data.value = axios.get('/api/v1/borrowers',config)
+  axios.get('/api/v1/borrowers',config)
   .then(function (response) {
     console.log(response)
     totalPages.value = response.data.totalPages;
     borrowers.value = response.data.borrowers;
     data.value = response.data
+    console.log(data.value)
     forceRender();
   });
 }
