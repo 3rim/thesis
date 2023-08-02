@@ -3,6 +3,7 @@ package com.erim.bachelor.service;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.helper.PasswordGenerator;
 import com.erim.bachelor.repositories.BorrowerRepository;
@@ -55,7 +56,6 @@ public class BorrowerService {
     public Optional<Borrower> getUserById(Long id) {
         return borrowerRepository.findById(id);
     }
-
 
     public List<Borrower> getUserByFirstNameAndOrLastName(String firstName, String lastName) {
         return borrowerRepository.searchByFirstAndOrLastName(firstName,lastName);
@@ -161,7 +161,6 @@ public class BorrowerService {
                resetBorrowerMap.put(id,dto);
                dtoList.add(dto);
            }
-
         });
 
         Thread resetBorrowers = new Thread(() ->
@@ -174,7 +173,13 @@ public class BorrowerService {
         resetBorrowers.start();
 
         return dtoList;
+    }
 
+    public Borrower updateBorrowerRoles(Long id, Set<Role> roles) {
+        Borrower borrower = borrowerRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        borrower.setRoles(roles);
+        borrowerRepository.save(borrower);
+        return borrower;
     }
 
 

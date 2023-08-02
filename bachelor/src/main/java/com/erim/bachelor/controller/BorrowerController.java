@@ -5,6 +5,7 @@ import com.erim.bachelor.data.MediumRequestDTO;
 import com.erim.bachelor.data.BorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
 import org.modelmapper.ModelMapper;
@@ -170,9 +171,18 @@ public class BorrowerController {
                 HttpStatus.BAD_REQUEST, "Please upload a file");
     }
 
-    @PutMapping(path ="{id}", consumes = "application/json",produces = "application/json")
-    public void editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Borrower borrower){
+    @PatchMapping(path ="{id}")
+    public ResponseEntity<String> editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Set<Role> roles){
         //TODO: implement
+        try {
+            borrowerService.updateBorrowerRoles(id,roles);
+            return new ResponseEntity<>("roles updated for id:" +id, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("User does not exist",HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Server Error:Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(path = "/reset")
