@@ -19,10 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BorrowerService {
@@ -152,6 +149,35 @@ public class BorrowerService {
         return CSVHelper.usersToCSV(borrowerRepository.findAll());
     }
 
+    public List<InitBorrowerDTO> resetPasswords(List<Long> borrowerIDs) {
+
+        Map<Long,InitBorrowerDTO> resetBorrowerMap  = new HashMap<>();
+        List<InitBorrowerDTO> dtoList = new ArrayList<>();
+
+        borrowerIDs.forEach(id ->{
+           Optional<Borrower> borrower = borrowerRepository.findById(id);
+           if(borrower.isPresent()){
+               InitBorrowerDTO dto = createNewBorrowerDTO(borrower.get());
+               resetBorrowerMap.put(id,dto);
+               dtoList.add(dto);
+           }
+
+        });
+
+        Thread resetBorrowers = new Thread(() ->
+                resetBorrowerMap.forEach((id,dto )-> {
+                    Borrower resetBorrower = borrowerRepository.findById(id).get();
+                    resetBorrower.setPassword(passwordEncoder.encode(dto.getOneTimePassword()));
+                    resetBorrower.setBorrowerState(BorrowerState.INITIALIZED);
+                    borrowerRepository.save(resetBorrower);
+                }));
+        resetBorrowers.start();
+
+        return dtoList;
+
+    }
+
+
     /**
      * Creates a new Borrower Entity and stores it to  the Database.
      * @param newBorrower The new BorrowerEntity to be created
@@ -160,7 +186,6 @@ public class BorrowerService {
     private InitBorrowerDTO createNewBorrowerDTO(Borrower newBorrower) {
         String oneTimePassword = PasswordGenerator.generateInitialPassword();
         InitBorrowerDTO newBorrowerDTO = modelMapper.map(newBorrower, InitBorrowerDTO.class);
-        System.out.println(newBorrowerDTO);
         newBorrowerDTO.setOneTimePassword(oneTimePassword);
         return newBorrowerDTO;
     }
@@ -198,4 +223,5 @@ public class BorrowerService {
     private List<Borrower> getAllActiveUsers() {
         return borrowerRepository.findAllByBorrowerNrIsNotNull();
     }
+
 }

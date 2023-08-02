@@ -175,6 +175,12 @@ public class BorrowerController {
         //TODO: implement
     }
 
+    @PutMapping(path = "/reset")
+    public ResponseEntity<List<InitBorrowerDTO>> resetPasswords (@RequestBody List<Long> ids){
+        List<InitBorrowerDTO>  response = borrowerService.resetPasswords(ids);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     /**
      * Delete a Borrower by his Number (Not EntityID).
      * @param borrowerNr The BorrowerNumber

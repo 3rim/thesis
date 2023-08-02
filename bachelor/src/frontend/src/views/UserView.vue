@@ -71,6 +71,7 @@ const lastName = ref();
 const userState = ref();
 const borrowers = ref([]);
 const router = useRouter();
+const route = useRoute();
 
 const totalPages = ref(0);
 const data = ref();
@@ -82,7 +83,9 @@ const filter = () =>{
 
 const getPage = (index) =>{
     page.value = index;
+    console.log(index);
     loadData();
+    
 }
 
 const getPreviousPage = () =>{
@@ -103,12 +106,12 @@ const loadData = () =>{
                     borrowerState: userState.value,
                     firstName: firstName.value,
                     lastName: lastName.value,
-                    size: 1
+                    size: 2
                 }
             }
             console.log(config)
             let myParams = config.params;
-            router.push({name:'users',query:myParams})
+            
   data.value = axios.get('/api/v1/borrowers',config)
   .then(function (response) {
     console.log(response)
