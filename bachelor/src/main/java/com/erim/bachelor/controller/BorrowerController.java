@@ -170,9 +170,8 @@ public class BorrowerController {
                 HttpStatus.BAD_REQUEST, "Please upload a file");
     }
 
-    @PatchMapping(path ="{id}")
+    @PatchMapping(path ="{id}/roles")
     public ResponseEntity<String> editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Set<Role> roles){
-        //TODO: implement
         try {
             borrowerService.updateBorrowerRoles(id,roles);
             return new ResponseEntity<>("roles updated for id:" +id, HttpStatus.OK);

@@ -41,6 +41,7 @@
                     <th class="px-4">Geb.</th>
                     <th class="px-4">Gruppe</th>
                     <th class="px-4">Status</th>
+                    <th class="px-4"></th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +56,13 @@
                     <td>{{ $dateStringToGermanFormat(borrower.dob)}}</td>
                     <td>{{ borrower.borrowerGroup }}</td>
                     <td>{{ borrower.borrowerState }}</td>
+                    <td class="">
+                        <button 
+                        class="ml-5 bg-blue-500 hover:bg-blue-700 px-2 text-white text-xs font-bold rounded"
+                        @click="editRoles(borrower.id)">
+                            Rolen bearbeiten
+                        </button>
+                    </td>
                 </tr>
             </tbody>
             </table>
@@ -91,6 +99,11 @@ const borrowers = ref();
 const allSelected = computed(() =>{
     return borrowers.value.every(borrower => borrower.selected);
 })
+
+const editRoles = (id) =>{
+    console.log(id);
+    router.push({ name: 'userRoles',params: { id:id },})
+}
 
 const selectAll = () =>{
     let all_s = allSelected.value;
