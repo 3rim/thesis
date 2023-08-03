@@ -4,12 +4,17 @@ import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.data.MediumRequestDTO;
 import com.erim.bachelor.data.BorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.BorrowerState;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +23,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
@@ -44,7 +47,68 @@ public class BorrowerController {
      * @return A List which is either empty or contains all Borrowers
      */
     @GetMapping()
-    public List<Borrower> getAllBorrowers(){return borrowerService.getAllUsers();}
+    public ResponseEntity<Map<String,Object >> getAllBorrowers(
+            @RequestParam(required = false) BorrowerState borrowerState,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int pageSize,
+            @RequestParam(defaultValue = "borrowerID,desc")String[] sort
+            ){
+        try {
+            List<Order> orders = new ArrayList<>();
+            if (sort[0].contains(",")) {
+                // will sort more than 2 fields
+                // sortOrder="field, direction"
+                for (String sortOrder : sort) {
+                    String[] _sort = sortOrder.split(",");
+                    orders.add(new Order(getSortDirection(_sort[1]), _sort[0]));
+                }
+            } else {
+                // sort=[field, direction]
+                orders.add(new Order(getSortDirection(sort[1]), sort[0]));
+            }
+
+            List<Borrower> borrowers;
+            //Create pageSort by page,size and given sorts in orders
+            Pageable pageable = PageRequest.of(page, pageSize,Sort.by(orders));
+            Page<Borrower> pageBorrowers;
+            boolean filterByName = firstName !=null || lastName != null;
+            //No Filter => getAll
+            if(borrowerState == null && !filterByName)
+                pageBorrowers = borrowerService.getUsers(pageable);
+            //state and name
+            else if(borrowerState != null && filterByName )
+                pageBorrowers = borrowerService.getAllByStateAndName(pageable,borrowerState,firstName,lastName);
+            //name
+            else if(filterByName)
+                pageBorrowers = borrowerService.getAllByName(pageable,firstName,lastName);
+            //state
+            else
+                pageBorrowers = borrowerService.getByState(pageable,borrowerState);
+
+            borrowers = pageBorrowers.getContent();
+            if(borrowers.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            List<BorrowerDTO> borrowerDTOS = borrowers
+                    .stream()
+                    .map(this::convertToDTO)
+                    .toList();
+            //Create Response
+            Map<String,Object> response = new HashMap<>();
+            response.put("borrowers",borrowerDTOS);
+            response.put("currentPage", pageBorrowers.getNumber());
+            response.put("totalItems", pageBorrowers.getTotalElements());
+            response.put("totalPages", pageBorrowers.getTotalPages());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+
+        }catch (Exception e){
+            System.out.println(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Get Borrower by id
@@ -106,9 +170,23 @@ public class BorrowerController {
                 HttpStatus.BAD_REQUEST, "Please upload a file");
     }
 
-    @PutMapping(path ="{id}", consumes = "application/json",produces = "application/json")
-    public void editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Borrower borrower){
-        //TODO: implement
+    @PatchMapping(path ="{id}/roles")
+    public ResponseEntity<String> editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Set<Role> roles){
+        try {
+            borrowerService.updateBorrowerRoles(id,roles);
+            return new ResponseEntity<>("roles updated for id:" +id, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("User does not exist",HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Server Error:Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path = "/reset")
+    public ResponseEntity<List<InitBorrowerDTO>> resetPasswords (@RequestBody List<Long> ids){
+        List<InitBorrowerDTO>  response = borrowerService.resetPasswords(ids);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
@@ -118,6 +196,15 @@ public class BorrowerController {
     @DeleteMapping(value = "{borrowerNr}")
     public void softDeleteBorrowerByNr(@PathVariable(value = "borrowerNr")Long borrowerNr){
         borrowerService.softDeleteBorrowerByNr(borrowerNr);
+    }
+
+    /**
+     * Deletes Borrowers by ID if the borrower has no lend media
+     * @param ids The BorrowerIDs to be deleted
+     */
+    @DeleteMapping()
+    public void deleteBorrowersById(@RequestBody List<Long> ids){
+        borrowerService.deleteBorrowersByID(ids);
     }
 
     /**
@@ -136,5 +223,15 @@ public class BorrowerController {
 
 
         return borrowerDTO;
+    }
+
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        return Sort.Direction.ASC;
     }
 }

@@ -1,8 +1,8 @@
 package com.erim.bachelor.config;
 
-import com.erim.bachelor.data.BorrowerState;
-import com.erim.bachelor.data.Role;
-import com.erim.bachelor.data.Status;
+import com.erim.bachelor.enums.BorrowerState;
+import com.erim.bachelor.enums.Role;
+import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.InventoryRepository;
@@ -16,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,7 +25,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 @Configuration
 @RequiredArgsConstructor

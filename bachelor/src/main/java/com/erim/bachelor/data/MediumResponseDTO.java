@@ -1,6 +1,7 @@
 package com.erim.bachelor.data;
 
 import com.erim.bachelor.entities.LoanHistory;
+import com.erim.bachelor.enums.Status;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,5 +34,5 @@ public class MediumResponseDTO {
     private String currentBorrower;
     //Currently lend since
     private LocalDate dateOfLend;
-    private List<LoanHistory> loanHistories;
+    //private List<LoanHistory> loanHistories;
 }

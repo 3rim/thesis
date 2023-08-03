@@ -1,6 +1,6 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.Status;
+import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
@@ -9,6 +9,7 @@ import com.erim.bachelor.repositories.LoanHistoryRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -90,6 +91,10 @@ public class LoanService {
         inventoryRepository.save(medium);
 
         return  borrower;
+    }
+
+    public List<LoanHistory> getLoanHistories(Long mediumID) {
+        return loanHistoryRepository.findAllLoanHistoryByMediumMediumID(mediumID);
     }
 }
 

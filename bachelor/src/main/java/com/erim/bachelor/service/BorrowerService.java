@@ -1,13 +1,16 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.BorrowerState;
+import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.helper.PasswordGenerator;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BorrowerService {
@@ -36,14 +36,26 @@ public class BorrowerService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Borrower> getAllUsers() {
-        return borrowerRepository.findAll();
+    public Page<Borrower> getUsers(Pageable pageable) {
+        return borrowerRepository.findAll(pageable);
     }
+
+    public Page<Borrower> getByState(Pageable pageable,BorrowerState state){
+        return borrowerRepository.findAllByBorrowerState(pageable,state);
+    }
+
+    public Page<Borrower> getAllByName(Pageable pageable,String firstName,String lastName){
+        return borrowerRepository.findAllByName(pageable,firstName,lastName);
+    }
+
+    public Page<Borrower> getAllByStateAndName(Pageable pageable,BorrowerState state,String firstName,String lastName){
+        return borrowerRepository.findAllByStateAndName(pageable,state,firstName,lastName);
+    }
+
 
     public Optional<Borrower> getUserById(Long id) {
         return borrowerRepository.findById(id);
     }
-
 
     public List<Borrower> getUserByFirstNameAndOrLastName(String firstName, String lastName) {
         return borrowerRepository.searchByFirstAndOrLastName(firstName,lastName);
@@ -116,9 +128,60 @@ public class BorrowerService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
     }
 
+    /**
+     * Permanent delete borrowers if nothing is borrowed by them.
+     * @param borrowerIDs List of Ids to be deleted
+     */
+    public void deleteBorrowersByID(List<Long> borrowerIDs){
+        for(Long id : borrowerIDs){
+            Optional<Borrower> borrower = borrowerRepository.findById(id);
+            if(borrower.isPresent()){
+                Borrower b = borrower.get();
+                if(b.getMediumList().isEmpty()){
+                    b.getLoanHistories().forEach(loanHistory -> loanHistory.setBorrower(null));
+                    borrowerRepository.deleteById(id);
+                }
+            }
+        }
+    }
+
     public InputStream downloadUsers() {
         return CSVHelper.usersToCSV(borrowerRepository.findAll());
     }
+
+    public List<InitBorrowerDTO> resetPasswords(List<Long> borrowerIDs) {
+
+        Map<Long,InitBorrowerDTO> resetBorrowerMap  = new HashMap<>();
+        List<InitBorrowerDTO> dtoList = new ArrayList<>();
+
+        borrowerIDs.forEach(id ->{
+           Optional<Borrower> borrower = borrowerRepository.findById(id);
+           if(borrower.isPresent()){
+               InitBorrowerDTO dto = createNewBorrowerDTO(borrower.get());
+               resetBorrowerMap.put(id,dto);
+               dtoList.add(dto);
+           }
+        });
+
+        Thread resetBorrowers = new Thread(() ->
+                resetBorrowerMap.forEach((id,dto )-> {
+                    Borrower resetBorrower = borrowerRepository.findById(id).get();
+                    resetBorrower.setPassword(passwordEncoder.encode(dto.getOneTimePassword()));
+                    resetBorrower.setBorrowerState(BorrowerState.INITIALIZED);
+                    borrowerRepository.save(resetBorrower);
+                }));
+        resetBorrowers.start();
+
+        return dtoList;
+    }
+
+    public Borrower updateBorrowerRoles(Long id, Set<Role> roles) {
+        Borrower borrower = borrowerRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        borrower.setRoles(roles);
+        borrowerRepository.save(borrower);
+        return borrower;
+    }
+
 
     /**
      * Creates a new Borrower Entity and stores it to  the Database.
@@ -128,7 +191,6 @@ public class BorrowerService {
     private InitBorrowerDTO createNewBorrowerDTO(Borrower newBorrower) {
         String oneTimePassword = PasswordGenerator.generateInitialPassword();
         InitBorrowerDTO newBorrowerDTO = modelMapper.map(newBorrower, InitBorrowerDTO.class);
-        System.out.println(newBorrowerDTO);
         newBorrowerDTO.setOneTimePassword(oneTimePassword);
         return newBorrowerDTO;
     }
@@ -166,4 +228,5 @@ public class BorrowerService {
     private List<Borrower> getAllActiveUsers() {
         return borrowerRepository.findAllByBorrowerNrIsNotNull();
     }
+
 }

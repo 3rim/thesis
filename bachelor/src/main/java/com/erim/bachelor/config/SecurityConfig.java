@@ -1,6 +1,6 @@
 package com.erim.bachelor.config;
 
-import com.erim.bachelor.data.Role;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,17 +27,32 @@ public class SecurityConfig {
     private final String LOAN_HELPER = Role.LOAN_HELPER.toString();
     private final String INVENTORY_HELPER = Role.INVENTORY_HELPER.toString();
 
+    private final String[] AUTH_WHITE_LIST ={
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            //API Authentication
+            "/api/v1/auth/**",
+            //Error Page ResponseStatusException always redirect to /error page which request authentication due to the latest spring version
+            "/error"
+
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
                 //Public API
-                .requestMatchers("/api/v1/auth/**")
-                    .permitAll()
-
-                //Fix: ResponseStatusException always redirect to /error page which request authentication due to the latest spring version
-                .requestMatchers("/error")
+                .requestMatchers(AUTH_WHITE_LIST)
                     .permitAll()
 
                 //Configure Borrower-Admin endpoints

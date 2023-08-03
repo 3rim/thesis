@@ -2,6 +2,8 @@ package com.erim.bachelor.security;
 
 import com.erim.bachelor.data.*;
 import com.erim.bachelor.entities.Borrower;
+import com.erim.bachelor.enums.BorrowerState;
+import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

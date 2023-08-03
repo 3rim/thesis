@@ -1,4 +1,4 @@
-package com.erim.bachelor.data;
+package com.erim.bachelor.enums;
 
 public enum Role {
     USER,

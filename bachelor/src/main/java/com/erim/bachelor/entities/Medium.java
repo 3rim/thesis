@@ -1,8 +1,7 @@
 package com.erim.bachelor.entities;
 
 import com.erim.bachelor.data.InventoryDTO;
-import com.erim.bachelor.data.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.erim.bachelor.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
