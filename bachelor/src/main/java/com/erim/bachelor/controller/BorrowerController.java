@@ -28,7 +28,6 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
@@ -53,7 +52,7 @@ public class BorrowerController {
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "borrowerID,desc")String[] sort
             ){
         try {
@@ -72,7 +71,7 @@ public class BorrowerController {
 
             List<Borrower> borrowers;
             //Create pageSort by page,size and given sorts in orders
-            Pageable pageable = PageRequest.of(page,size,Sort.by(orders));
+            Pageable pageable = PageRequest.of(page, pageSize,Sort.by(orders));
             Page<Borrower> pageBorrowers;
             boolean filterByName = firstName !=null || lastName != null;
             //No Filter => getAll
