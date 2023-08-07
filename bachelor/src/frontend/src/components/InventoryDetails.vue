@@ -1,13 +1,22 @@
 <template>
     <div class="container flex flex-col flex-1 items-center py-2">
         <!-- Generel data about Media -->
-        <div class="bg-slate-300 px-4 py-1">
-            <p> Titel: {{ mediaData.data[0].title }} </p>
-            <p> ISBN: {{ mediaData.data[0].isbn }}</p>
-            <p> Medien Typ: {{ mediaData.data[0].mediumTyp }}</p>
-            <p> Jahrgänge: {{ mediaData.data[0].year }} </p>
-            <p> Fächer: {{ mediaData.data[0].subjects }} </p>
+        <div class="px-4 py-1">
+            <p><strong>Titel: </strong>{{ mediaData.data[0].title }} </p>
+            <p><strong>ISBN: </strong> {{ mediaData.data[0].isbn }}</p>
+            <p><strong>Medien Typ: </strong> {{ mediaData.data[0].mediumTyp }}</p>
+            <p><strong>Jahrgänge: </strong>
+                <span v-for="item in mediaData.data[0].year">
+                    {{ item}},
+                </span>
+            </p>
+            <p><strong>Fächer: </strong>
+                <span v-for="item in mediaData.data[0].subjects">
+                    {{ item}},
+                </span>
+            </p>
         </div>
+
         <!-- Tabelle -->
         <div class=" py-2">
             <table class="">
