@@ -7,14 +7,14 @@
         v-if="!err">
         <!-- Generell infos about this Medium -->
         <div class="py-3">
-            <p>Medium-ID: {{ route.params.mediumID }}</p>
-            <p>Titel: {{ mediumData.title }}</p>
-            <p>Aktueller Ausleiher: {{ mediumData.currentBorrower }}</p>
-            <p>Status: {{ mediumData.status }}</p>
-            <p v-if="mediumData.serialNr">Status: {{ mediumData.serialNr }}</p>
+            <p><strong>Medium-ID:</strong> {{ route.params.mediumID }}</p>
+            <p><strong>Titel:</strong> {{ mediumData.title }}</p>
+            <p><strong>Ausleiher:</strong> {{ mediumData.currentBorrower }}</p>
+            <p><strong>Status:</strong> {{ mediumData.status }}</p>
+            <p v-if="mediumData.serialNr"><strong>Seriennummer:</strong> {{ mediumData.serialNr }}</p>
         </div>
         <!-- The loan histories -->
-        <p>Ausleihhistorie</p>
+        <p> <strong>Ausleihhistorie </strong></p>
         <div>
             <table>
             <thead class="bg-[#E4D4BA]">
