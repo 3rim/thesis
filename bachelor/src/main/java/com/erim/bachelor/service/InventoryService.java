@@ -1,29 +1,34 @@
 package com.erim.bachelor.service;
 
 import com.erim.bachelor.data.InventoryDTO;
+import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediaSeriesRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class InventoryService {
 
-    private final InventoryRepository inventoryRepository;
+    private final MediumRepository mediumRepository;
+    private final MediaSeriesRepository mediaSeriesRepository;
 
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public InventoryService(MediumRepository mediumRepository, MediaSeriesRepository mediaSeriesRepository) {
+        this.mediumRepository = mediumRepository;
+        this.mediaSeriesRepository = mediaSeriesRepository;
     }
 
     public List<Medium> getAllMedia(){
-        return inventoryRepository.findAll();
+        return mediumRepository.findAll();
     }
 
     /**
@@ -33,30 +38,30 @@ public class InventoryService {
      * @return null or the added Medium
      */
     public Medium addNewMedium(Medium medium){
-        if(!inventoryRepository.existsById(medium.getMediumID()))
-            return inventoryRepository.save(medium);
+        if(!mediumRepository.existsById(medium.getMediumID()))
+            return mediumRepository.save(medium);
         else {
             return null;
         }
     }
 
     public Optional<Medium> getMediumById(Long id) {
-        return inventoryRepository.findById(id);
+        return mediumRepository.findById(id);
     }
 
     public  Optional<Medium> updateMedium(Long id,Medium newMedium) {
-        return Optional.of(inventoryRepository.findById(id)
+        return Optional.of(mediumRepository.findById(id)
                 .map(medium -> {
                     medium.setTitle(newMedium.getTitle());
 
-                    return inventoryRepository.save(medium);
+                    return mediumRepository.save(medium);
                 })
-                .orElseGet(() -> inventoryRepository.save(newMedium)));
+                .orElseGet(() -> mediumRepository.save(newMedium)));
     }
 
     public ResponseEntity<String> deleteMedium(Long id){
 
-        Optional<Medium> mediumToDelete = inventoryRepository.findById(id);
+        Optional<Medium> mediumToDelete = mediumRepository.findById(id);
         if(mediumToDelete.isEmpty())
             return new ResponseEntity<>("Medium with id:"+id+" not found",HttpStatus.BAD_REQUEST);
 
@@ -64,20 +69,15 @@ public class InventoryService {
         if(medium.isBorrowed())
             return new ResponseEntity<>("Medium with Id:"+id+" is still borrowed to User: "+medium.getBorrower().getFullName(),HttpStatus.CONFLICT);
         else {
-            inventoryRepository.deleteById(id);
+            mediumRepository.deleteById(id);
             return new ResponseEntity<>("Medium with Id:"+id+" deleted ",HttpStatus.OK);
         }
-
-
-
-
     }
 
     public List<Medium> getAllMediaByTitle(String title) {
-        return inventoryRepository.findAllByTitle(title);
-    }
+         MediaSeries mediaSeries = mediaSeriesRepository.findByTitel(title)
+                 .orElseThrow(NoSuchElementException::new);
 
-    public List<InventoryDTO> getInventoryDTO() {
-        return inventoryRepository.getInventoryDTO();
+         return mediaSeries.getMediumList();
     }
 }

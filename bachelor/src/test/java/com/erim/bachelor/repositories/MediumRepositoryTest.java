@@ -19,28 +19,28 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
     Just add h2 in your pom.xml and set its scope to test. Spring Boot should handle the rest.
  */
 @SpringBootTest
-class InventoryRepositoryTest {
+class MediumRepositoryTest {
 
     @Autowired
-    private InventoryRepository inventoryRepository;
+    private MediumRepository mediumRepository;
 
     @BeforeEach
     void setUp() {
-        inventoryRepository.deleteAll();
+        mediumRepository.deleteAll();
 
         ArrayList<Medium> media = new ArrayList<>(
                 Arrays.asList(
-                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build()
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).build(),
+                        Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).build()
                 ));
-        inventoryRepository.saveAll(media);
+        mediumRepository.saveAll(media);
     }
 
     @Test
     void InitMediaExists(){
-        List<Medium> actual = inventoryRepository.findAll();
+        List<Medium> actual = mediumRepository.findAll();
         assertThat(actual.size()).isEqualTo(4);
     }
 

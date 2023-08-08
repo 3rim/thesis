@@ -34,19 +34,20 @@ public class Medium {
 
     @Id
     private Long mediumID;
-    private String mediumTyp;
+    private String title;
+    private String serialNr;
+    private LocalDate dateOfLend;
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    /*private String mediumTyp;
     private String ISBN;
-    private String serialNr;
     @ElementCollection // sonst mekert er
     private Set<Integer> year = new HashSet<>();
     @ElementCollection
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
-    private String title;
-    private LocalDate dateOfLend;
-
+*/
     public Medium(Long mediumID,String title) {
         this.mediumID = mediumID;
         this.title = title;
@@ -60,6 +61,10 @@ public class Medium {
     @JoinColumn(name = "borrower_id")
     @JsonIgnoreProperties(value = {"mediumList", "handler","hibernateLazyInitializer"}, allowSetters = true)
     private Borrower borrower;
+
+    @ManyToOne
+    @JoinColumn(name = "media_series_id")
+    private MediaSeries mediaSeries;
 
     /*
      CascadeType.REMOVE : if an Entity of Medium is removed, also remove the associated Entities in LendHistory.

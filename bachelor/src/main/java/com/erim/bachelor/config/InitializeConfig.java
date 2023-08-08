@@ -1,12 +1,14 @@
 package com.erim.bachelor.config;
 
+import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
+import com.erim.bachelor.repositories.MediaSeriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -31,6 +33,7 @@ import java.util.HashSet;
 public class InitializeConfig {
 
     private final BorrowerRepository repository;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> repository.findBorrowerByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -54,12 +57,12 @@ public class InitializeConfig {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(InventoryRepository inventoryRepository, BorrowerRepository borrowerRepository){
+    CommandLineRunner commandLineRunner(MediumRepository mediumRepository, BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){
         return args -> {
             ArrayList<Medium> media = new ArrayList<>(
                     Arrays.asList(
-                            Medium.builder().mediumID(1L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().mediumID(2L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build()
+                            Medium.builder().mediumID(1L).title("Java ist auch eine Insel").status(Status.AVAILABLE).build(),
+                            Medium.builder().mediumID(2L).title("Java ist auch eine Insel").status(Status.AVAILABLE).build()
                             /*Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
                             Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),*/
 
@@ -73,9 +76,36 @@ public class InitializeConfig {
                             Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
                             Medium.builder().title("Mathe II").status(Status.AVAILABLE).build()*/
 
-                    ));
 
-            inventoryRepository.saveAll(media);
+                    ));
+            mediumRepository.saveAll(media);
+
+
+
+            ArrayList<MediaSeries> mediaSeries = new ArrayList<>(
+                    Arrays.asList(
+                            MediaSeries
+                                    .builder()
+                                    .titel("IPad")
+                                    .mediaTyp("IPad")
+                                    .available(0)
+                                    .build()
+
+                    ));
+            MediaSeries series = MediaSeries
+                    .builder()
+                    .titel("IPad")
+                    .mediaTyp("IPad")
+                    .build();
+
+            mediaSeriesRepository.save(series);
+            Medium m = Medium.builder()
+                    .mediumID(10L)
+                    .mediaSeries(series)
+                    .status(Status.AVAILABLE)
+                    .build();
+            mediumRepository.save(m);
+
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
                             //User

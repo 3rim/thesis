@@ -2,7 +2,8 @@ package com.erim.bachelor.service;
 
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediaSeriesRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +18,17 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class InventoryServiceTest {
 
     @Mock
-    private InventoryRepository inventoryRepository;
+    private MediumRepository mediumRepository;
 
+    @Mock
+    MediaSeriesRepository mediaSeriesRepository;
     private InventoryService inventoryService;
     private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
         autoCloseable =  MockitoAnnotations.openMocks(this);
-        inventoryService = new InventoryService(inventoryRepository);
+        inventoryService = new InventoryService(mediumRepository, mediaSeriesRepository);
 
     }
     @AfterEach
@@ -38,7 +41,7 @@ class InventoryServiceTest {
         //when
         inventoryService.getAllMedia();
         //then
-        verify(inventoryRepository).findAll();
+        verify(mediumRepository).findAll();
     }
 
     @Test
@@ -55,7 +58,7 @@ class InventoryServiceTest {
         //then
         ArgumentCaptor<Medium> mediumArgumentCaptor = ArgumentCaptor.forClass(Medium.class);
 
-        verify(inventoryRepository).save(mediumArgumentCaptor.capture());
+        verify(mediumRepository).save(mediumArgumentCaptor.capture());
         Medium capturedMedium = mediumArgumentCaptor.getValue();
         assertThat(capturedMedium).isEqualTo(medium);
 
