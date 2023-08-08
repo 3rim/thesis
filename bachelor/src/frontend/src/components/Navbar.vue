@@ -3,29 +3,31 @@
         <nav class="container flex flex-col sm:flex-row items-center gap-4  ">
         <div class="px-2 pt-2 sm:flex">
             <RouterLink :to="{name:'profile'}">
-                <p class=" mt-1 block px-2 py-1 font-semibold rounded hover:bg-navbar-buttons " >Meine Medien</p>
+                <p class=" mt-1 block px-2 py-1 font-semibold rounded hover:bg-navbar-buttons " >Home</p>
             </RouterLink>
             <RouterLink v-if="showLoanBoard" :to="{name:'ausleihe'}">
                 <p class="mt-1 block px-2 py-1 font-semibold rounded hover:bg-navbar-buttons">Ausleihe/Rückname</p>
             </RouterLink>
-            <InvetoryDropDown v-if="showInventoryDropDown" /> 
-            <AdminDropDownVue v-if="showAdminDropDown" />
-        </div>
-        <div>
+           
+            <InventoryMenu v-if="showInventoryDropDown"/>
+            <AdminMenu v-if="showAdminDropDown"/>
+
             <button 
-            class=""
-            @click="logout">Logout</button>
+            class=" lg:absolute lg:top-1 lg:right-1 md:absolute md:top-1 md:right-1  mt-1 block px-2 py-1 font-semibold rounded hover:bg-navbar-buttons"
+            @click="logout">Logout
+            </button>
         </div>
     </nav>
     </header>
 </template>
 
 <script setup>
-import AdminDropDownVue from './AdminDropDown.vue';
-import InvetoryDropDown from './InventoryDropDown.vue';
-import { computed, ref } from 'vue';
+import AdminMenu from './AdminMenu.vue'
+import InventoryMenu from './InventoryMenu.vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+
 
 const store = useStore();
 const router = useRouter();

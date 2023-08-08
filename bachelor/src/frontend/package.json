@@ -13,6 +13,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@headlessui/vue": "^1.7.15",
+    "@heroicons/vue": "^2.0.18",
     "axios": "^1.4.0",
     "papaparse": "^5.4.1",
     "qs": "^6.11.2",
