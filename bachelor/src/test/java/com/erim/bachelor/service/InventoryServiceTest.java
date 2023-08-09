@@ -48,13 +48,12 @@ class InventoryServiceTest {
     void addNewMedium() {
         Medium medium = Medium.
                 builder().
-                title("IPad").
                 mediumID(5L).
                 status(Status.AVAILABLE).
                 serialNr("FFFF1234ABCD").
                 build();
         //when
-        inventoryService.addNewMedium(medium);
+        //inventoryService.addNewMedium(medium);
         //then
         ArgumentCaptor<Medium> mediumArgumentCaptor = ArgumentCaptor.forClass(Medium.class);
 

@@ -4,6 +4,7 @@ import com.erim.bachelor.data.*;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
+import com.erim.bachelor.exceptions.MediumStillBorrowedException;
 import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.service.InventoryService;
@@ -24,69 +25,29 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
-    private final MediumRepository repository;
-    private final MediaSeriesRepository mediaSeriesRepository;
 
     @Autowired
     public InventoryController(InventoryService inventoryService, ModelMapper modelMapper, MediumRepository repository, MediaSeriesRepository mediaSeriesRepository) {
         this.inventoryService = inventoryService;
         this.modelMapper = modelMapper;
-        this.repository = repository;
-        this.mediaSeriesRepository = mediaSeriesRepository;
     }
 
     /**
-     * Get list of inventoryDTO´s
-     * Title| Amount | Available
-     * IPad     4          2
-     * Book1    15         0
-     *
-     * @return list of InventoryDTO´s
+     * Returns All stored MediaSeries
+     * @return list of Inventory
      */
     @GetMapping()
-    public List<MediaSeries> getInventoryOverView(){
-        return mediaSeriesRepository.findAll();
-    }
-
-    /**
-     * Get whole inventory
-     * @return list of all inventory
-     */
-    @GetMapping(path = "/allMedia")
-    public List<MediumResponse> getAllMedia(){
-        List<Medium> allMedia = inventoryService.getAllMedia();
-        return allMedia.stream().map(this::convertToDTO).toList();
-    }
-    /**
-     * Get every Medium in a MediaSeries
-     * @return list of all Media in a MediaSeries
-     */
-    @GetMapping(path = "title/{title}")
-    public ResponseEntity<List<MediumResponse>> getAllMediaByTitle(@PathVariable(value = "title") String title){
-
-        List<Medium> allMediaByTitle = null;
-        try {
-            allMediaByTitle = inventoryService.getAllMediaByTitle(title);
-            List<MediumResponse> response = allMediaByTitle.stream().map(this::convertToDTO).toList();
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+    public List<MediaSeries> getInventoryOverView(){return inventoryService.getInventoryOverview();}
 
 
     /**
      * Get medium by id
-     * @param id id of Medium
+     * @param mediumID id of Medium
      * @return If Media exist return the Media and Http.Ok if not return Http.NOT_FOUND
      */
-    @GetMapping(path = "{id}")
-    public ResponseEntity<MediumResponse> getMediumById(@PathVariable(value = "id") Long id){
-        Optional<Medium> medium = inventoryService.getMediumById(id);
+    @GetMapping(path = "{mediumID}")
+    public ResponseEntity<MediumResponse> getMediumById(@PathVariable(value = "mediumID") Long mediumID){
+        Optional<Medium> medium = inventoryService.getMediumById(mediumID);
         if(medium.isPresent())
             return new ResponseEntity<>(convertToDTO(medium.get()),HttpStatus.OK);
         else
@@ -96,31 +57,78 @@ public class InventoryController {
     }
 
     /**
-     * Add new Medium to the inventory.
-     * @param mediumRequestDTO The Medium to be added into the inventory
-     * @return ResponseEntity
+     * Get a specific MediaSeries by its id
+     * @param seriesID the id of the MediaSeries
+     * @return MediaSeries
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequestDTO mediumRequestDTO){
-        Medium medium = convertToMedium(mediumRequestDTO);
-        Medium mediumCreated = inventoryService.addNewMedium(medium);
-
-        if(mediumCreated == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
-        }else {
-            return new ResponseEntity<>(convertToDTO(mediumCreated), HttpStatus.OK);
+    @GetMapping(path = "series/{seriesID}")
+    public ResponseEntity<MediaSeries> getMediaSeries(@PathVariable Long seriesID){
+        try {
+            return new ResponseEntity<>(inventoryService.getMediaSeries(seriesID),HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Update a medium by id
-     * @param id id of medium
-     * @param updateMedium The new medium
-     * @return
+     * Get all Media from a MediaSeries
+     * @param seriesID the id of the MediaSeries
+     * @return List which contains every Media of a MediaSeries
      */
+    @GetMapping(path = "series/{seriesID}/media")
+    public ResponseEntity<List<MediumResponse>> getMediaSeriesMedia(@PathVariable Long seriesID){
+        try {
+            List<Medium> mediaList =inventoryService.getMediaSeriesMedia(seriesID);
+            List<MediumResponse> response = mediaList.stream().map(this::convertToDTO).toList();
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Add a new MediaSeries
+     * @param series FormData of MediaSeries
+     * @return The new added MediaSeries
+     */
+    @PostMapping(path = "/series")
+    public ResponseEntity<MediaSeries> createNewMediaSeries(@RequestBody MediaSeries series){
+        try {
+            return new ResponseEntity<>(inventoryService.createNewMediaSeries(series),HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Add new Medium to a MediaSeries.
+     * @param mediumRequest The Medium to be added into the MediaSeries
+     * @param seriesId The MediaSeriesID
+     * @return ResponseEntity
+     */
+    @PostMapping(path = "series/{seriesId}/media" ,consumes = "application/json", produces = "application/json")
+    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesId){
+        Medium newMedium;
+        try {
+            Medium medium = convertToMedium(mediumRequest);
+            newMedium = inventoryService.addNewMedium(medium,seriesId);
+            if(newMedium == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
+            }else {
+                return new ResponseEntity<>(convertToDTO(newMedium), HttpStatus.OK);
+            }
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping(path = "{id}",consumes = "application/json", produces = "application/json")
     public ResponseEntity<Medium> updateMedium(@PathVariable(value = "id")Long id, @RequestBody Medium updateMedium){
-
+        //TODO:refactor
         Optional<Medium> medium = inventoryService.updateMedium(id,updateMedium);
         if(medium.isPresent())
             return new ResponseEntity<>(medium.get(),HttpStatus.OK);
@@ -133,12 +141,19 @@ public class InventoryController {
 
     /**
      * Delete a medium by id
-     * @param id id of medium
-     * @return
+     * @param mediumID id of medium
+     * @return StatusResponse
      */
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity<String>deleteById(@PathVariable(value = "id")Long id){
-        return inventoryService.deleteMedium(id);
+    @DeleteMapping(path = "{mediumID}")
+    public ResponseEntity<String>deleteById(@PathVariable(value = "mediumID")Long mediumID){
+        try {
+            inventoryService.deleteMedium(mediumID);
+            return new ResponseEntity<>("Medium deleted", HttpStatus.OK);
+        } catch (MediumStillBorrowedException e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -148,7 +163,9 @@ public class InventoryController {
      */
     private MediumResponse convertToDTO(Medium medium){
         MediumResponse dto = modelMapper.map(medium, MediumResponse.class);
-        dto.setTitle(medium.getMediaSeries().getTitel());
+        MediaSeries mediaSeries = medium.getMediaSeries();
+        dto.setTitle(mediaSeries.getTitle());
+        dto.setMediaSeriesID(mediaSeries.getId());
         if(medium.isBorrowed())
             dto.setCurrentBorrower(medium.getBorrower().getFullName());
         return dto;
@@ -156,11 +173,11 @@ public class InventoryController {
 
     /**
      * Converts a MediumRequestDTO into a Medium.
-     * @param mediumRequestDTO The MediumRequestDTO to be converted into a Medium
+     * @param mediumRequest The MediumRequestDTO to be converted into a Medium
      * @return The converted Medium
      */
-    private Medium convertToMedium(MediumRequestDTO mediumRequestDTO){
-        Medium medium = modelMapper.map(mediumRequestDTO, Medium.class);
+    private Medium convertToMedium(MediumRequest mediumRequest){
+        Medium medium = modelMapper.map(mediumRequest, Medium.class);
         medium.setStatus(Status.AVAILABLE);
         return medium;
     }

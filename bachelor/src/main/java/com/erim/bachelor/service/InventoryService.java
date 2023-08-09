@@ -1,13 +1,11 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.InventoryDTO;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
+import com.erim.bachelor.exceptions.MediumStillBorrowedException;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.repositories.MediumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +25,12 @@ public class InventoryService {
         this.mediaSeriesRepository = mediaSeriesRepository;
     }
 
-    public List<Medium> getAllMedia(){
-        return mediumRepository.findAll();
+    /**
+     * Returns an empty List or all MediaSeries
+     * @return List with all MediaSeries stored in database
+     */
+    public List<MediaSeries> getInventoryOverview() {
+        return mediaSeriesRepository.findAll();
     }
 
     /**
@@ -37,9 +39,15 @@ public class InventoryService {
      * @param medium The new Medium to be added
      * @return null or the added Medium
      */
-    public Medium addNewMedium(Medium medium){
-        if(!mediumRepository.existsById(medium.getMediumID()))
-            return mediumRepository.save(medium);
+    public Medium addNewMedium(Medium medium,Long seriesID){
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+
+        if(!mediumRepository.existsById(medium.getMediumID())){
+            medium.setMediaSeries(mediaSeries);
+            mediaSeries.getMediumList().add(medium);
+            mediaSeriesRepository.save(mediaSeries);
+            return medium;
+        }
         else {
             return null;
         }
@@ -50,34 +58,35 @@ public class InventoryService {
     }
 
     public  Optional<Medium> updateMedium(Long id,Medium newMedium) {
+        //TODO:refactor
         return Optional.of(mediumRepository.findById(id)
                 .map(medium -> {
-                    medium.setTitle(newMedium.getTitle());
+                    //medium.setTitle(newMedium.getTitle());
 
                     return mediumRepository.save(medium);
                 })
                 .orElseGet(() -> mediumRepository.save(newMedium)));
     }
 
-    public ResponseEntity<String> deleteMedium(Long id){
+    public void deleteMedium(Long id) throws MediumStillBorrowedException {
+        Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
-        Optional<Medium> mediumToDelete = mediumRepository.findById(id);
-        if(mediumToDelete.isEmpty())
-            return new ResponseEntity<>("Medium with id:"+id+" not found",HttpStatus.BAD_REQUEST);
-
-        Medium medium = mediumToDelete.get();
         if(medium.isBorrowed())
-            return new ResponseEntity<>("Medium with Id:"+id+" is still borrowed to User: "+medium.getBorrower().getFullName(),HttpStatus.CONFLICT);
-        else {
+            throw new MediumStillBorrowedException("Medium:"+medium.getMediumID()+" is borrowed to "+medium.getBorrower().getFullName() );
+        else
             mediumRepository.deleteById(id);
-            return new ResponseEntity<>("Medium with Id:"+id+" deleted ",HttpStatus.OK);
-        }
     }
 
-    public List<Medium> getAllMediaByTitle(String title) {
-         MediaSeries mediaSeries = mediaSeriesRepository.findByTitel(title)
-                 .orElseThrow(NoSuchElementException::new);
+    public MediaSeries createNewMediaSeries(MediaSeries series) {
+        return mediaSeriesRepository.save(series);
+    }
 
-         return mediaSeries.getMediumList();
+    public MediaSeries getMediaSeries(Long id) {
+        return mediaSeriesRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public List<Medium> getMediaSeriesMedia(Long seriesID) {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+        return mediaSeries.getMediumList();
     }
 }

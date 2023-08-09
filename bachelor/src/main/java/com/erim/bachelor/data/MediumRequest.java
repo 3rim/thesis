@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryDTO {
-
-    private String title;
-    private int amount;
-    private int available;
-
+public class MediumRequest {
+    private Long mediumID;
+    private String serialNr;
 }

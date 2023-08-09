@@ -1,7 +1,7 @@
 package com.erim.bachelor.controller;
 
 import com.erim.bachelor.data.LoanHistoriesDTO;
-import com.erim.bachelor.data.MediumRequestDTO;
+import com.erim.bachelor.data.MediumRequest;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
@@ -43,10 +43,10 @@ public class LoanController {
      * @return A list with all current loaned media to this borrower with borrowerID
      */
     @PostMapping
-    public ResponseEntity<List<MediumRequestDTO>> loanMedium(@RequestParam Long borrowerID,
-                                                             @RequestParam Long mediumID){
+    public ResponseEntity<List<MediumRequest>> loanMedium(@RequestParam Long borrowerID,
+                                                          @RequestParam Long mediumID){
         Borrower borrower = loanService.loanMediumToUser(borrowerID,mediumID);
-        List<MediumRequestDTO> borrowerLoanedMedia = borrower.getMediumList().
+        List<MediumRequest> borrowerLoanedMedia = borrower.getMediumList().
                 stream().
                 map(this::convertToDTO).
                 toList();
@@ -59,8 +59,8 @@ public class LoanController {
      * @param medium the Medium to be converted into MediumDTO
      * @return MediumDTO
      */
-    private MediumRequestDTO convertToDTO(Medium medium){
-        return modelMapper.map(medium, MediumRequestDTO.class);
+    private MediumRequest convertToDTO(Medium medium){
+        return modelMapper.map(medium, MediumRequest.class);
     }
 
     /**
@@ -69,12 +69,17 @@ public class LoanController {
      * @return LoanHistoryDTO
      */
     private LoanHistoriesDTO convertToDTO(LoanHistory loanHistory){
+        //model mapper throws infinite loop exception, idk why
 
-        LoanHistoriesDTO dto = modelMapper.map(loanHistory, LoanHistoriesDTO.class);
+        LoanHistoriesDTO dto = new LoanHistoriesDTO();
+        dto.setLoanHistoryId(loanHistory.getLoanHistoryId());
+        dto.setMedium(loanHistory.getMedium().getMediaSeries().getTitle());
+        dto.setDateOfLend(loanHistory.getDateOfLend());
+        dto.setDateOfReturn(loanHistory.getDateOfReturn());
+
         if(loanHistory.getBorrower() !=null)
             dto.setBorrower(loanHistory.getBorrower().getFullName());
-        if(loanHistory.getMedium()!=null)
-            dto.setMedium(loanHistory.getMedium().getTitle());
+
         return dto;
     }
 }

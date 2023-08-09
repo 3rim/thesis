@@ -1,5 +1,6 @@
 package com.erim.bachelor.data;
 
+import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.enums.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 public class MediumResponse {
 
     private Long mediumID;
+    private Long mediaSeriesID;
     private String serialNr;
     private String title;
     private String currentBorrower;
@@ -22,4 +24,5 @@ public class MediumResponse {
     private Status status;
     //Currently lend since
     private LocalDate dateOfLend;
+
 }

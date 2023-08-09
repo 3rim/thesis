@@ -1,7 +1,7 @@
 package com.erim.bachelor.controller;
 
 import com.erim.bachelor.data.InitBorrowerDTO;
-import com.erim.bachelor.data.MediumRequestDTO;
+import com.erim.bachelor.data.MediumRequest;
 import com.erim.bachelor.data.BorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
@@ -213,9 +213,9 @@ public class BorrowerController {
      * @return BorrowerDTO
      */
     private BorrowerDTO convertToDTO(Borrower borrower){
-        List<MediumRequestDTO> borrowerLendMedia = borrower.getMediumList().
+        List<MediumRequest> borrowerLendMedia = borrower.getMediumList().
                 stream().
-                map(medium -> modelMapper.map(medium, MediumRequestDTO.class)).
+                map(medium -> modelMapper.map(medium, MediumRequest.class)).
                 toList();
 
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);

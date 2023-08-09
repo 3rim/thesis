@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface MediaSeriesRepository extends JpaRepository<MediaSeries,Long> {
 
-    Optional<MediaSeries> findByTitel(String title);
+    Optional<MediaSeries> findByTitle(String title);
 }

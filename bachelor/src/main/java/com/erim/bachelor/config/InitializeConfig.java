@@ -61,8 +61,8 @@ public class InitializeConfig {
         return args -> {
             ArrayList<Medium> media = new ArrayList<>(
                     Arrays.asList(
-                            Medium.builder().mediumID(1L).title("Java ist auch eine Insel").status(Status.AVAILABLE).build(),
-                            Medium.builder().mediumID(2L).title("Java ist auch eine Insel").status(Status.AVAILABLE).build()
+                            Medium.builder().mediumID(1L).status(Status.AVAILABLE).build(),
+                            Medium.builder().mediumID(2L).status(Status.AVAILABLE).build()
                             /*Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
                             Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),*/
 
@@ -86,7 +86,7 @@ public class InitializeConfig {
                     Arrays.asList(
                             MediaSeries
                                     .builder()
-                                    .titel("IPad")
+                                    .title("IPad")
                                     .mediaTyp("IPad")
                                     .available(0)
                                     .build()
@@ -94,7 +94,7 @@ public class InitializeConfig {
                     ));
             MediaSeries series = MediaSeries
                     .builder()
-                    .titel("IPad")
+                    .title("IPad")
                     .mediaTyp("IPad")
                     .build();
 

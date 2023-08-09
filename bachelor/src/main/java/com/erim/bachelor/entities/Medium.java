@@ -1,6 +1,5 @@
 package com.erim.bachelor.entities;
 
-import com.erim.bachelor.data.InventoryDTO;
 import com.erim.bachelor.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -8,9 +7,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -18,23 +15,10 @@ import java.util.Set;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedNativeQuery(
-        name = "Medium.getInventoryDTO",
-        query = "SELECT Title,count(*) as amount,count (CASE WHEN status='AVAILABLE' THEN 1 END) as available from medium group by 1",
-        resultSetMapping = "Mapping.InventoryDTO" )
-@SqlResultSetMapping(name = "Mapping.InventoryDTO",classes = {
-        @ConstructorResult(
-                targetClass = InventoryDTO.class,
-                columns = {
-                        @ColumnResult(name = "Title"),
-                        @ColumnResult(name = "amount",type = Integer.class),
-                        @ColumnResult(name = "available",type = Integer.class)})
-})
 public class Medium {
 
     @Id
     private Long mediumID;
-    private String title;
     private String serialNr;
     private LocalDate dateOfLend;
     @Enumerated(EnumType.STRING)
@@ -48,10 +32,8 @@ public class Medium {
     private Set<String> subjects = new HashSet<>();
     private double originalPrice;
 */
-    public Medium(Long mediumID,String title) {
+    public Medium(Long mediumID) {
         this.mediumID = mediumID;
-        this.title = title;
-
     }
 
     /*
@@ -62,7 +44,7 @@ public class Medium {
     @JsonIgnoreProperties(value = {"mediumList", "handler","hibernateLazyInitializer"}, allowSetters = true)
     private Borrower borrower;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_series_id")
     private MediaSeries mediaSeries;
 
