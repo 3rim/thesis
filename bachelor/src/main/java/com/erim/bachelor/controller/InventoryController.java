@@ -4,6 +4,7 @@ import com.erim.bachelor.data.*;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
+import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumStillBorrowedException;
 import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
@@ -27,7 +28,7 @@ public class InventoryController {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public InventoryController(InventoryService inventoryService, ModelMapper modelMapper, MediumRepository repository, MediaSeriesRepository mediaSeriesRepository) {
+    public InventoryController(InventoryService inventoryService, ModelMapper modelMapper) {
         this.inventoryService = inventoryService;
         this.modelMapper = modelMapper;
     }
@@ -43,17 +44,16 @@ public class InventoryController {
     /**
      * Get medium by id
      * @param mediumID id of Medium
-     * @return If Media exist return the Media and Http.Ok if not return Http.NOT_FOUND
+     * @return If Media exist return the Media if not return Http.NOT_FOUND
      */
     @GetMapping(path = "{mediumID}")
     public ResponseEntity<MediumResponse> getMediumById(@PathVariable(value = "mediumID") Long mediumID){
-        Optional<Medium> medium = inventoryService.getMediumById(mediumID);
-        if(medium.isPresent())
-            return new ResponseEntity<>(convertToDTO(medium.get()),HttpStatus.OK);
-        else
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Medium not found"
-            );
+        try {
+            Medium medium = inventoryService.getMediumById(mediumID);
+            return new ResponseEntity<>(convertToDTO(medium),HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medium not found");
+        }
     }
 
     /**
@@ -80,7 +80,7 @@ public class InventoryController {
     @GetMapping(path = "series/{seriesID}/media")
     public ResponseEntity<List<MediumResponse>> getMediaSeriesMedia(@PathVariable Long seriesID){
         try {
-            List<Medium> mediaList =inventoryService.getMediaSeriesMedia(seriesID);
+            List<Medium> mediaList = inventoryService.getMediaSeriesMedia(seriesID);
             List<MediumResponse> response = mediaList.stream().map(this::convertToDTO).toList();
             return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -136,7 +136,23 @@ public class InventoryController {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Medium not found"
             );
+    }
 
+    /**
+     * Patch a MediaSeries by its ID
+     *
+     * @param mediaSeries The MediaSeriesData in JSON
+     * @param seriesID The id of the to patch MediaSeries
+     * @return The patched MediaSeries
+     */
+    @PatchMapping(path = "series/{seriesID}")
+    public ResponseEntity<MediaSeries> patchMediaSeries(@RequestBody MediaSeries mediaSeries, @PathVariable Long seriesID){
+        try {
+            MediaSeries patchedMediaSeries = inventoryService.patchMediaSeries(seriesID,mediaSeries);
+            return new ResponseEntity<>(patchedMediaSeries,HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -153,6 +169,19 @@ public class InventoryController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }catch (NoSuchElementException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping(path = "series/{seriesID}")
+    public ResponseEntity<String> deleteMediaSeries(@PathVariable Long seriesID){
+        try {
+            inventoryService.deleteMediaSeries(seriesID);
+            return new ResponseEntity<>("MediaSeries deleted",HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("MediaSeries:"+seriesID+" not found",HttpStatus.NOT_FOUND);
+        }catch (MediaSeriesNotEmptyException e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }catch (Exception e) {
+            return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

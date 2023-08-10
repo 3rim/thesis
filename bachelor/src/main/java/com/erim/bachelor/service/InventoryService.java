@@ -2,6 +2,7 @@ package com.erim.bachelor.service;
 
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
+import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumStillBorrowedException;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.repositories.MediumRepository;
@@ -53,8 +54,8 @@ public class InventoryService {
         }
     }
 
-    public Optional<Medium> getMediumById(Long id) {
-        return mediumRepository.findById(id);
+    public Medium getMediumById(Long id) {
+        return mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     public  Optional<Medium> updateMedium(Long id,Medium newMedium) {
@@ -88,5 +89,24 @@ public class InventoryService {
     public List<Medium> getMediaSeriesMedia(Long seriesID) {
         MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
         return mediaSeries.getMediumList();
+    }
+
+    public MediaSeries patchMediaSeries(Long id,MediaSeries mediaSeries) {
+        if(id==null)
+            throw new NoSuchElementException();
+
+        if(!mediaSeriesRepository.existsById(id))
+            throw new NoSuchElementException();
+
+        mediaSeries.setId(id);
+        return mediaSeriesRepository.save(mediaSeries);
+    }
+
+    public void deleteMediaSeries(Long seriesID) throws MediaSeriesNotEmptyException {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+        if(!mediaSeries.getMediumList().isEmpty())
+            throw new MediaSeriesNotEmptyException("MediaSeries:"+seriesID+"cannot be deleted as long as it contains Media");
+
+        mediaSeriesRepository.deleteById(seriesID);
     }
 }
