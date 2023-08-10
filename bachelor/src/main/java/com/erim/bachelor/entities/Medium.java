@@ -35,6 +35,10 @@ public class Medium {
     public Medium(Long mediumID) {
         this.mediumID = mediumID;
     }
+    public Medium(Long mediumID,String serialNr) {
+        this.mediumID = mediumID;
+        this.serialNr = serialNr;
+    }
 
     /*
     A many-to-one mapping means that many instances of this entity are mapped to one instance of another entityA many-to-one mapping means that many instances of this entity are mapped to one instance of another entity

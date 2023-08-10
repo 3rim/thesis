@@ -24,15 +24,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
+import java.util.random.RandomGenerator;
 
 @Configuration
 @RequiredArgsConstructor
 public class InitializeConfig {
 
     private final BorrowerRepository repository;
+    private static Long ID_COUNTER =0L;
+    int leftLimit = 97; // letter 'a'
+    int rightLimit = 122; // letter 'z'
+    int targetStringLength = 10;
+
 
     @Bean
     public UserDetailsService userDetailsService(){
@@ -59,52 +63,69 @@ public class InitializeConfig {
     @Bean
     CommandLineRunner commandLineRunner(MediumRepository mediumRepository, BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){
         return args -> {
-            ArrayList<Medium> media = new ArrayList<>(
-                    Arrays.asList(
-                            Medium.builder().mediumID(1L).status(Status.AVAILABLE).build(),
-                            Medium.builder().mediumID(2L).status(Status.AVAILABLE).build()
-                            /*Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),*/
-
-                            /*Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F9FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F8FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F7FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F6FFABCDQ1GC").build(),
-
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build()*/
-
-
-                    ));
-            mediumRepository.saveAll(media);
-
-
 
             ArrayList<MediaSeries> mediaSeries = new ArrayList<>(
                     Arrays.asList(
-                            MediaSeries
-                                    .builder()
-                                    .title("IPad")
-                                    .mediaTyp("IPad")
-                                    .available(0)
-                                    .build()
 
-                    ));
-            MediaSeries series = MediaSeries
+                        ));
+            //MediaSeries IPAD 7
+            MediaSeries ipad7 = MediaSeries
                     .builder()
-                    .title("IPad")
+                    .id(1L)
+                    .title("IPad Gen.7")
                     .mediaTyp("IPad")
+                    .mediumList(new ArrayList<>())
+                    .build();
+            //MediaSeries IPAD 9
+            MediaSeries ipad9 = MediaSeries
+                    .builder()
+                    .id(2L)
+                    .title("IPad Gen.9")
+                    .mediaTyp("IPad")
+                    .mediumList(new ArrayList<>())
                     .build();
 
-            mediaSeriesRepository.save(series);
-            Medium m = Medium.builder()
-                    .mediumID(10L)
-                    .mediaSeries(series)
-                    .status(Status.AVAILABLE)
+            MediaSeries matheI = MediaSeries
+                    .builder()
+                    .id(3L)
+                    .title("Mathe I")
+                    .mediaTyp("Buch")
+                    .ISBN_EAN("554656654")
+                    .originalPrice(25.5)
+                    .mediumList(new ArrayList<>())
+                    .subjects(new HashSet<>(){{
+                        add("Mathe");
+                    }})
+                    .vintage(new HashSet<>(){{
+                        add(5);add(6);
+                    }})
                     .build();
-            mediumRepository.save(m);
+
+            mediaSeriesRepository.save(ipad7);
+            mediaSeriesRepository.save(ipad9);
+            mediaSeriesRepository.save(matheI);
+
+            List<Medium> media = generateRandomMedia(false);
+            media.forEach(medium -> {
+                medium.setMediaSeries(matheI);
+                matheI.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(matheI);
+
+            media = generateRandomMedia(true);
+            media.forEach(medium -> {
+                medium.setMediaSeries(ipad7);
+                ipad7.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(ipad7);
+
+            media = generateRandomMedia(true);
+            media.forEach(medium -> {
+                medium.setMediaSeries(ipad9);
+                ipad9.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(ipad9);
+
 
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
@@ -175,4 +196,27 @@ public class InitializeConfig {
         return new ModelMapper();
     }
 
+    private List<Medium> generateRandomMedia(boolean serialNumber){
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        List<Medium> media = new ArrayList<>();
+        if(serialNumber){
+            for (int i = 0; i<10;i++){
+                String generatedString = random.ints(leftLimit, rightLimit + 1)
+                        .limit(targetStringLength)
+                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                        .toString();
+                Medium m = new Medium(ID_COUNTER++, generatedString,null,Status.AVAILABLE,null,null,null);
+                media.add(m);
+            }
+        }else {
+            for (int i = 0; i<10;i++){
+                Medium m = new Medium(ID_COUNTER++, "",null,Status.AVAILABLE,null,null,null);
+                media.add(m);
+            }
+        }
+        return media;
+    }
 }
