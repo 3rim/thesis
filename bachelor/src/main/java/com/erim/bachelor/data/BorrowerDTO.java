@@ -19,7 +19,7 @@ public class BorrowerDTO {
     private String firstName;
     private String lastName;
     private String borrowerGroup;
-    private List<MediumRequest> mediumList;
+    private List<MediumResponse> mediumList;
     private boolean leftTheSchool;
     private BorrowerState borrowerState;
     private String dob;

@@ -3,6 +3,7 @@ package com.erim.bachelor.controller;
 import com.erim.bachelor.data.InitBorrowerDTO;
 import com.erim.bachelor.data.MediumRequest;
 import com.erim.bachelor.data.BorrowerDTO;
+import com.erim.bachelor.data.MediumResponse;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
@@ -213,9 +214,13 @@ public class BorrowerController {
      * @return BorrowerDTO
      */
     private BorrowerDTO convertToDTO(Borrower borrower){
-        List<MediumRequest> borrowerLendMedia = borrower.getMediumList().
+        List<MediumResponse> borrowerLendMedia = borrower.getMediumList().
                 stream().
-                map(medium -> modelMapper.map(medium, MediumRequest.class)).
+                map(medium -> {
+                    MediumResponse mediumResponse = modelMapper.map(medium,MediumResponse.class);
+                    mediumResponse.setTitle(medium.getMediaSeries().getTitle());
+                    return mediumResponse;
+                }).
                 toList();
 
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);
