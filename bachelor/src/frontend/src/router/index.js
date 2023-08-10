@@ -48,7 +48,7 @@ const router = createRouter({
       component: InventoryView,
       children:[
         {path: ':mediumID' , component: MediumView},
-        {path: 'title/:title' ,component: InventoryDetailsView}
+        {path: 'series/:mediaSeriesID' ,component: InventoryDetailsView}
       ]
     },
     {

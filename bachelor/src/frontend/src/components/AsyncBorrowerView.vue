@@ -1,14 +1,14 @@
 <template>
     <div class="flex flex-col flex-1 items-center">
         <!-- User  -->
-        <div v-if="borrowerData.data.leftTheSchool ===true">
+        <div v-if="borrowerData.leftTheSchool ===true">
             <p class="text-[#6F1A07] font-bold underline">Nicht mehr auf der Schule!</p>
         </div>
         <div class="py-1 ">
-            <p class=""><span class="font-bold">Vorname: </span> {{borrowerData.data.firstName}}</p>
-            <p class=""><span class="font-bold">Nachname: </span> {{borrowerData.data.lastName}}</p>
-            <p class=""><span class="font-bold">Gruppe: </span> {{borrowerData.data.borrowerGroup}}</p>
-            <p class=""><span class="font-bold">Geb.: </span> {{ $dateStringToGermanFormat(  borrowerData.data.dob)}}</p>
+            <p class=""><span class="font-bold">Vorname: </span> {{borrowerData.firstName}}</p>
+            <p class=""><span class="font-bold">Nachname: </span> {{borrowerData.lastName}}</p>
+            <p class=""><span class="font-bold">Gruppe: </span> {{borrowerData.borrowerGroup}}</p>
+            <p class=""><span class="font-bold">Geb.: </span> {{ $dateStringToGermanFormat(  borrowerData.dob)}}</p>
         </div>
 
         <!-- Medialist-->
@@ -18,8 +18,6 @@
                     <tr class="">
                         <th class="px-2" >MediumID</th>
                         <th class="px-2">Medium Titel</th>
-                        <th class="px-2">MediumTyp</th>
-                        <th class="px-2">ISBN</th>
                         <th class="px-2">Seriennummer</th>
                         <th class="px-2">Ausgegeben am</th>
                     </tr>
@@ -29,8 +27,6 @@
                   class="bg-[#F7F3E3]">
                     <td class="border-collapse border border-slate-400">{{ medium.mediumID }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.title }}</td>
-                    <td class="border-collapse border border-slate-400">{{ medium.mediumTyp }}</td>
-                    <td class="border-collapse border border-slate-400">{{ medium.isbn }}</td>
                     <td class="border-collapse border border-slate-400">{{ medium.serialNr }}</td>
                     <td class="border-collapse border border-slate-400">{{ $dateStringToGermanFormat(medium.dateOfLend) }}</td>
                   </tr>
@@ -58,7 +54,7 @@ const getBorrowerData =async () => {
         );
         console.log(borrowerData);
         mediaList.value = borrowerData.data.mediumList
-        return borrowerData;
+        return borrowerData.data;
     } catch (error) {
         console.log(error);
     }

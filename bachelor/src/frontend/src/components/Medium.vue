@@ -76,11 +76,22 @@ loanHistories.value = await getLoanHistories();
 
 
 const getMediumData = async () =>{
-    let config = {
-                headers: authHeader(),
-            }
-    const response = await axios.get( `/api/v1/inventory/${route.params.mediumID}`,config);
-    return response.data;
+    let config = {headers: authHeader()}
+    try {
+        const response = await axios.get( `/api/v1/inventory/${route.params.mediumID}`,config)
+        return response.data;
+    } catch (error) {
+        // Handle errors
+        err.value =true
+        console.log(error)
+        if(error.response.status === 404){
+            errorMessage.value ="MediumID:"+route.params.mediumID+" nicht gefunden"
+        }
+        if(error.response.status === 400){
+            errorMessage.value ="Anfrage konnte nicht verarbeitet werden"
+        }
+        
+    }
 }
 mediumData.value = await getMediumData();
 </script>

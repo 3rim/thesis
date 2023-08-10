@@ -2,17 +2,17 @@
     <div class="container flex flex-col flex-1 items-center py-2">
         <!-- Generel data about Media -->
         <div class="px-4 py-1">
-            <p><strong>Titel: </strong>{{ mediaData.data[0].title }} </p>
-            <p><strong>ISBN: </strong> {{ mediaData.data[0].isbn }}</p>
-            <p><strong>Medien Typ: </strong> {{ mediaData.data[0].mediumTyp }}</p>
+            <p><strong>Titel: </strong>{{ mediaSeries.title }} </p>
+            <p><strong>ISBN: </strong> {{ mediaSeries.isbn_EAN }}</p>
+            <p><strong>Medien Typ: </strong> {{ mediaSeries.mediumTyp }}</p>
             <p><strong>Jahrgänge: </strong>
-                <span v-for="item in mediaData.data[0].year">
-                    {{ item}},
+                <span class="px-1" v-for="item in mediaSeries.vintage">
+                    {{item}}
                 </span>
             </p>
             <p><strong>Fächer: </strong>
-                <span v-for="item in mediaData.data[0].subjects">
-                    {{ item}},
+                <span class="px-1" v-for="item in mediaSeries.subjects">
+                    {{item}}
                 </span>
             </p>
         </div>
@@ -29,7 +29,7 @@
                         <th class="px-2">Ausgeliehen seit</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="mediaData">
                   <tr v-for="medium in mediaData.data"
                   class="bg-[#F7F3E3] border-b-2">
                     <td class="text-center ">{{ medium.mediumID }}</td>
@@ -67,9 +67,8 @@ const getMediaDataByTitle =async () => {
                 headers: authHeader(),
             }
     try {
-        const title = route.params.title
         const result = await axios.get(
-            `/api/v1/inventory/title/${title}`,config);
+            `/api/v1/inventory/series/${route.params.mediaSeriesID}/media`,config);
         //Hier haben wir ein JSON- Array mit mehreren Elementen,
         console.log(result.data[0].mediumID)
         console.log(result.data)
@@ -79,7 +78,27 @@ const getMediaDataByTitle =async () => {
     }
 };
 
+const getMediaSeriesData = async () =>{
+    let config = {
+                headers: authHeader(),
+            }
+    try {
+        const result = await axios.get(
+            `/api/v1/inventory/series/${route.params.mediaSeriesID}`,config);  
+        console.log(result.data)
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 const mediaData = await getMediaDataByTitle();
+const mediaSeries = await getMediaSeriesData();
+console.log("SeriesDaa#ta")
+console.log(mediaSeries)
+
+
 
 
 </script>

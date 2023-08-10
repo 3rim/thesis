@@ -2,20 +2,35 @@
     <div class="flex flex-col flex-1 items-center py-8">
         <table>
             <thead class="bg-[#E4D4BA]">
-                <tr>
+                <tr class="">
                     <th class="px-2">Titel</th>
-                    <th class="px-2">Gesamtanzahl</th>
+                    <th class="px-2">ISBN/EAN</th>
+                    <th class="px-2">Medien Typ</th>
+                    <th class="px-2">Fächer</th>
+                    <th class="px-2">Jahrgänge</th>
+                    <th class="px-2">Bestand</th>
                     <th class="px-2">Verfügbar</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="medium in inventoryList"
-                 @click="goTo(medium.title)"
-                 class="bg-[#F7F3E3] border-b-2 cursor-pointer">
-                    <td class="text-center">{{ medium.title }}</td>
-                    <td class="text-center">{{ medium.amount }}</td>
-                    <td class="text-center">{{ medium.available }}</td>
-                                 
+                <tr v-for="mediaSeries in inventoryList"
+                 @click="goTo(mediaSeries.id)"
+                 class=" text-center bg-[#F7F3E3] border-b-2 cursor-pointer">
+                    <td class="">{{ mediaSeries.title }}</td>
+                    <td class="">{{ mediaSeries.isbn_EAN }}</td>
+                    <td class="">{{ mediaSeries.mediaTyp }}</td>
+                    <td class="">
+                        <span class="px-1" v-for="item in mediaSeries.subjects" :key="item.id">
+                            {{ item }}
+                        </span>
+                    </td>
+                    <td class="">
+                        <span class="px-1" v-for="item in mediaSeries.vintage" :key="item.id">
+                            {{ item }}
+                        </span>
+                    </td>
+                    <td class="">{{ mediaSeries.amount }}</td>
+                    <td class="">{{ mediaSeries.available }}</td>
                 </tr>
              <!-- 
                 <router-link 
@@ -41,8 +56,8 @@ import { ref } from 'vue';
 import authHeader from '../services/authHeader';
 
 const router = useRouter();
-const goTo = (title) => {
-    router.push(`/inventory/title/${title}`)
+const goTo = (mediaSeriesID) => {
+    router.push(`/inventory/series/${mediaSeriesID}`)
 } 
 
 const route = useRoute();
