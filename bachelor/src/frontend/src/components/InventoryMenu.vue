@@ -40,7 +40,7 @@ let navigation = [
   },
   {
     name: "Aufnehmen",
-    path: "/inventory/add"
+    path: "/inventory/series"
   },
   {
     name: "Entfernen",

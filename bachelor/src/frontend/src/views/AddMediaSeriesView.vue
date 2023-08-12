@@ -1,16 +1,22 @@
 <template>
-    <div class="container flex flex-col items-center py-2">
-      <button
+<div class="container flex flex-col items-center py-5">
+  <button
         type="button"
         @click="openModal"
-        class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
       >
-        Medienreihe hinzufügen
-      </button>
-      
-    </div>
-    <!--Modal from HeadlessUI Framework-->
-    <TransitionRoot appear :show="isOpen" as="template">
+        Medienreihe hinzufügen +
+  </button>
+  <Suspense>
+    <AsyncAddMediaSeries />
+      <template #fallback>
+        <p>loading...</p>
+      </template>
+  </Suspense>
+
+</div>
+<!--Modal from HeadlessUI Framework-->
+<TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div"  class="relative z-10" @close="closeModal">
         <TransitionChild
           as="template"
@@ -130,20 +136,14 @@
           </div>
         </div>
       </Dialog>
-    </TransitionRoot>
-  </template>
-  
-  <script setup>
-  import AsyncInventoryList from '@/components/AsyncInventoryList.vue';
-  import { ref } from 'vue';
-  import axios from "axios";
-  import {
-    TransitionRoot,
-    TransitionChild,
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-} from '@headlessui/vue';
+</TransitionRoot>
+</template>
+
+<script setup>
+import AsyncAddMediaSeries from '@/components/AsyncAddMediaSeries.vue';
+import { ref,onMounted } from 'vue';
+import axios from "axios";
+import {TransitionRoot,TransitionChild,Dialog,DialogPanel,DialogTitle,} from '@headlessui/vue';
 import authHeader from '../services/authHeader';
   
 const isOpen = ref(false)
@@ -156,7 +156,28 @@ const tempSubject = ref("");
 const tempVintage =ref("");
 const vintageArray =ref([]);
 const subjectsArray =ref([]);
+const inventoryList = ref();
+
+onMounted(() => {
+  getInventoryData();
+})
+
+const getInventoryData = () => {
+    let config = {
+                headers: authHeader()
+            }
+    try {
+        const inventoryData = axios.get(
+            `/api/v1/inventory`,config
+        );
+        inventoryList.value = inventoryData.data
+        return inventoryData;
+    } catch (error) {
+        console.log(error);
+    }
+};
   
+
 const closeModal= () =>  {
     isOpen.value = false
     title.value ="";

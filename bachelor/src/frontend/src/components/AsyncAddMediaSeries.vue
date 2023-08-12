@@ -15,7 +15,7 @@
             <tbody>
                 <tr v-for="mediaSeries in inventoryList"
                  @click="goTo(mediaSeries.id)"
-                 class=" text-center hover:bg-[#ede6cb] bg-[#F7F3E3] border-b-2 cursor-pointer">
+                 class=" hover:bg-[#ede6cb] text-center bg-[#F7F3E3] border-b-2 cursor-pointer">
                     <td class="">{{ mediaSeries.title }}</td>
                     <td class="">{{ mediaSeries.isbn_EAN }}</td>
                     <td class="">{{ mediaSeries.mediaTyp }}</td>
@@ -32,17 +32,6 @@
                     <td class="">{{ mediaSeries.amount }}</td>
                     <td class="">{{ mediaSeries.available }}</td>
                 </tr>
-             <!-- 
-                <router-link 
-                v-for="medium in testData" 
-                    :to="{ name: 'inventory', params: { title: medium.title} }"
-                    tag="tr"
-                    >
-                    <td>{{ medium.title }}</td>
-                    <td>{{ medium.amount }}</td>
-                    <td>{{ medium.available }}</td>               
-                </router-link>
-                -->
                 </tbody>
         </table>
     </div>
@@ -56,8 +45,8 @@ import authHeader from '../services/authHeader';
 
 const router = useRouter();
 const goTo = (mediaSeriesID) => {
-    router.push(`/inventory/series/${mediaSeriesID}`)
-}
+    router.push(`/inventory/series/${mediaSeriesID}/media`)
+} 
 
 const inventoryList = ref(null);
 
@@ -70,12 +59,10 @@ const getInventoryData =async () => {
             `/api/v1/inventory`,config
         );
         inventoryList.value = inventoryData.data
-        return inventoryData;
+        return inventoryData.data;
     } catch (error) {
         console.log(error);
     }
 };
-
 await getInventoryData();  
-
 </script>

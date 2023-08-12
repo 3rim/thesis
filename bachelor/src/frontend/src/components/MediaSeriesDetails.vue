@@ -1,21 +1,9 @@
 <template>
     <div class="container flex flex-col flex-1 items-center py-2">
         <!-- Generel data about Media -->
-        <div class="px-4 py-1">
-            <p><strong>Titel: </strong>{{ mediaSeries.title }} </p>
-            <p><strong>ISBN: </strong> {{ mediaSeries.isbn_EAN }}</p>
-            <p><strong>Medien Typ: </strong> {{ mediaSeries.mediumTyp }}</p>
-            <p><strong>Jahrgänge: </strong>
-                <span class="px-1" v-for="item in mediaSeries.vintage">
-                    {{item}}
-                </span>
-            </p>
-            <p><strong>Fächer: </strong>
-                <span class="px-1" v-for="item in mediaSeries.subjects">
-                    {{item}}
-                </span>
-            </p>
-        </div>
+        <Suspense>
+            <MediaSeriesInfoCard/>
+        </Suspense>
 
         <!-- Tabelle -->
         <div class=" py-2">
@@ -50,6 +38,7 @@ import axios from 'axios' ;
 import {useRoute} from "vue-router";
 import { useRouter } from 'vue-router';
 import authHeader from '../services/authHeader';
+import MediaSeriesInfoCard from './MediaSeriesInfoCard.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -68,7 +57,7 @@ const getMediaDataByTitle =async () => {
             }
     try {
         const result = await axios.get(
-            `/api/v1/inventory/series/${route.params.mediaSeriesID}/media`,config);
+            `/api/v1/inventory/series/${route.params.seriesID}/media`,config);
         //Hier haben wir ein JSON- Array mit mehreren Elementen,
         console.log(result.data[0].mediumID)
         console.log(result.data)
@@ -84,7 +73,7 @@ const getMediaSeriesData = async () =>{
             }
     try {
         const result = await axios.get(
-            `/api/v1/inventory/series/${route.params.mediaSeriesID}`,config);  
+            `/api/v1/inventory/series/${route.params.seriesID}`,config);  
         console.log(result.data)
         return result.data;
     } catch (error) {
