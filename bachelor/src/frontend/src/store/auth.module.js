@@ -12,8 +12,16 @@ export const auth = {
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {
-          commit('loginSuccess', user);
-          return Promise.resolve(user);
+          if(user.initialLogin){
+            commit('loginFailure');
+            return Promise.resolve(user);
+            
+          }
+          else{
+            commit('loginSuccess', user);
+            return Promise.resolve(user);
+          }
+          
         },
         error => {
           commit('loginFailure');
