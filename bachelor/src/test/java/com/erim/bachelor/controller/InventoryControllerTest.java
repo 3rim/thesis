@@ -1,14 +1,12 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class InventoryControllerTest {
 
-    private InventoryRepository inventoryRepository;
+    private MediumRepository mediumRepository;
 
     @BeforeEach
     void setUp() {

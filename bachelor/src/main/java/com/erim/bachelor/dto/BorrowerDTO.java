@@ -1,6 +1,5 @@
-package com.erim.bachelor.data;
+package com.erim.bachelor.dto;
 
-import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ public class BorrowerDTO {
     private String firstName;
     private String lastName;
     private String borrowerGroup;
-    private List<MediumRequestDTO> mediumList;
+    private List<MediumResponse> mediumList;
     private boolean leftTheSchool;
     private BorrowerState borrowerState;
     private String dob;

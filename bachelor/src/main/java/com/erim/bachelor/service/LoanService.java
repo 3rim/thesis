@@ -4,12 +4,11 @@ import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.LoanHistoryRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,14 +20,14 @@ import java.util.Objects;
 public class LoanService {
 
     private final BorrowerRepository borrowerRepository;
-    private final InventoryRepository inventoryRepository;
+    private final MediumRepository mediumRepository;
 
     private final LoanHistoryRepository loanHistoryRepository;
 
     @Autowired
-    public LoanService(BorrowerRepository borrowerRepository, InventoryRepository inventoryRepository, LoanHistoryRepository loanHistoryRepository) {
+    public LoanService(BorrowerRepository borrowerRepository, MediumRepository mediumRepository, LoanHistoryRepository loanHistoryRepository) {
         this.borrowerRepository = borrowerRepository;
-        this.inventoryRepository = inventoryRepository;
+        this.mediumRepository = mediumRepository;
         this.loanHistoryRepository = loanHistoryRepository;
     }
 
@@ -41,10 +40,10 @@ public class LoanService {
         else
             borrower = borrowerRepository.findById(userID).get();
 
-        if(inventoryRepository.findById(mediumID).isEmpty())
+        if(mediumRepository.findById(mediumID).isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "medium with id: "+mediumID+" not found");
         else
-            medium = inventoryRepository.findById(mediumID).get();
+            medium = mediumRepository.findById(mediumID).get();
 
         if(medium.isBorrowed()){
             //Borrower != medium.getBorrower
@@ -75,7 +74,7 @@ public class LoanService {
         Long loanHistoryID= loanHistory.getLoanHistoryId();
         loanHistory.setDateOfReturn(LocalDate.now());
         //loanHistoryRepository.save(loanHistory);
-        inventoryRepository.save(medium);
+        mediumRepository.save(medium);
 
         return  borrower;
     }
@@ -88,7 +87,7 @@ public class LoanService {
 
         LoanHistory loanHistory = new LoanHistory(now,borrower,medium);
         medium.addNewLoanHistory(loanHistory);
-        inventoryRepository.save(medium);
+        mediumRepository.save(medium);
 
         return  borrower;
     }

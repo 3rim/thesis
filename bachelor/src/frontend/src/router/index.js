@@ -3,10 +3,11 @@ import HomeView from '../views/HomeView.vue'
 import LendUserSearchView from '../views/LendUserSearchView.vue'
 import LendView from '../views/LendView.vue'
 import InventoryView from '../views/InventoryView.vue'
-import InventoryDetailsView from '../views/InventoryDetailsView.vue'
+import MediaSeriesDetailsView from '../views/MediaSeriesDetailsView.vue'
 import MediumView from '../views/MediumView.vue'
-import InventoryAddView from '../views/InventoryAddView.vue'
+import AddMediaSeriesView from '../views/AddMediaSeriesView.vue'
 import InventoryDeleteView from '../views/InventoryDeleteView.vue'
+import AddMediaView from '../views/AddMediaView.vue'
 import UserImportView from '../views/UserImportView.vue'
 import UserView from '../views/UserView.vue'
 import UserRolesView from '../views/UserRolesView.vue'
@@ -48,14 +49,16 @@ const router = createRouter({
       component: InventoryView,
       children:[
         {path: ':mediumID' , component: MediumView},
-        {path: 'title/:title' ,component: InventoryDetailsView}
+        {path: 'series' , component: AddMediaSeriesView},
+        {path: 'series/:seriesID/media' , component: AddMediaView},
+        {path: 'series/:seriesID' ,component: MediaSeriesDetailsView}
       ]
     },
-    {
+    /*{
       path: '/inventory/add',
       name: 'inventoryAdd',
-      component: InventoryAddView,
-    },
+      component: AddMediaSeriesView,
+    },*/
     {
       path: '/inventory/delete',
       name: 'inventoryDelete',

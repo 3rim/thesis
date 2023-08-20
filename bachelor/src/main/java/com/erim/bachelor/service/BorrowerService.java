@@ -1,7 +1,7 @@
 package com.erim.bachelor.service;
 
 import com.erim.bachelor.enums.BorrowerState;
-import com.erim.bachelor.data.InitBorrowerDTO;
+import com.erim.bachelor.dto.InitBorrowerDTO;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;

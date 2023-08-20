@@ -35,7 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //"Bearer " = 7 characters, after follows the jwt
         jwt =authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+        userEmail = jwtService.extractUsername(jwt);//TODO: check for jwt_expiration
+
+
 
         //SecurityContextHolder.getContext().getAuthentication() == null  ==> user not authenticated
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){

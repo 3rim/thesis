@@ -1,4 +1,4 @@
-package com.erim.bachelor.data;
+package com.erim.bachelor.dto;
 
 
 import com.erim.bachelor.enums.Role;

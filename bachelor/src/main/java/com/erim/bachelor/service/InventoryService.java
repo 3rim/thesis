@@ -1,29 +1,37 @@
 package com.erim.bachelor.service;
 
-import com.erim.bachelor.data.InventoryDTO;
+import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
+import com.erim.bachelor.exceptions.MediumStillBorrowedException;
+import com.erim.bachelor.repositories.MediaSeriesRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class InventoryService {
 
-    private final InventoryRepository inventoryRepository;
+    private final MediumRepository mediumRepository;
+    private final MediaSeriesRepository mediaSeriesRepository;
 
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public InventoryService(MediumRepository mediumRepository, MediaSeriesRepository mediaSeriesRepository) {
+        this.mediumRepository = mediumRepository;
+        this.mediaSeriesRepository = mediaSeriesRepository;
     }
 
-    public List<Medium> getAllMedia(){
-        return inventoryRepository.findAll();
+    /**
+     * Returns an empty List or all MediaSeries
+     * @return List with all MediaSeries stored in database
+     */
+    public List<MediaSeries> getInventoryOverview() {
+        return mediaSeriesRepository.findAll();
     }
 
     /**
@@ -32,52 +40,73 @@ public class InventoryService {
      * @param medium The new Medium to be added
      * @return null or the added Medium
      */
-    public Medium addNewMedium(Medium medium){
-        if(!inventoryRepository.existsById(medium.getMediumID()))
-            return inventoryRepository.save(medium);
+    public Medium addNewMedium(Medium medium,Long seriesID){
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+
+        if(!mediumRepository.existsById(medium.getMediumID())){
+            medium.setMediaSeries(mediaSeries);
+            mediaSeries.getMediumList().add(medium);
+            mediaSeriesRepository.save(mediaSeries);
+            return medium;
+        }
         else {
             return null;
         }
     }
 
-    public Optional<Medium> getMediumById(Long id) {
-        return inventoryRepository.findById(id);
+    public Medium getMediumById(Long id) {
+        return mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     public  Optional<Medium> updateMedium(Long id,Medium newMedium) {
-        return Optional.of(inventoryRepository.findById(id)
+        //TODO:refactor
+        return Optional.of(mediumRepository.findById(id)
                 .map(medium -> {
-                    medium.setTitle(newMedium.getTitle());
+                    //medium.setTitle(newMedium.getTitle());
 
-                    return inventoryRepository.save(medium);
+                    return mediumRepository.save(medium);
                 })
-                .orElseGet(() -> inventoryRepository.save(newMedium)));
+                .orElseGet(() -> mediumRepository.save(newMedium)));
     }
 
-    public ResponseEntity<String> deleteMedium(Long id){
+    public void deleteMedium(Long id) throws MediumStillBorrowedException {
+        Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
-        Optional<Medium> mediumToDelete = inventoryRepository.findById(id);
-        if(mediumToDelete.isEmpty())
-            return new ResponseEntity<>("Medium with id:"+id+" not found",HttpStatus.BAD_REQUEST);
-
-        Medium medium = mediumToDelete.get();
         if(medium.isBorrowed())
-            return new ResponseEntity<>("Medium with Id:"+id+" is still borrowed to User: "+medium.getBorrower().getFullName(),HttpStatus.CONFLICT);
-        else {
-            inventoryRepository.deleteById(id);
-            return new ResponseEntity<>("Medium with Id:"+id+" deleted ",HttpStatus.OK);
-        }
-
-
-
-
+            throw new MediumStillBorrowedException("Medium:"+medium.getMediumID()+" is borrowed to "+medium.getBorrower().getFullName() );
+        else
+            mediumRepository.deleteById(id);
     }
 
-    public List<Medium> getAllMediaByTitle(String title) {
-        return inventoryRepository.findAllByTitle(title);
+    public MediaSeries createNewMediaSeries(MediaSeries series) {
+        return mediaSeriesRepository.save(series);
     }
 
-    public List<InventoryDTO> getInventoryDTO() {
-        return inventoryRepository.getInventoryDTO();
+    public MediaSeries getMediaSeries(Long id) {
+        return mediaSeriesRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public List<Medium> getMediaSeriesMedia(Long seriesID) {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+        return mediaSeries.getMediumList();
+    }
+
+    public MediaSeries patchMediaSeries(Long id,MediaSeries mediaSeries) {
+        if(id==null)
+            throw new NoSuchElementException();
+
+        if(!mediaSeriesRepository.existsById(id))
+            throw new NoSuchElementException();
+
+        mediaSeries.setId(id);
+        return mediaSeriesRepository.save(mediaSeries);
+    }
+
+    public void deleteMediaSeries(Long seriesID) throws MediaSeriesNotEmptyException {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+        if(!mediaSeries.getMediumList().isEmpty())
+            throw new MediaSeriesNotEmptyException("MediaSeries:"+seriesID+"cannot be deleted as long as it contains Media");
+
+        mediaSeriesRepository.deleteById(seriesID);
     }
 }

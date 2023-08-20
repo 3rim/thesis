@@ -1,10 +1,8 @@
-package com.erim.bachelor.data;
+package com.erim.bachelor.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * Borrower DTO for new added Borrowers

@@ -1,13 +1,14 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.data.InitBorrowerDTO;
-import com.erim.bachelor.data.MediumRequestDTO;
-import com.erim.bachelor.data.BorrowerDTO;
+import com.erim.bachelor.dto.InitBorrowerDTO;
+import com.erim.bachelor.dto.BorrowerDTO;
+import com.erim.bachelor.dto.MediumResponse;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -31,6 +32,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
+@Tag(name = "Borrowers")
 @CrossOrigin
 public class BorrowerController {
     private final BorrowerService borrowerService;
@@ -213,9 +215,13 @@ public class BorrowerController {
      * @return BorrowerDTO
      */
     private BorrowerDTO convertToDTO(Borrower borrower){
-        List<MediumRequestDTO> borrowerLendMedia = borrower.getMediumList().
+        List<MediumResponse> borrowerLendMedia = borrower.getMediumList().
                 stream().
-                map(medium -> modelMapper.map(medium, MediumRequestDTO.class)).
+                map(medium -> {
+                    MediumResponse mediumResponse = modelMapper.map(medium,MediumResponse.class);
+                    mediumResponse.setTitle(medium.getMediaSeries().getTitle());
+                    return mediumResponse;
+                }).
                 toList();
 
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);

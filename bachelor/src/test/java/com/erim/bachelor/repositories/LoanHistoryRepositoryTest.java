@@ -25,7 +25,7 @@ class LoanHistoryRepositoryTest {
     @Autowired
     BorrowerRepository borrowerRepository;
     @Autowired
-    InventoryRepository inventoryRepository;
+    MediumRepository mediumRepository;
 
     @BeforeEach
     void setUp() {
@@ -35,9 +35,9 @@ class LoanHistoryRepositoryTest {
         borrowerRepository.save(borrower);
 
         Medium medium = new Medium(1L,"Spring Boot 2");
-        inventoryRepository.save(medium);
+        mediumRepository.save(medium);
         Medium medium2 = new Medium(2L,"Java ist auch eine Insel");
-        inventoryRepository.save(medium);
+        mediumRepository.save(medium);
 
 
         ArrayList<LoanHistory> loans = new ArrayList<>(

@@ -1,12 +1,21 @@
 package com.erim.bachelor.config;
 
+import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.InventoryRepository;
+import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
+import com.erim.bachelor.repositories.MediaSeriesRepository;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -22,15 +31,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
+import java.util.random.RandomGenerator;
 
 @Configuration
 @RequiredArgsConstructor
 public class InitializeConfig {
 
     private final BorrowerRepository repository;
+    private static Long ID_COUNTER =0L;
+    int leftLimit = 97; // letter 'a'
+    int rightLimit = 122; // letter 'z'
+    int targetStringLength = 10;
+
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> repository.findBorrowerByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -54,28 +68,72 @@ public class InitializeConfig {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(InventoryRepository inventoryRepository, BorrowerRepository borrowerRepository){
+    CommandLineRunner commandLineRunner(MediumRepository mediumRepository, BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){
         return args -> {
-            ArrayList<Medium> media = new ArrayList<>(
+
+            ArrayList<MediaSeries> mediaSeries = new ArrayList<>(
                     Arrays.asList(
-                            Medium.builder().mediumID(1L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().mediumID(2L).title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build()
-                            /*Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),
-                            Medium.builder().title("Java ist auch eine Insel").status(Status.AVAILABLE).ISBN("51651651").build(),*/
 
-                            /*Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F9FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F8FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F7FFABCDQ1GC").build(),
-                            Medium.builder().title("IPad 8.Gen").status(Status.AVAILABLE).serialNr("F6FFABCDQ1GC").build(),
+                        ));
+            //MediaSeries IPAD 7
+            MediaSeries ipad7 = MediaSeries
+                    .builder()
+                    .id(1L)
+                    .title("IPad Gen.7")
+                    .mediaTyp("IPad")
+                    .mediumList(new ArrayList<>())
+                    .build();
+            //MediaSeries IPAD 9
+            MediaSeries ipad9 = MediaSeries
+                    .builder()
+                    .id(2L)
+                    .title("IPad Gen.9")
+                    .mediaTyp("IPad")
+                    .mediumList(new ArrayList<>())
+                    .build();
 
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build(),
-                            Medium.builder().title("Mathe II").status(Status.AVAILABLE).build()*/
+            MediaSeries matheI = MediaSeries
+                    .builder()
+                    .id(3L)
+                    .title("Mathe I")
+                    .mediaTyp("Buch")
+                    .ISBN_EAN("554656654")
+                    .originalPrice(25.5)
+                    .mediumList(new ArrayList<>())
+                    .subjects(new HashSet<>(){{
+                        add("Mathe");
+                    }})
+                    .vintage(new HashSet<>(){{
+                        add(5);add(6);
+                    }})
+                    .build();
 
-                    ));
+            mediaSeriesRepository.save(ipad7);
+            mediaSeriesRepository.save(ipad9);
+            mediaSeriesRepository.save(matheI);
 
-            inventoryRepository.saveAll(media);
+            List<Medium> media = generateRandomMedia(false);
+            media.forEach(medium -> {
+                medium.setMediaSeries(matheI);
+                matheI.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(matheI);
+
+            media = generateRandomMedia(true);
+            media.forEach(medium -> {
+                medium.setMediaSeries(ipad7);
+                ipad7.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(ipad7);
+
+            media = generateRandomMedia(true);
+            media.forEach(medium -> {
+                medium.setMediaSeries(ipad9);
+                ipad9.getMediumList().add(medium);
+            });
+            mediaSeriesRepository.save(ipad9);
+
+
             ArrayList<Borrower> users = new ArrayList<>(
                     Arrays.asList(
                             //User
@@ -145,4 +203,54 @@ public class InitializeConfig {
         return new ModelMapper();
     }
 
+    private List<Medium> generateRandomMedia(boolean serialNumber){
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        List<Medium> media = new ArrayList<>();
+        if(serialNumber){
+            for (int i = 0; i<10;i++){
+                String generatedString = random.ints(leftLimit, rightLimit + 1)
+                        .limit(targetStringLength)
+                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                        .toString();
+                Medium m = new Medium(ID_COUNTER++, generatedString,null,Status.AVAILABLE,null,null,null);
+                media.add(m);
+            }
+        }else {
+            for (int i = 0; i<10;i++){
+                Medium m = new Medium(ID_COUNTER++, "",null,Status.AVAILABLE,null,null,null);
+                media.add(m);
+            }
+        }
+        return media;
+    }
+
+
+    /**
+     * Config for Swagger to use JWT
+     * <a href="https://www.baeldung.com/openapi-jwt-authentication">...</a>
+     */
+    @Bean
+    public OpenAPI customizeOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+        return new OpenAPI()
+                .info(new Info().title("REST-API: Media-Loaning-Serverice ")
+                        .description("Thesis Project")
+                        .version("1.0").contact(new Contact()
+                                .name("Erim Medi")
+                                .email("erim_medi@hotmail.de"))
+                        .license(new License().name("License der API")))
+
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(securitySchemeName))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .name(securitySchemeName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")));
+    }
 }
+

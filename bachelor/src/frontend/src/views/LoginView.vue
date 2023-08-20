@@ -110,13 +110,9 @@ const handleLogin = async () =>{
         password: password.value
     }
     
-    const response = await axios.post(API_URL + 'login', user)
+    //const response = await axios.post(API_URL + 'login', user)
     
-    if(response.data.initialLogin){
-       console.log("init")
-       showInitLogin.value = true
-    }
-    else{
+    
         //login
         store.dispatch("auth/login",user).then(
         (response) => {
@@ -135,13 +131,6 @@ const handleLogin = async () =>{
             console.log(message.value)
         }
     )
-    }
+    
 }
-
-const isInitialLogin = async() =>{
-    const response = axios.post(API_URL + 'login', user).then(
-        
-    )
-}
-
 </script>
