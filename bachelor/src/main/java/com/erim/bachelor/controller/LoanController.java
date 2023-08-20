@@ -6,6 +6,7 @@ import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.service.LoanService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/loan")
+@Tag(name = "Loaning")
 public class LoanController {
     private final LoanService loanService;
     private final ModelMapper modelMapper;

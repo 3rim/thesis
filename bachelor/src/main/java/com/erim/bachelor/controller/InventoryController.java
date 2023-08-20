@@ -7,6 +7,7 @@ import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumStillBorrowedException;
 import com.erim.bachelor.service.InventoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/inventory")
+@Tag(name = "Inventory")
 public class InventoryController {
 
     private final InventoryService inventoryService;

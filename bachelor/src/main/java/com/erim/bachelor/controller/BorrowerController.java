@@ -8,6 +8,7 @@ import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -31,6 +32,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(path = "api/v1/borrowers")
+@Tag(name = "Borrowers")
 @CrossOrigin
 public class BorrowerController {
     private final BorrowerService borrowerService;
