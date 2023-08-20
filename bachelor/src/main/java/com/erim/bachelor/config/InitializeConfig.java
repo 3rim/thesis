@@ -9,6 +9,13 @@ import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -219,4 +226,31 @@ public class InitializeConfig {
         }
         return media;
     }
+
+
+    /**
+     * Config for Swagger to use JWT
+     * <a href="https://www.baeldung.com/openapi-jwt-authentication">...</a>
+     */
+    @Bean
+    public OpenAPI customizeOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+        return new OpenAPI()
+                .info(new Info().title("REST-API: Media-Loaning-Serverice ")
+                        .description("Thesis Project")
+                        .version("1.0").contact(new Contact()
+                                .name("Erim Medi")
+                                .email("erim_medi@hotmail.de"))
+                        .license(new License().name("License der API")))
+
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(securitySchemeName))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .name(securitySchemeName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")));
+    }
 }
+
