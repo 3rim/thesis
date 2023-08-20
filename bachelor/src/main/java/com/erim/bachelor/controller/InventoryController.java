@@ -1,13 +1,11 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.data.*;
+import com.erim.bachelor.dto.*;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumStillBorrowedException;
-import com.erim.bachelor.repositories.MediumRepository;
-import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.service.InventoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

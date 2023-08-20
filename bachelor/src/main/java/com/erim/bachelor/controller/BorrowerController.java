@@ -1,9 +1,8 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.data.InitBorrowerDTO;
-import com.erim.bachelor.data.MediumRequest;
-import com.erim.bachelor.data.BorrowerDTO;
-import com.erim.bachelor.data.MediumResponse;
+import com.erim.bachelor.dto.InitBorrowerDTO;
+import com.erim.bachelor.dto.BorrowerDTO;
+import com.erim.bachelor.dto.MediumResponse;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;

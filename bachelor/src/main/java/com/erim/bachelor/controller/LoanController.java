@@ -1,7 +1,7 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.data.LoanHistoriesDTO;
-import com.erim.bachelor.data.MediumRequest;
+import com.erim.bachelor.dto.LoanHistoriesDTO;
+import com.erim.bachelor.dto.MediumRequest;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;

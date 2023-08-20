@@ -1,6 +1,5 @@
-package com.erim.bachelor.data;
+package com.erim.bachelor.dto;
 
-import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.enums.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
