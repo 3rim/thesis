@@ -51,14 +51,14 @@ const router = createRouter({
         {path: ':mediumID' , component: MediumView},
         {path: 'series' , component: AddMediaSeriesView},
         {path: 'series/:seriesID/media' , component: AddMediaView},
-        {path: 'series/:seriesID' ,component: MediaSeriesDetailsView}
+        
       ]
     },
-    /*{
-      path: '/inventory/add',
-      name: 'inventoryAdd',
-      component: AddMediaSeriesView,
-    },*/
+    {
+      path: '/inventory/series/:seriesID',
+      name: 'seriesDetetails',
+      component: MediaSeriesDetailsView,
+    },
     {
       path: '/inventory/delete',
       name: 'inventoryDelete',

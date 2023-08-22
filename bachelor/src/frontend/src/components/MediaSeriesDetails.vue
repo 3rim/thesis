@@ -3,9 +3,15 @@
         <!-- Generel data about Media -->
         <Suspense>
             <MediaSeriesInfoCard/>
-        </Suspense>
-
-        <!-- Tabelle -->
+        </Suspense>    
+        <button 
+        class="my-2 bg-red-500 enabled:hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full  disabled:opacity-25  "
+        :disabled="amount > 0"
+        @click="deleteMediaSeries"
+        >
+            Medienreihe löschen
+        </button>
+    <!-- Tabelle -->
         <div class=" py-2">
             <table class="">
                 <thead class="bg-[#E4D4BA]">
@@ -35,59 +41,38 @@
 <script setup>
 
 import axios from 'axios' ;
+import { ref } from 'vue';
 import {useRoute} from "vue-router";
 import { useRouter } from 'vue-router';
 import authHeader from '../services/authHeader';
-import MediaSeriesInfoCard from './MediaSeriesInfoCard.vue';
+import MediaSeriesInfoCard from './MediaSeriesInfoCard.vue'
+
 
 const router = useRouter();
 const route = useRoute();
+const amount = ref();
 
-//TODO:Sorting server-side instead client site 
-const sort = () =>{
-    const result =   mediaData.data.sort((x,y) => (x["mediumID"] < y["mediumID"] ? -1:1))
-    console.log(result);
-}
-
-
-
-const getMediaDataByTitle =async () => {
-    let config = {
-                headers: authHeader(),
-            }
+const getMediaSeriesMedia =async () => {
+    let config = {headers: authHeader()}
     try {
-        const result = await axios.get(
-            `/api/v1/inventory/series/${route.params.seriesID}/media`,config);
-        //Hier haben wir ein JSON- Array mit mehreren Elementen,
-        console.log(result.data[0].mediumID)
-        console.log(result.data)
+        const result = await axios.get(`/api/v1/inventory/series/${route.params.seriesID}/media`,config);
+        amount.value = result.data.length;
         return result;
     } catch (error) {
         console.log(error);
     }
 };
 
-const getMediaSeriesData = async () =>{
-    let config = {
-                headers: authHeader(),
-            }
+const mediaData = await getMediaSeriesMedia();
+
+const deleteMediaSeries = async ()  =>{
+    let config = {headers: authHeader()}
     try {
-        const result = await axios.get(
-            `/api/v1/inventory/series/${route.params.seriesID}`,config);  
-        console.log(result.data)
-        return result.data;
+        await axios.delete(`/api/v1/inventory/series/${route.params.seriesID}`,config);
+        router.push("/inventory")
     } catch (error) {
         console.log(error);
     }
 }
-
-
-const mediaData = await getMediaDataByTitle();
-const mediaSeries = await getMediaSeriesData();
-console.log("SeriesDaa#ta")
-console.log(mediaSeries)
-
-
-
 
 </script>
