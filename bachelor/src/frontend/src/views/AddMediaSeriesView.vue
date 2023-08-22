@@ -13,7 +13,6 @@
         <p>loading...</p>
       </template>
   </Suspense>
-  <RouterView />
 </div>
 <!--Modal from HeadlessUI Framework-->
 <TransitionRoot appear :show="isOpen" as="template">
