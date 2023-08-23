@@ -13,14 +13,14 @@
                     <label class="block  tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
                         Email
                     </label>
-                    <Field v-model="email" class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" name="email" type="email" />
+                    <Field id="email" v-model="email" class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" name="email" type="email" />
                     <ErrorMessage class="text-red-500" name="email" />
                 </div>
                 <div>
                     <label class="block  tracking-wide text-gray-700 text-xs font-bold mb-2" for="password">
                         Password
                     </label>
-                    <Field class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" name="password" type="password" />
+                    <Field id="password" class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" name="password" type="password" />
                     
                 </div>
                 <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Login</button>
@@ -76,7 +76,8 @@
 
         <div v-if="message"
         class=" mt-5 flex flex-col flex-1 items-center">
-        <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ message }}</p>
+        <p v-if="message.code == 'ERR_BAD_REQUEST'" class="flex items-center bg-red-200 px-2 py-4 rounded" >Mail oder Passwort falsch</p>
+        <p v-if="message.code == 'INTERNAL_SERVER_ERROR'" class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ message.message }}</p>
        </div>
     </div>
 </template>
@@ -159,7 +160,7 @@ const handleLogin = async (form) =>{
         (error) =>{
             console.log(error)
             loading.value = false;
-            message.value = error.message;
+            message.value = error;
             console.log(message.value)
         }
     )
