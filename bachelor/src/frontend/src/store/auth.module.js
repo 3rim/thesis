@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import { faL } from '@fortawesome/free-solid-svg-icons';
 
 
+let timer ='';
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
   ? { status: { loggedIn: true,autoLogout:false }, user }
@@ -25,11 +26,16 @@ export const auth = {
             commit('loginSuccess', user);
 
             const decoded =jwt_decode(user.jwt)
-            let expirationTime = decoded.exp *1000;
-            console.log(expirationTime);
-            setTimeout(()=>{
+            console.log(decoded);
+            let expDate = new Date(decoded.exp *1000)
+            let now = new Date();
+            let expiresIn = expDate.getTime() - now.getTime() 
+            
+            console.log("jwt expires in:"+expiresIn /3600000 +"h");
+
+            timer = setTimeout(()=>{
               dispatch("auto_logout")
-            },3*1000)
+            },expiresIn)
   
             return Promise.resolve(user);
           }
@@ -42,8 +48,12 @@ export const auth = {
       );
     },
     logout({ commit }) {
-      console.log("logout")
       AuthService.logout();
+      //clear Timer on logout
+      if(timer){
+        clearTimeout(timer)
+      }
+
       commit('logout');
     },
     auto_logout({commit,dispatch}){
@@ -65,7 +75,7 @@ export const auth = {
       state.status.loggedIn = false;
       state.user = null;
     },
-    autoLogout(state,user){
+    autoLogout(state){
       state.status.loggedIn = false;
       state.status.autoLogout = true;
       state.user = null;
