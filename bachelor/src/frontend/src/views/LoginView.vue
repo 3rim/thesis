@@ -116,7 +116,6 @@ const handleLogin = async () =>{
         //login
         store.dispatch("auth/login",user).then(
         (response) => {
-            console.log(response.id)
             if(response.initialLogin){
                 showInitLogin.value = true;
             }
