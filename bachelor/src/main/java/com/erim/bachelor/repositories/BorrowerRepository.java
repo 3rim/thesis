@@ -15,8 +15,8 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
 
     // LIKE '%or%'	Finds any values that have "or" in any position
     //:value  parameter binding
-    @Query("select u from Borrower u where (:firstName is null or u.firstName like %:firstName%)"
-            +" and (:lastName is null or u.lastName  like %:lastName%)")
+    @Query("select u from Borrower u where (:firstName is null or u.firstName ilike %:firstName%)"
+            +" and (:lastName is null or u.lastName  ilike %:lastName%)")
     List<Borrower> searchByFirstAndOrLastName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     Optional<Borrower> findBorrowerByBorrowerNr(Long borrowerNr);
@@ -29,12 +29,19 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
 
     Page<Borrower> findAllByBorrowerState(Pageable pageable,BorrowerState borrowerState );
 
-    @Query("select u from Borrower u where (:firstName is null or u.firstName like %:firstName%)"
-            +" and (:lastName is null or u.lastName  like %:lastName%)")
+    /**
+     * UPPER(COL_NAME)
+     * @param pageable
+     * @param firstName
+     * @param lastName
+     * @return
+     */
+    @Query("select u from Borrower u where (:firstName is null or  u.firstName ilike %:firstName%)"
+            +" and (:lastName is null or u.lastName  ilike %:lastName%)")
     Page<Borrower> findAllByName(Pageable pageable, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
-    @Query("select u from Borrower u where (:firstName is null or u.firstName like %:firstName%)"
-            +" and (:lastName is null or u.lastName  like %:lastName%) and u.borrowerState=:borrowerState")
+    @Query("select u from Borrower u where (:firstName is null or u.firstName ilike %:firstName%)"
+            +" and (:lastName is null or u.lastName  ilike %:lastName%) and u.borrowerState=:borrowerState")
     Page<Borrower> findAllByStateAndName(Pageable pageable, BorrowerState borrowerState, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
     Optional<Borrower> findBorrowerByEmail(String email);
