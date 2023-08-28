@@ -35,7 +35,7 @@ export const auth = {
 
             timer = setTimeout(()=>{
               dispatch("auto_logout")
-            },expiresIn)
+            },10*1000)
   
             return Promise.resolve(user);
           }
