@@ -37,6 +37,7 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
+                .setHeaderParam("typ","JWT")
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 3* HOUR))
