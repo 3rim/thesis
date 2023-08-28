@@ -64,18 +64,10 @@ public class LoanService {
         medium.setStatus(Status.AVAILABLE);
         medium.setBorrower(null);
         medium.setDateOfLend(null);
-        /*Optional<LoanHistory> lh = loanHistoryRepository.findLoanHistoryByMediumMediumID(medium.getMediumID());
-        LoanHistory loanHistory =lh.get();
-        loanHistory.setDateOfReturn(LocalDate.now());
-        loanHistoryRepository.save(loanHistory);*/
 
-        List<LoanHistory> listLoanHistories = medium.getLoanHistories();
         LoanHistory loanHistory = medium.getLoanHistories().get(medium.getLoanHistories().size()-1);
-        Long loanHistoryID= loanHistory.getLoanHistoryId();
         loanHistory.setDateOfReturn(LocalDate.now());
-        //loanHistoryRepository.save(loanHistory);
         mediumRepository.save(medium);
-
         return  borrower;
     }
 
