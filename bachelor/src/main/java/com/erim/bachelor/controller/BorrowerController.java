@@ -220,13 +220,13 @@ public class BorrowerController {
                 map(medium -> {
                     MediumResponse mediumResponse = modelMapper.map(medium,MediumResponse.class);
                     mediumResponse.setTitle(medium.getMediaSeries().getTitle());
+                    mediumResponse.setCurrentBorrower(borrower.getFullName());
                     return mediumResponse;
                 }).
                 toList();
 
         BorrowerDTO borrowerDTO = modelMapper.map(borrower, BorrowerDTO.class);
         borrowerDTO.setMediumList(borrowerLendMedia);
-
 
         return borrowerDTO;
     }
