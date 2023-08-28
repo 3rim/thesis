@@ -40,7 +40,7 @@ public class MediaSeries {
     @Formula(value = "(SELECT COUNT(*) FROM medium m WHERE m.media_series_id=id AND m.status='AVAILABLE')")
     private int available;
     private double originalPrice;
-    @OneToMany(mappedBy = "mediaSeries",fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "mediaSeries", cascade = { CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<Medium> mediumList;
 }
