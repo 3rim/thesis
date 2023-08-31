@@ -49,7 +49,7 @@ public class BorrowerController {
      * @return A List which is either empty or contains all Borrowers
      */
     @GetMapping()
-    public ResponseEntity<Map<String,Object >> getAllBorrowers(
+    public ResponseEntity<Map<String,Object >> getPageableBorrowers(
             @RequestParam(required = false) BorrowerState borrowerState,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
