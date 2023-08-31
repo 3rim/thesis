@@ -191,14 +191,6 @@ public class BorrowerController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    /**
-     * Delete a Borrower by his Number (Not EntityID).
-     * @param borrowerNr The BorrowerNumber
-     */
-    @DeleteMapping(value = "{borrowerNr}")
-    public void softDeleteBorrowerByNr(@PathVariable(value = "borrowerNr")Long borrowerNr){
-        borrowerService.softDeleteBorrowerByNr(borrowerNr);
-    }
 
     /**
      * Deletes Borrowers by ID if the borrower has no lend media
