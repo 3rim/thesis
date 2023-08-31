@@ -126,18 +126,6 @@ public class InventoryController {
         }
     }
 
-    @PutMapping(path = "{id}",consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Medium> updateMedium(@PathVariable(value = "id")Long id, @RequestBody Medium updateMedium){
-        //TODO:refactor
-        Optional<Medium> medium = inventoryService.updateMedium(id,updateMedium);
-        if(medium.isPresent())
-            return new ResponseEntity<>(medium.get(),HttpStatus.OK);
-        else
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Medium not found"
-            );
-    }
-
     /**
      * Patch a MediaSeries by its ID
      *

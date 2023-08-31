@@ -58,16 +58,6 @@ public class InventoryService {
         return mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    public  Optional<Medium> updateMedium(Long id,Medium newMedium) {
-        //TODO:refactor
-        return Optional.of(mediumRepository.findById(id)
-                .map(medium -> {
-                    //medium.setTitle(newMedium.getTitle());
-
-                    return mediumRepository.save(medium);
-                })
-                .orElseGet(() -> mediumRepository.save(newMedium)));
-    }
 
     public void deleteMedium(Long id) throws MediumStillBorrowedException {
         Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
