@@ -20,22 +20,12 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
     List<Borrower> searchByFirstAndOrLastName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     Optional<Borrower> findBorrowerByBorrowerNr(Long borrowerNr);
+    Optional<Borrower> findBorrowerByEmail(String email);
 
-    /**
-     * return all Borrower Entities where BorrowerNr is not null
-     * @return List of Borrowers where borrowerNr != null
-     */
     List<Borrower> findAllByBorrowerNrIsNotNull();
 
     Page<Borrower> findAllByBorrowerState(Pageable pageable,BorrowerState borrowerState );
 
-    /**
-     * UPPER(COL_NAME)
-     * @param pageable
-     * @param firstName
-     * @param lastName
-     * @return
-     */
     @Query("select u from Borrower u where (:firstName is null or  u.firstName ilike %:firstName%)"
             +" and (:lastName is null or u.lastName  ilike %:lastName%)")
     Page<Borrower> findAllByName(Pageable pageable, @Param("firstName") String firstName, @Param("lastName") String lastName);
@@ -43,8 +33,4 @@ public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
     @Query("select u from Borrower u where (:firstName is null or u.firstName ilike %:firstName%)"
             +" and (:lastName is null or u.lastName  ilike %:lastName%) and u.borrowerState=:borrowerState")
     Page<Borrower> findAllByStateAndName(Pageable pageable, BorrowerState borrowerState, @Param("firstName") String firstName, @Param("lastName") String lastName);
-
-    Optional<Borrower> findBorrowerByEmail(String email);
-
-
 }
