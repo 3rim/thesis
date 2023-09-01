@@ -3,7 +3,7 @@ package com.erim.bachelor.service;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
-import com.erim.bachelor.exceptions.MediumStillBorrowedException;
+import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 
 import java.util.List;
 
@@ -33,9 +33,9 @@ public interface IInventoryService {
     /**
      * Delete a Medium if it is not borrowed by a Borrower.
      * @param id ID of Medium
-     * @throws MediumStillBorrowedException if Medium is borrowed but deletion is tried.
+     * @throws MediumIsBorrowedException if Medium is borrowed but deletion is tried.
      */
-    void deleteMedium(Long id) throws MediumStillBorrowedException;
+    void deleteMedium(Long id) throws MediumIsBorrowedException;
 
     /**
      * Returns all Media in a MediaSeries.
