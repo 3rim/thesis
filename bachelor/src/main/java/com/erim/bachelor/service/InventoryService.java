@@ -42,8 +42,8 @@ public class InventoryService implements IInventoryService {
      * @return null or the added Medium
      */
     @Override
-    public Medium addNewMedium(Medium medium,Long seriesID){
-        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+    public Medium addNewMedium(Medium medium,Long mediaSeriesId){
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
 
         if(!mediumRepository.existsById(medium.getMediumID())){
             medium.setMediaSeries(mediaSeries);
@@ -81,8 +81,8 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public List<Medium> getMediaSeriesMedia(Long seriesID) {
-        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+    public List<Medium> getMediaSeriesMedia(Long mediaSeriesId) {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
         return mediaSeries.getMediumList();
     }
 
@@ -98,11 +98,11 @@ public class InventoryService implements IInventoryService {
         return mediaSeriesRepository.save(mediaSeries);
     }
     @Override
-    public void deleteMediaSeries(Long seriesID) throws MediaSeriesNotEmptyException {
-        MediaSeries mediaSeries = mediaSeriesRepository.findById(seriesID).orElseThrow(NoSuchElementException::new);
+    public void deleteMediaSeries(Long mediaSeriesId) throws MediaSeriesNotEmptyException {
+        MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
         if(!mediaSeries.getMediumList().isEmpty())
-            throw new MediaSeriesNotEmptyException("MediaSeries:"+seriesID+"cannot be deleted as long as it contains Media");
+            throw new MediaSeriesNotEmptyException("MediaSeries:"+mediaSeriesId+"cannot be deleted as long as it contains Media");
 
-        mediaSeriesRepository.deleteById(seriesID);
+        mediaSeriesRepository.deleteById(mediaSeriesId);
     }
 }
