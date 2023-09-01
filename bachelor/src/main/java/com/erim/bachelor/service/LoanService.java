@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class LoanService {
+public class LoanService implements ILoanService {
 
     private final BorrowerRepository borrowerRepository;
     private final MediumRepository mediumRepository;
@@ -31,7 +31,8 @@ public class LoanService {
         this.loanHistoryRepository = loanHistoryRepository;
     }
 
-    public Borrower loanMediumToUser(Long userID, Long mediumID) {
+    @Override
+    public Borrower loanUnloanMediumToUser(Long userID, Long mediumID) {
         Borrower borrower;
         Medium medium;
 
@@ -60,6 +61,12 @@ public class LoanService {
 
     }
 
+    @Override
+    public List<LoanHistory> getLoanHistories(Long mediumID) {
+        return loanHistoryRepository.findAllLoanHistoryByMediumMediumID(mediumID);
+    }
+
+
     private Borrower unloanFromUser(Borrower borrower, Medium medium) {
         medium.setStatus(Status.AVAILABLE);
         medium.setBorrower(null);
@@ -82,10 +89,6 @@ public class LoanService {
         mediumRepository.save(medium);
 
         return  borrower;
-    }
-
-    public List<LoanHistory> getLoanHistories(Long mediumID) {
-        return loanHistoryRepository.findAllLoanHistoryByMediumMediumID(mediumID);
     }
 }
 

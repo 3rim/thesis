@@ -5,7 +5,7 @@ import com.erim.bachelor.dto.MediumRequest;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.service.LoanService;
+import com.erim.bachelor.service.ILoanService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ import java.util.List;
 @RequestMapping(path = "api/v1/loan")
 @Tag(name = "Loaning")
 public class LoanController {
-    private final LoanService loanService;
+    private final ILoanService loanService;
     private final ModelMapper modelMapper;
     @Autowired
-    public LoanController(LoanService loanService, ModelMapper modelMapper) {
+    public LoanController(ILoanService loanService, ModelMapper modelMapper) {
         this.loanService = loanService;
         this.modelMapper = modelMapper;
     }
@@ -47,7 +47,7 @@ public class LoanController {
     @PostMapping
     public ResponseEntity<List<MediumRequest>> loanMedium(@RequestParam Long borrowerID,
                                                           @RequestParam Long mediumID){
-        Borrower borrower = loanService.loanMediumToUser(borrowerID,mediumID);
+        Borrower borrower = loanService.loanUnloanMediumToUser(borrowerID,mediumID);
         List<MediumRequest> borrowerLoanedMedia = borrower.getMediumList().
                 stream().
                 map(this::convertToDTO).
@@ -71,7 +71,7 @@ public class LoanController {
      * @return LoanHistoryDTO
      */
     private LoanHistoriesDTO convertToDTO(LoanHistory loanHistory){
-        //model mapper throws infinite loop exception, idk why
+        //model mapper throws infinite loop exception, IDK why
 
         LoanHistoriesDTO dto = new LoanHistoriesDTO();
         dto.setLoanHistoryId(loanHistory.getLoanHistoryId());
