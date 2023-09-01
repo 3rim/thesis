@@ -4,16 +4,16 @@ import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
+import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.LoanHistoryRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -32,28 +32,19 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Borrower loanUnloanMediumToUser(Long userID, Long mediumID) {
+    public Borrower loanUnloanMediumToUser(Long borrowerID, Long mediumID) throws MediumIsBorrowedException {
         Borrower borrower;
         Medium medium;
 
-        if(borrowerRepository.findById(userID).isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user with id: "+userID+" not found");
-        else
-            borrower = borrowerRepository.findById(userID).get();
-
-        if(mediumRepository.findById(mediumID).isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "medium with id: "+mediumID+" not found");
-        else
-            medium = mediumRepository.findById(mediumID).get();
+        borrower = borrowerRepository.findById(borrowerID).orElseThrow(()-> new NoSuchElementException("user with id: "+borrowerID+" not found"));
+        medium   = mediumRepository.findById(mediumID).orElseThrow(()-> new NoSuchElementException("medium with id: "+mediumID+" not found"));
 
         if(medium.isBorrowed()){
             //Borrower != medium.getBorrower
             if(!Objects.equals(medium.getBorrower().getBorrowerID(), borrower.getBorrowerID()))
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "medium with id:"+mediumID+ " already loaned to "+medium.getBorrower().getFullName());
-            else{ // Medium is already loan to this borrower ==> take it back from him
+                throw new MediumIsBorrowedException("medium with id:"+mediumID+ " already loaned to "+medium.getBorrower().getFullName());
+            else // Medium is already loan to this borrower ==> take it back from him
                 return unloanFromUser(borrower,medium);
-            }
         }
         else {
             return loanToUser(borrower,medium);
@@ -87,7 +78,6 @@ public class LoanService implements ILoanService {
         LoanHistory loanHistory = new LoanHistory(now,borrower,medium);
         medium.addNewLoanHistory(loanHistory);
         mediumRepository.save(medium);
-
         return  borrower;
     }
 }

@@ -3,7 +3,7 @@ package com.erim.bachelor.service;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
-import com.erim.bachelor.exceptions.MediumStillBorrowedException;
+import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.repositories.MediumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +62,11 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public void deleteMedium(Long id) throws MediumStillBorrowedException {
+    public void deleteMedium(Long id) throws MediumIsBorrowedException {
         Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
         if(medium.isBorrowed())
-            throw new MediumStillBorrowedException("Medium:"+medium.getMediumID()+" is borrowed to "+medium.getBorrower().getFullName() );
+            throw new MediumIsBorrowedException("Medium:"+medium.getMediumID()+" is borrowed to "+medium.getBorrower().getFullName() );
         else
             mediumRepository.deleteById(id);
     }

@@ -5,9 +5,8 @@ import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
-import com.erim.bachelor.exceptions.MediumStillBorrowedException;
+import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.service.IInventoryService;
-import com.erim.bachelor.service.InventoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,7 +152,7 @@ public class InventoryController {
         try {
             inventoryService.deleteMedium(mediumID);
             return new ResponseEntity<>("Medium deleted", HttpStatus.OK);
-        } catch (MediumStillBorrowedException e) {
+        } catch (MediumIsBorrowedException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }catch (NoSuchElementException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);

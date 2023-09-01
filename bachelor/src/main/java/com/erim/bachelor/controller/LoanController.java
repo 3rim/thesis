@@ -5,6 +5,7 @@ import com.erim.bachelor.dto.MediumRequest;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
+import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.service.ILoanService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -46,14 +48,22 @@ public class LoanController {
      */
     @PostMapping
     public ResponseEntity<List<MediumRequest>> loanMedium(@RequestParam Long borrowerID,
-                                                          @RequestParam Long mediumID){
-        Borrower borrower = loanService.loanUnloanMediumToUser(borrowerID,mediumID);
-        List<MediumRequest> borrowerLoanedMedia = borrower.getMediumList().
-                stream().
-                map(this::convertToDTO).
-                toList();
+                                                          @RequestParam Long mediumID) {
+        Borrower borrower;
+        try {
+            borrower = loanService.loanUnloanMediumToUser(borrowerID,mediumID);
+            List<MediumRequest> borrowerLoanedMedia = borrower.getMediumList().
+                    stream().
+                    map(this::convertToDTO).
+                    toList();
 
-        return new ResponseEntity<>(borrowerLoanedMedia, HttpStatus.OK);
+            return new ResponseEntity<>(borrowerLoanedMedia, HttpStatus.OK);
+        } catch (MediumIsBorrowedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"something went wrong :(");
+        }
     }
 
     /**
