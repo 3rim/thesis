@@ -6,6 +6,7 @@ import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumStillBorrowedException;
+import com.erim.bachelor.service.IInventoryService;
 import com.erim.bachelor.service.InventoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -17,18 +18,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/inventory")
 @Tag(name = "Inventory")
 public class InventoryController {
 
-    private final InventoryService inventoryService;
+    private final IInventoryService inventoryService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public InventoryController(InventoryService inventoryService, ModelMapper modelMapper) {
+    public InventoryController(IInventoryService inventoryService, ModelMapper modelMapper) {
         this.inventoryService = inventoryService;
         this.modelMapper = modelMapper;
     }
@@ -49,7 +49,7 @@ public class InventoryController {
     @GetMapping(path = "{mediumID}")
     public ResponseEntity<MediumResponse> getMediumById(@PathVariable(value = "mediumID") Long mediumID){
         try {
-            Medium medium = inventoryService.getMediumById(mediumID);
+            Medium medium = inventoryService.getMedium(mediumID);
             return new ResponseEntity<>(convertToDTO(medium),HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medium not found");
