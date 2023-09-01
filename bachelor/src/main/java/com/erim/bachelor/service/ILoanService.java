@@ -16,7 +16,7 @@ public interface ILoanService {
      * @param mediumID The MediumID
      * @return The Borrower to which Medium was loaned or un-loaned.
      */
-    Borrower loanUnloanMediumToUser(Long borrowerID,Long mediumID) throws MediumIsBorrowedException;
+    Borrower loanUnloanMedium(Long borrowerID, Long mediumID) throws MediumIsBorrowedException;
 
     /**
      * Get LoanHistories for the Medium

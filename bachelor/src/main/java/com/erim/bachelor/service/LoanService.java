@@ -32,7 +32,7 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public Borrower loanUnloanMediumToUser(Long borrowerID, Long mediumID) throws MediumIsBorrowedException {
+    public Borrower loanUnloanMedium(Long borrowerID, Long mediumID) throws MediumIsBorrowedException {
         Borrower borrower;
         Medium medium;
 

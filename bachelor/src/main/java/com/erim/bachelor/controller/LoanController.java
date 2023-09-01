@@ -51,7 +51,7 @@ public class LoanController {
                                                           @RequestParam Long mediumID) {
         Borrower borrower;
         try {
-            borrower = loanService.loanUnloanMediumToUser(borrowerID,mediumID);
+            borrower = loanService.loanUnloanMedium(borrowerID,mediumID);
             List<MediumRequest> borrowerLoanedMedia = borrower.getMediumList().
                     stream().
                     map(this::convertToDTO).
