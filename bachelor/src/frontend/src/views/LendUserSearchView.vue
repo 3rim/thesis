@@ -1,7 +1,6 @@
 <template>
 <main class="container text-black">
     <!--nicht relativ machen sonst klappt der dropdown overlay nicht -->
-    
     <div class=" pt-4 mb-8 flex"> 
         <font-awesome-icon class="py-2 px-1" icon="a-solid fa fa-user" size="2x"></font-awesome-icon>
         <div class="w-full">
@@ -49,12 +48,11 @@ const router = useRouter();
 // ------ Functions ------------
 const getUser = (user) => {
     router.push({
-        name: 'ausleiheUser',
+        name: 'loanView',
         query:{
            id: user.id,
         }
     })
-
 };
 
 const getSearchResults = () =>{
@@ -67,16 +65,15 @@ const getSearchResults = () =>{
                 headers: authHeader(),
                 params: {firstName:firstName,lastName:lastName}
             }
-            const result = await axios.get('/api/v1/borrowers/name',config);
-            userSearchResults.value = result.data;
-            console.log(userSearchResults.value)
+            const response = await axios.get('/api/v1/borrowers/name',config);
+            userSearchResults.value = response.data;
             return;
         }
         userSearchResults.value = null;
     },300);
 }
 
-function splitFirstAndLastName(str){
+const splitFirstAndLastName =(str) =>{
     const fullName = str;
     const lastIndex = fullName.lastIndexOf(" ");
 
