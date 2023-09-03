@@ -1,5 +1,5 @@
 <script setup>
-import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
+import AsyncBorrower from '../components/AsyncBorrower.vue';
 import { useStore } from 'vuex';
 import { onBeforeMount ,computed} from 'vue';
 import { useRouter } from 'vue-router';
@@ -23,7 +23,7 @@ onBeforeMount(() => {
 <template>
   <main class="mt-5">
     <Suspense v-if="currentUser">
-    <AsyncBorrowerView :user-id="store.state.auth.user.id"/>
+    <AsyncBorrower :user-id="store.state.auth.user.id"/>
     <template #fallback>
             <p>loadning...</p>
         </template>
