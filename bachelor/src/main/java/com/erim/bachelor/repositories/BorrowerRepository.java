@@ -13,10 +13,14 @@ import java.util.Optional;
 
 public interface BorrowerRepository extends JpaRepository<Borrower,Long> {
 
-    // LIKE '%or%'	Finds any values that have "or" in any position
-    //:value  parameter binding
-    @Query("select u from Borrower u where (:firstName is null or u.firstName ilike %:firstName%)"
-            +" and (:lastName is null or u.lastName  ilike %:lastName%)")
+    /**
+     * The % used above represents any character or set of characters. In this case, % is referred to as a "wildcard."
+     * value%  = matches everything that starts with value.
+     * %value% = Finds any values that have "value" in any position.
+     * :value  = parameter binding
+     */
+    @Query("select u from Borrower u where (:firstName is null or u.firstName ilike :firstName%)"
+            +" and (:lastName is null or u.lastName  ilike :lastName%)")
     List<Borrower> searchByFirstAndOrLastName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     Optional<Borrower> findBorrowerByBorrowerNr(Long borrowerNr);
