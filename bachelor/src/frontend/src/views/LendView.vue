@@ -36,31 +36,24 @@
 
 <script setup>
 import AsyncBorrowerView from '../components/AsyncBorrowerView.vue';
-
 import { ref } from 'vue';
 import axios from "axios";
-import { useRouter } from 'vue-router';
 import {useRoute} from "vue-router";
 import authHeader from '../services/authHeader';
-
 
 const err = ref(false);
 const errorMessage = ref("")
 
 const componentKey = ref(0);
 //Re-render component if necessary
-const forceRerender = () => {
-  componentKey.value += 1;
-};
 
-
-const router = useRouter();
 const route = useRoute();
-
 const mediaID = ref("");
 const queryTimeout = ref();
 
-
+const forceRerender = () => {
+  componentKey.value += 1;
+};
 
 const lendMedia = () =>{
     err.value = false
@@ -87,5 +80,4 @@ const lendMedia = () =>{
         }
     },);
 }
-
 </script>

@@ -31,7 +31,6 @@
             </template>
          </ul>
         </div>
-       
     </div>
 </main>
 </template>
@@ -42,7 +41,12 @@ import axios from "axios";
 import { useRouter } from 'vue-router';
 import authHeader from '../services/authHeader';
 
+const searchQuery = ref("");
+const queryTimeout = ref();
+const userSearchResults = ref(null);
 const router = useRouter();
+
+// ------ Functions ------------
 const getUser = (user) => {
     router.push({
         name: 'ausleiheUser',
@@ -52,10 +56,6 @@ const getUser = (user) => {
     })
 
 };
-
-const searchQuery = ref("");
-const queryTimeout = ref();
-const userSearchResults = ref(null);
 
 const getSearchResults = () =>{
     clearTimeout(queryTimeout.value);
