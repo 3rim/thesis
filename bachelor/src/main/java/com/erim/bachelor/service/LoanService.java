@@ -44,10 +44,10 @@ public class LoanService implements ILoanService {
             if(!Objects.equals(medium.getBorrower().getBorrowerID(), borrower.getBorrowerID()))
                 throw new MediumIsBorrowedException("medium with id:"+mediumID+ " already loaned to "+medium.getBorrower().getFullName());
             else // Medium is already loan to this borrower ==> take it back from him
-                return unloanFromUser(borrower,medium);
+                return unloanFromBorrower(borrower,medium);
         }
         else {
-            return loanToUser(borrower,medium);
+            return loanToBorrower(borrower,medium);
         }
 
     }
@@ -58,7 +58,7 @@ public class LoanService implements ILoanService {
     }
 
 
-    private Borrower unloanFromUser(Borrower borrower, Medium medium) {
+    private Borrower unloanFromBorrower(Borrower borrower, Medium medium) {
         medium.setStatus(Status.AVAILABLE);
         medium.setBorrower(null);
         medium.setDateOfLend(null);
@@ -69,7 +69,7 @@ public class LoanService implements ILoanService {
         return  borrower;
     }
 
-    private Borrower loanToUser(Borrower borrower, Medium medium) {
+    private Borrower loanToBorrower(Borrower borrower, Medium medium) {
         medium.setStatus(Status.RENT);
         medium.setBorrower(borrower);
         LocalDate now = LocalDate.now();
