@@ -1,8 +1,5 @@
 import AuthService from '../services/authService';
-import VueJwtDecode from 'vue-jwt-decode'
 import jwt_decode from 'jwt-decode';
-import { faL } from '@fortawesome/free-solid-svg-icons';
-
 
 let timer ='';
 const user = JSON.parse(localStorage.getItem('user'));
@@ -16,16 +13,14 @@ export const auth = {
   actions: {
     login({ commit,dispatch}, user) {
       return AuthService.login(user).then(
-        user => {
-          if(user.initialLogin){
+        response => {
+          if(response.initialLogin){
             commit('loginFailure');
-            return Promise.resolve(user);
-            
+            return Promise.resolve(response);
           }
           else{
-            commit('loginSuccess', user);
-
-            const decoded =jwt_decode(user.jwt)
+            commit('loginSuccess', response);
+            const decoded =jwt_decode(response.jwt)
             console.log(decoded);
             let expDate = new Date(decoded.exp *1000)
             let now = new Date();
@@ -35,13 +30,14 @@ export const auth = {
 
             timer = setTimeout(()=>{
               dispatch("auto_logout")
-            },10*1000)
+            },expiresIn )//10*1000 for test
   
-            return Promise.resolve(user);
+            return Promise.resolve(response);
           }
           
         },
         error => {
+          console.log(error)
           commit('loginFailure');
           return Promise.reject(error);
         }
