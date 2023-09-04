@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path = "api/v1/loan")
@@ -60,6 +61,9 @@ public class LoanController {
             return new ResponseEntity<>(borrowerLoanedMedia, HttpStatus.OK);
         } catch (MediumIsBorrowedException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+        catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
         }
         catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"something went wrong :(");
