@@ -13,7 +13,7 @@ import UserView from '../views/UserView.vue'
 import UserRolesView from '../views/UserRolesView.vue'
 import LoginView from '../views/LoginView.vue'
 import qs from 'qs'
-
+import store from '../store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -82,7 +82,16 @@ const router = createRouter({
   ],
   parseQuery: qs.parse,
   stringifyQuery: qs.stringify,
- 
+})
+
+router.beforeEach(async(to, from) => {
+  const loggedIn = store.state.auth.status.loggedIn
+  if(!loggedIn && 
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'login'
+    ){
+    return {name: 'login'}
+  }
 })
 
 export default router
