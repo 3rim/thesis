@@ -8,6 +8,14 @@ import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +24,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,11 +52,64 @@ public class BorrowerController {
         this.modelMapper = modelMapper;
     }
 
+    private final String csvExample = """
+            id,firstName,lastName,group,DateOfBirth,Email
+            1,August,Dowyer,5a,12.06.2000,august.dowyer@schulnetz-gsm.de
+            2,Livia,Truitt,5a,13.06.2000,livia.truitt@schulnetz-gsm.de          
+            """;
+
     /**
      * Get all Borrowers
      *
      * @return A List which is either empty or contains all Borrowers
      */
+    @Operation(summary = "Get Pageable borrowers",description = """
+            Get borrowers in small chunks(by Page).
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully loaned/unloaned",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    examples =  @ExampleObject(name = "Pageable Response", value = """
+                                            {
+                                                "totalItems": 5,
+                                                "borrowers": [
+                                                    {
+                                                        "id": 2,
+                                                        "borrowerNr": 101,
+                                                        "firstName": "admin",
+                                                        "lastName": "admin",
+                                                        "borrowerGroup": null,
+                                                        "mediumList": [],
+                                                        "leftTheSchool": false,
+                                                        "borrowerState": "ACTIVE",
+                                                        "dob": "2023-09-06",
+                                                        "roles": [
+                                                            "ADMIN"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "id": 1,
+                                                        "borrowerNr": 100,
+                                                        "firstName": "user",
+                                                        "lastName": "user",
+                                                        "borrowerGroup": null,
+                                                        "mediumList": [],
+                                                        "leftTheSchool": false,
+                                                        "borrowerState": "ACTIVE",
+                                                        "dob": "2023-09-06",
+                                                        "roles": [
+                                                            "USER"
+                                                        ]
+                                                    }
+                                                ],
+                                                "totalPages": 2,
+                                                "currentPage": 1
+                                            }
+                                            """))
+                    }),
+    })
     @GetMapping()
     public ResponseEntity<Map<String,Object >> getPageableBorrowers(
             @RequestParam(required = false) BorrowerState borrowerState,
@@ -117,6 +179,11 @@ public class BorrowerController {
      * @param id id of Borrower
      * @return The Borrowers or a Not found exception
      */
+    @Operation(summary = "Get Borrower by id", description ="Returns borrowerDTO")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - Borrower not found",content = @Content)
+    })
     @GetMapping(path = "{id}")
     @PreAuthorize("#id == authentication.principal.borrowerID or hasAnyAuthority('ADMIN','LIBRARIAN','LOAN_HELPER')")
     public ResponseEntity<BorrowerDTO> getBorrowerById(@PathVariable( value = "id") Long id){
@@ -135,6 +202,10 @@ public class BorrowerController {
      * @param lastName last name of Borrowers
      * @return A list with matched Borrowers or an empty list
      */
+    @Operation(summary = "Get Borrowers by first and/or lastname", description ="Returns List of borrowerDTO that matches query")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+    })
     @GetMapping(path = "name")
     public List<BorrowerDTO>getBorrowersByName(
             @RequestParam(required = false)String firstName,
@@ -145,7 +216,11 @@ public class BorrowerController {
         return listBorrowers.stream().map(borrower -> modelMapper.map(borrower, BorrowerDTO.class)).toList();
     }
 
-    @GetMapping(path = "/csvFile")
+    @Operation(summary = "Get Borrower.csv", description ="Returns csv file with borrowers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved",content = @Content),
+    })
+    @GetMapping(path = "/csvFile",produces="text/csv")
     public ResponseEntity<Resource> getCSVFile(){
         String filename = "users_"+LocalDate.now()+".csv";
         InputStreamResource file = new InputStreamResource(borrowerService.downloadUsers());
@@ -157,8 +232,31 @@ public class BorrowerController {
 
     }
 
+    @Operation(summary = "Import User csv", description = """
+            New users are added/updated/deleted via csv import
+            
+            User in csv not in database => new user
+            
+            User in csv and in database => update if needed user
+            
+            User not in csv bit in database => deactivate user
+                        
+            CSV-Schema
+            
+            id	firstName	lastName	group	DateOfBirth	Email
+            
+            1	August	    Dowyer	    5a	    12.06.2000	august.dowyer@schulnetz-gsm.de
+                  
+            Returns csv file with new added users and their oneTimePassword
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved", content =@Content),
+            @ApiResponse(responseCode = "417", description = "EXPECTATION_FAILED -  file is incorrect",content = @Content),
+    })
     @PostMapping()
-    public ResponseEntity<List<InitBorrowerDTO>> importCSV(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<List<InitBorrowerDTO>> importCSV(
+            @Parameter(example = "Vatsal")
+            @RequestParam("file")  MultipartFile file){
         if(CSVHelper.hasCSVFormat(file)){
             try{
                 List<InitBorrowerDTO> result= borrowerService.importUsersCSV(file);
@@ -172,6 +270,11 @@ public class BorrowerController {
                 HttpStatus.BAD_REQUEST, "Please upload a file");
     }
 
+    @Operation(summary = "Edit user roles")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully edited"),
+            @ApiResponse(responseCode = "404", description = "Not found - Borrower not found",content = @Content)
+    })
     @PatchMapping(path ="{id}/roles")
     public ResponseEntity<String> editUserRoles(@PathVariable(value = "id")Long id,@RequestBody Set<Role> roles){
         try {
@@ -185,6 +288,10 @@ public class BorrowerController {
         }
     }
 
+    @Operation(summary = "reset passwords",description = "returns csv file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully edited"),
+    })
     @PutMapping(path = "/reset")
     public ResponseEntity<List<InitBorrowerDTO>> resetPasswords (@RequestBody List<Long> ids){
         List<InitBorrowerDTO>  response = borrowerService.resetPasswords(ids);
@@ -196,6 +303,10 @@ public class BorrowerController {
      * Deletes Borrowers by ID if the borrower has no lend media
      * @param ids The BorrowerIDs to be deleted
      */
+    @Operation(summary = "delete borrowers by their ids")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted"),
+    })
     @DeleteMapping()
     public void deleteBorrowersById(@RequestBody List<Long> ids){
         borrowerService.deleteBorrowersByID(ids);

@@ -7,6 +7,10 @@ import com.erim.bachelor.entities.LoanHistory;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.service.ILoanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,10 @@ public class LoanController {
         this.modelMapper = modelMapper;
     }
 
+    @Operation(summary = "Get LoanHistories for a Medium by MediumID", description = "Returns List of LoanHistory of a Medium")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+    })
     @GetMapping(path = "/histories/{mediumID}")
     public ResponseEntity<List<LoanHistoriesDTO>> getLoanHistories(@PathVariable Long mediumID){
 
@@ -47,6 +55,19 @@ public class LoanController {
      * @param mediumID id of medium
      * @return A list with all current loaned media to this borrower with borrowerID
      */
+    @Operation(summary = "Loan or unloan Medium",
+            description =
+                    """
+                            If Medium is not loaned by borrower => loan
+                            
+                            If Medium is loaned by borrower => unloan
+                            
+                            Returns List of Medium loaned by borrower""")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully loaned/unloaned"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Medium is already borrowed by another borrower",content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - Borrower/Medium not found",content = @Content)
+    })
     @PostMapping
     public ResponseEntity<List<MediumRequest>> loanMedium(@RequestParam Long borrowerID,
                                                           @RequestParam Long mediumID) {

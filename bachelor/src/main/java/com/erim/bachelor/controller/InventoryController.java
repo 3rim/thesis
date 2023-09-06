@@ -7,6 +7,10 @@ import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.service.IInventoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,7 @@ public class InventoryController {
      * Returns All stored MediaSeries
      * @return list of Inventory
      */
+    @Operation(summary = "Get inventory overview", description = "Returns list of MediaSeries")
     @GetMapping()
     public List<MediaSeries> getInventoryOverView(){return inventoryService.getInventoryOverview();}
 
@@ -45,6 +50,11 @@ public class InventoryController {
      * @param mediumID id of Medium
      * @return If Media exist return the Media if not return Http.NOT_FOUND
      */
+    @Operation(summary = "Get a specific medium by id", description = "Returns medium by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The medium was not found",content = @Content)
+    })
     @GetMapping(path = "{mediumID}")
     public ResponseEntity<MediumResponse> getMediumById(@PathVariable(value = "mediumID") Long mediumID){
         try {
@@ -60,6 +70,11 @@ public class InventoryController {
      * @param seriesID the id of the MediaSeries
      * @return MediaSeries
      */
+    @Operation(summary = "Get a specific mediaSeries by id", description = "Returns mediaSeries by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
+    })
     @GetMapping(path = "series/{seriesID}")
     public ResponseEntity<MediaSeries> getMediaSeries(@PathVariable Long seriesID){
         try {
@@ -76,6 +91,11 @@ public class InventoryController {
      * @param seriesID the id of the MediaSeries
      * @return List which contains every Media of a MediaSeries
      */
+    @Operation(summary = "Get Media in  MediaSeries", description = "Returns List of Media from a MediaSeries")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
+    })
     @GetMapping(path = "series/{seriesID}/media")
     public ResponseEntity<List<MediumResponse>> getMediaSeriesMedia(@PathVariable Long seriesID){
         try {
@@ -94,6 +114,10 @@ public class InventoryController {
      * @param series FormData of MediaSeries
      * @return The new added MediaSeries
      */
+    @Operation(summary = "Create new MediaSeries", description = "Returns created MediaSeries")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully created"),
+    })
     @PostMapping(path = "/series")
     public ResponseEntity<MediaSeries> createNewMediaSeries(@RequestBody MediaSeries series){
         try {
@@ -109,6 +133,12 @@ public class InventoryController {
      * @param seriesID The MediaSeriesID
      * @return ResponseEntity
      */
+    @Operation(summary = "Add new Medium to a MediaSeries", description = "Returns added Medium")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully added"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - MediumID already exists",content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
+    })
     @PostMapping(path = "series/{seriesID}/media" ,consumes = "application/json", produces = "application/json")
     public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesID){
         Medium newMedium;
@@ -132,6 +162,11 @@ public class InventoryController {
      * @param seriesID The id of the to patch MediaSeries
      * @return The patched MediaSeries
      */
+    @Operation(summary = "Patch MediaSeries", description = "Returns patched MediaSeries")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully patched"),
+            @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
+    })
     @PatchMapping(path = "series/{seriesID}")
     public ResponseEntity<MediaSeries> patchMediaSeries(@RequestBody MediaSeries mediaSeries, @PathVariable Long seriesID){
         try {
@@ -147,6 +182,12 @@ public class InventoryController {
      * @param mediumID id of medium
      * @return StatusResponse
      */
+    @Operation(summary = "Delete Medium by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Cannot delete borrowed medium",content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - The Medium was not found",content = @Content)
+    })
     @DeleteMapping(path = "{mediumID}")
     public ResponseEntity<String>deleteById(@PathVariable(value = "mediumID")Long mediumID){
         try {
@@ -158,6 +199,12 @@ public class InventoryController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
+    @Operation(summary = "Delete MediaSeries by id", description = "Deletion works only if MediaSeries does not contain Media")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - MediaSeries contains Media",content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
+    })
     @DeleteMapping(path = "series/{seriesID}")
     public ResponseEntity<String> deleteMediaSeries(@PathVariable Long seriesID){
         try {

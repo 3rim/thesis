@@ -4,6 +4,9 @@ import com.erim.bachelor.dto.AuthenticationRequest;
 import com.erim.bachelor.dto.AuthenticationResponse;
 import com.erim.bachelor.dto.PasswordChangeDTO;
 import com.erim.bachelor.security.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
+    @Operation(summary = "login with email and password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully logged in"),
+            @ApiResponse(responseCode = "400", description = "BadCredentials"),
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
         try {
@@ -33,6 +40,14 @@ public class AuthenticationController {
         }
     }
 
+    @Operation(summary = "Initial login",description = """
+            For the first login with oneTimePassword(numeric).
+            New password is set.
+            """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "New password has been set"),
+            @ApiResponse(responseCode = "400", description = "BadCredentials"),
+    })
     @PostMapping("/initialLogin")//TODO: define response
     public ResponseEntity<String> changeInitialPassword(@RequestBody PasswordChangeDTO request){
         try {
