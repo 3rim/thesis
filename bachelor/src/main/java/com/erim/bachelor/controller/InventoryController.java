@@ -106,15 +106,15 @@ public class InventoryController {
     /**
      * Add new Medium to a MediaSeries.
      * @param mediumRequest The Medium to be added into the MediaSeries
-     * @param seriesId The MediaSeriesID
+     * @param seriesID The MediaSeriesID
      * @return ResponseEntity
      */
-    @PostMapping(path = "series/{seriesId}/media" ,consumes = "application/json", produces = "application/json")
-    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesId){
+    @PostMapping(path = "series/{seriesID}/media" ,consumes = "application/json", produces = "application/json")
+    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesID){
         Medium newMedium;
         try {
             Medium medium = convertToMedium(mediumRequest);
-            newMedium = inventoryService.addNewMedium(medium,seriesId);
+            newMedium = inventoryService.addNewMedium(medium,seriesID);
             if(newMedium == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
             }else {
