@@ -108,27 +108,6 @@ public class BorrowerService {
     }
 
     /**
-     * Soft Delete a borrower. The borrower entity will still be in the database but marked as deleted or rather as "left the school".
-     * @param borrowerNr The borrower number.
-     */
-    public void softDeleteBorrowerByNr(Long borrowerNr) {
-        //TODO:No usage: individually deleting borrowers can lead to conflicts ?
-        Optional<Borrower> toDeleteBorrower = borrowerRepository.findBorrowerByBorrowerNr(borrowerNr);
-        if(toDeleteBorrower.isPresent()){
-            Borrower borrower = toDeleteBorrower.get();
-            borrower.setLeftTheSchool(true);
-            borrower.setBorrowerNr(null);
-            borrower.setEmail(null);
-            borrower.setBorrowerState(BorrowerState.DEACTIVATED);
-            borrower.setRoles(null);
-
-            borrowerRepository.save(borrower);
-        }
-        else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Borrower with borrowerNr:"+borrowerNr+" not found");
-    }
-
-    /**
      * Permanent delete borrowers if nothing is borrowed by them.
      * @param borrowerIDs List of Ids to be deleted
      */

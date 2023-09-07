@@ -38,34 +38,13 @@ import java.util.random.RandomGenerator;
 @RequiredArgsConstructor
 public class InitializeConfig {
 
-    private final BorrowerRepository repository;
     private static Long ID_COUNTER =0L;
     int leftLimit = 97; // letter 'a'
     int rightLimit = 122; // letter 'z'
     int targetStringLength = 10;
 
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> repository.findBorrowerByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return  authProvider;
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
 
     @Bean
     CommandLineRunner commandLineRunner(MediumRepository mediumRepository, BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){

@@ -6,7 +6,7 @@
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="firstName">
                     Vorname
                 </label>
-                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="firstName" type="text" placeholder="Vorname"
+                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="firstName" type="search" placeholder="Vorname"
                 v-model="firstName" >
             </div>
             <!--lastName-->
@@ -14,14 +14,15 @@
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="lastName">
                     Nachname
                 </label>
-                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="lastName" type="text" placeholder="Nachname"
+                <input class="appearance-none block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="lastName" type="search" placeholder="Nachname"
                 v-model="lastName" >
             </div>
             <!-- State selection -->
             <div class=" px-3 mb-6 md:mb-0">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="userState">Status</label>
-                <select v-model="userState" class=" block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
-                    <option disabled value hidden="">Please select one</option>
+                <select v-model="userState"  class=" block  bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" >
+                    <option disabled value hidden=""></option>
+                    <option></option>
                     <option>INITIALIZED</option>
                     <option>ACTIVE</option>
                     <option>DEACTIVATED</option>

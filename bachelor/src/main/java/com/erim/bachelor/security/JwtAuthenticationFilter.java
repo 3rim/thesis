@@ -35,17 +35,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //"Bearer " = 7 characters, after follows the jwt
         jwt =authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);//TODO: check for jwt_expiration
-
-
+        userEmail = jwtService.extractUsername(jwt);
 
         //SecurityContextHolder.getContext().getAuthentication() == null  ==> user not authenticated
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            //if valid update SecurityContext
             if(jwtService.isJwtValid(jwt,userDetails)){
-                //if valid update SecurityContext
+                //Setting the authorities sets the authenticated flag automatically to true in the token
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                //User is authenticated ==> set SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

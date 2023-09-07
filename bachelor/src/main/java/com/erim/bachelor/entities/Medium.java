@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @Builder
 @Entity
-@Table
 @AllArgsConstructor
 @NoArgsConstructor
 public class Medium {
@@ -24,38 +23,17 @@ public class Medium {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    /*private String mediumTyp;
-    private String ISBN;
-    @ElementCollection // sonst mekert er
-    private Set<Integer> year = new HashSet<>();
-    @ElementCollection
-    private Set<String> subjects = new HashSet<>();
-    private double originalPrice;
-*/
-    public Medium(Long mediumID) {
-        this.mediumID = mediumID;
-    }
-    public Medium(Long mediumID,String serialNr) {
-        this.mediumID = mediumID;
-        this.serialNr = serialNr;
-    }
-
-    /*
-    A many-to-one mapping means that many instances of this entity are mapped to one instance of another entityA many-to-one mapping means that many instances of this entity are mapped to one instance of another entity
-     */
+    //Many instances of this Medium are mapped to one instance Borrower
     @ManyToOne
     @JoinColumn(name = "borrower_id")
-    @JsonIgnoreProperties(value = {"mediumList", "handler","hibernateLazyInitializer"}, allowSetters = true)
+    @JsonIgnoreProperties("mediumList")
     private Borrower borrower;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "media_series_id")
     private MediaSeries mediaSeries;
 
-    /*
-     CascadeType.REMOVE : if an Entity of Medium is removed, also remove the associated Entities in LendHistory.
-     */
-    @OneToMany(mappedBy = "medium",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "medium",cascade=CascadeType.ALL)
     private List<LoanHistory> loanHistories = new ArrayList<>();
 
     /**
@@ -66,13 +44,14 @@ public class Medium {
         return this.getStatus() == Status.RENT;
     }
 
+
+    /**
+     *
+     * Synchronize bidirectional entity associations with JPA and Hibernate
+     * Due to Medium being the Entity to be persisted first ,weather for inventory or loaning, we need to sync LoanHistory and Medium.
+     * We add new LoanHistories to a Medium and persist the Medium. The LoanHistories will be updated/persisted automatically by JPA.
+     * ht<a href="tps://vladmihalcea.com/jpa-hibernate-synchronize-bidirectional-entity-associations/"></a>    */
     public void addNewLoanHistory(LoanHistory loanHistory) {
         this.loanHistories.add(loanHistory);
-        /*
-            https://vladmihalcea.com/jpa-hibernate-synchronize-bidirectional-entity-associations/
-            How to synchronize bidirectional entity associations with JPA and Hibernate
-         */
-        //loanHistory.setMedium(this);
-
     }
 }

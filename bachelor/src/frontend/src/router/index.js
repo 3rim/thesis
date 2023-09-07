@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LendUserSearchView from '../views/LendUserSearchView.vue'
-import LendView from '../views/LendView.vue'
+import LoanView from '../views/LoanView.vue'
 import InventoryView from '../views/InventoryView.vue'
 import MediaSeriesDetailsView from '../views/MediaSeriesDetailsView.vue'
 import MediumView from '../views/MediumView.vue'
@@ -13,7 +13,7 @@ import UserView from '../views/UserView.vue'
 import UserRolesView from '../views/UserRolesView.vue'
 import LoginView from '../views/LoginView.vue'
 import qs from 'qs'
-
+import store from '../store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,8 +40,8 @@ const router = createRouter({
     },
     {
       path: '/ausleihe/user',
-      name: 'ausleiheUser',
-      component: LendView
+      name: 'loanView',
+      component: LoanView
     },
     {
       path: '/inventory',
@@ -82,7 +82,16 @@ const router = createRouter({
   ],
   parseQuery: qs.parse,
   stringifyQuery: qs.stringify,
- 
+})
+
+router.beforeEach(async(to, from) => {
+  const loggedIn = store.state.auth.status.loggedIn
+  if(!loggedIn && 
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'login'
+    ){
+    return {name: 'login'}
+  }
 })
 
 export default router
