@@ -23,7 +23,7 @@
             @click="getUser(user)"
             >
             {{ user.firstName}} {{ user.lastName}} {{ user.borrowerGroup }} 
-            <span v-if="user.leftTheSchool === true"
+            <span v-if="user.borrowerState == 'DEACTIVATED'"
             class="text-[#6F1A07] font-bold px-3">
                  Hat die Schule verlassen</span>
             </li>

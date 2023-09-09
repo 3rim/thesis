@@ -180,7 +180,6 @@ public class BorrowerService {
         inActiveBorrowers.forEach(
                 borrower -> {
                     borrower.setBorrowerNr(null);
-                    borrower.setLeftTheSchool(true);
                     borrower.setEmail(null);
                     borrower.setBorrowerState(BorrowerState.DEACTIVATED);
 
