@@ -180,6 +180,64 @@
         class=" flex flex-col flex-1 items-center">
         <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ errorMessage }}</p>
     </div>
+
+    <!--Modal from HeadlessUI Framework-->
+<TransitionRoot appear :show="isOpen" as="template">
+      <Dialog as="div"  class="relative z-10" @close="closeModal">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black bg-opacity-25" />
+        </TransitionChild>
+  
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <DialogTitle
+                  as="h3"
+                  class=" text-lg font-medium leading-6 text-gray-900"
+                >
+                  ACHTUNG: Selbstdeaktivierung entdeckt!
+                </DialogTitle>
+                <div>
+                    <br>
+                    <p>Sie sind dabei Ihren eigenen Account zu deaktivieren. Wenn dies nicht gewünscht ist überprüfen Sie die hochgeladene CSV-Datei.</p>
+                    <br>
+                    <p>Ist dies gewünscht, wird nach uploud der CSV-Datei Ihr Account deaktiviert und Sie werden automatisch ausgeloggt!</p>
+                </div>
+        
+                <button
+                    type="button"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                    @click="closeModal"
+                  >
+                    Ich habe Verstanden
+                  </button>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+</TransitionRoot>
     
 </template>
 
@@ -189,6 +247,9 @@ import { ref } from 'vue';
 import Papa from 'papaparse';
 import FormData from 'form-data';
 import authHeader from '../services/authHeader';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import {TransitionRoot,TransitionChild,Dialog,DialogPanel,DialogTitle,} from '@headlessui/vue';
 
 const props = defineProps(['csvFile','file']);
 const currentUsers = ref();
@@ -209,6 +270,15 @@ const dateOfBirthIndex = 4;
 
 const newUsersCsv = ref();
 const newUsersLength = ref();
+const selfDeactivasion =ref(false);
+const isOpen = ref(false)
+
+const store = useStore();
+const router = useRouter();
+
+const closeModal= () =>  {
+    isOpen.value = false;
+}
 
 const getUsers = async () => {
     
@@ -235,6 +305,11 @@ function postFile() {
     }
     ).then(function (response) {
     //handle success
+    if(selfDeactivasion){
+        store.dispatch('auth/logout');
+        router.push('/login')
+    }
+        
     success.value = true;
     showPreview.value= false;
     noChange.value = false;
@@ -288,7 +363,9 @@ const analyseChanges =() =>{
     });
     //Remaining users to be deactivated
     deactiveUsers.value = dataBaseUsersArray;
-
+    console.log(deactiveUsers.value)
+    checkSelfDeactivasion(deactiveUsers.value);
+    
     //if csv and database have differeces show the preview
     if(newUsers.value.length > 0 || changedUsers.value.length >0 || deactiveUsers.value.length >1){
         showPreview.value = true;
@@ -316,6 +393,18 @@ function changeDetected(a,b) {
         return false;
         }
 }
+
+function checkSelfDeactivasion(userToDeactivateArray){
+    let loggedInAdmin = JSON.parse(localStorage.getItem('user'));
+    userToDeactivateArray.forEach( (user) =>{
+        if(user[0] == loggedInAdmin.borrowerNr){
+            console.log("Admin is about to self-deactivate himself")
+            selfDeactivasion.value = true;
+            isOpen.value = true;
+        }
+    })
+}
+
 analyseChanges();
 
 function downloadBlob(){
