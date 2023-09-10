@@ -305,7 +305,7 @@ function postFile() {
     }
     ).then(function (response) {
     //handle success
-    if(selfDeactivasion){
+    if(selfDeactivasion.value){
         store.dispatch('auth/logout');
         router.push('/login')
     }
