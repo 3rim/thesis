@@ -44,6 +44,7 @@ public class AuthenticationService {
                     .jwt(jwtToken)
                     .roles(roleSet)
                     .id(borrower.getBorrowerID())
+                    .borrowerNr(borrower.getBorrowerNr())
                     .build();
         }
     }

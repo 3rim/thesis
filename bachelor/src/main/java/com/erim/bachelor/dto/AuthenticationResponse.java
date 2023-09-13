@@ -17,5 +17,6 @@ public class AuthenticationResponse {
     private String jwt;
     private Set<Role> roles;
     private long id;
+    private long borrowerNr;
     private boolean initialLogin;
 }

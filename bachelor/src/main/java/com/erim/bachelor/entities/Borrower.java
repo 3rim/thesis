@@ -41,7 +41,6 @@ public class Borrower implements UserDetails {
     @Enumerated(EnumType.STRING)
     private BorrowerState borrowerState;
     private String password;
-    private boolean leftTheSchool;
 
     @Column(name = "class")
     private String borrowerGroup;

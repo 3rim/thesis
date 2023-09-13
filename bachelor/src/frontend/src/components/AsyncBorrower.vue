@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col flex-1 items-center">
         <!-- User  -->
-        <div v-if="borrowerData.leftTheSchool ===true">
+        <div v-if="borrowerData.borrowerState == 'DEACTIVATED'">
             <p class="text-[#6F1A07] font-bold underline">Nicht mehr auf der Schule!</p>
         </div>
         <div class="py-1 ">

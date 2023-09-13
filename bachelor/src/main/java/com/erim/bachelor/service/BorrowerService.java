@@ -11,11 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,7 +106,7 @@ public class BorrowerService {
     }
 
     /**
-     * Permanent delete borrowers if nothing is borrowed by them.
+     * Permanent delete borrowers if nothing is borrowed by them and BorrowerState is not ACTIVE.
      * @param borrowerIDs List of Ids to be deleted
      */
     public void deleteBorrowersByID(List<Long> borrowerIDs){
@@ -116,7 +114,7 @@ public class BorrowerService {
             Optional<Borrower> borrower = borrowerRepository.findById(id);
             if(borrower.isPresent()){
                 Borrower b = borrower.get();
-                if(b.getMediumList().isEmpty()){
+                if(b.getMediumList().isEmpty() && b.getBorrowerState() != BorrowerState.ACTIVE){
                     b.getLoanHistories().forEach(loanHistory -> loanHistory.setBorrower(null));
                     borrowerRepository.deleteById(id);
                 }
@@ -182,7 +180,6 @@ public class BorrowerService {
         inActiveBorrowers.forEach(
                 borrower -> {
                     borrower.setBorrowerNr(null);
-                    borrower.setLeftTheSchool(true);
                     borrower.setEmail(null);
                     borrower.setBorrowerState(BorrowerState.DEACTIVATED);
 
