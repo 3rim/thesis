@@ -12,11 +12,17 @@ specification, design and implementation.
 # Tech-stack
 
 ## Backend
-Java 17
-Spring-Boot
-
+<ul>
+  <li>Java 17 </li>
+  <li>Spring-Boot </li>
+  <li>Spring-MVC </li>
+  <li>Spring-Data </li>
+  <li>Spring-Security</li>
+</ul>
 ## Frontend
-Vue.js
-Vuex
-Vue-Router
-Tailwind
+<ul>
+  <li>Vue.js </li>
+  <li>Vue-Router </li>
+  <li>Vuex </li>
+  <li>Tailwind.css </li>
+</ul>
