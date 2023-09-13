@@ -10,9 +10,11 @@ source CSS framework for the frontend. The work describes the requirements analy
 specification, design and implementation.
 
 # Tech-stack
+
 ## Backend
 Java 17
 Spring-Boot
+
 ## Frontend
 Vue.js
 Vuex
