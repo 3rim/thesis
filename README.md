@@ -57,19 +57,24 @@ Backend starts on localhost:8080. Now you can acces Swagger-UI under `http://loc
 
 # Swagger-UI
 
-Backend supports Swagger-UI. Start backend and navigate to `http://localhost:8080/swagger-ui/index.html#/`
-To properly test the backend API you will need to log-in first.
-![image](https://github.com/3rim/thesis/assets/37411005/98f6d198-e630-4b5b-8c49-c44f26eb6ab7)
-
-<img src="https://your-image-url.type](https://github.com/3rim/thesis/assets/37411005/98f6d198-e630-4b5b-8c49-c44f26eb6ab7" width="20">
+Backend supports Swagger-UI. Start backend and navigate to `http://localhost:8080/swagger-ui/index.html#/`.
+To properly test the backend API you will need to log-in first. 
+<br>
+<img src="https://github.com/3rim/thesis/assets/37411005/98f6d198-e630-4b5b-8c49-c44f26eb6ab7" width="70%">
 
 Login example call (username: `admin`, password: `user`
-![image](https://github.com/3rim/thesis/assets/37411005/8c5df751-b03f-4b37-acf8-00c32e9d82ae)
+<br>
+<img src="https://github.com/3rim/thesis/assets/37411005/8c5df751-b03f-4b37-acf8-00c32e9d82ae" width="70%">
 
 copy jwt in response body
-![image](https://github.com/3rim/thesis/assets/37411005/22214f8b-aeba-4b0f-b0bb-f082ae2cc07c)
+<br>
+<img src="https://github.com/3rim/thesis/assets/37411005/22214f8b-aeba-4b0f-b0bb-f082ae2cc07c" width="70%">
 
 add jwt via authorize button at the top
-![image](https://github.com/3rim/thesis/assets/37411005/d5fd5ba5-c510-458d-b7f7-3e4c3770868a)
+<br>
+<img src="https://github.com/3rim/thesis/assets/37411005/d5fd5ba5-c510-458d-b7f7-3e4c3770868a" width="70%">
+<br>
+
+You are now logged in as Admin. Every following request is authorized. Have fun.
 
 
