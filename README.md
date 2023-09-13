@@ -61,6 +61,8 @@ Backend supports Swagger-UI. Start backend and navigate to `http://localhost:808
 To properly test the backend API you will need to log-in first.
 ![image](https://github.com/3rim/thesis/assets/37411005/98f6d198-e630-4b5b-8c49-c44f26eb6ab7)
 
+<img src="https://your-image-url.type](https://github.com/3rim/thesis/assets/37411005/98f6d198-e630-4b5b-8c49-c44f26eb6ab7" width="20">
+
 Login example call (username: `admin`, password: `user`
 ![image](https://github.com/3rim/thesis/assets/37411005/8c5df751-b03f-4b37-acf8-00c32e9d82ae)
 
