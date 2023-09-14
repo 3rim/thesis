@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MediumRepository extends JpaRepository<Medium,Long> {
-    //TODO findBySerialNr , findAllByState
+    //TODO findBySerialNr
 }

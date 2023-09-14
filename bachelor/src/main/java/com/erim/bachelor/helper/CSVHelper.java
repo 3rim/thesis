@@ -19,7 +19,6 @@ public class CSVHelper {
     public static String TYPE = "text/csv";
 
     public static boolean hasCSVFormat(MultipartFile file) {
-
         return TYPE.equals(file.getContentType());
     }
 
@@ -58,7 +57,7 @@ public class CSVHelper {
     }
 
     public static List<Borrower> csvToUsers(InputStream is) {
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             char delimiter;
             String header = fileReader.readLine();
             if(header.indexOf(';') != -1)
