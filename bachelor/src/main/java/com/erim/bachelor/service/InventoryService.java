@@ -66,6 +66,12 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
+    public List<Medium> getMediumBySerialNr(String serialNr){
+        return mediumRepository.findBySerialNrContainsIgnoreCase(serialNr);
+    }
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteMedium(Long id) throws MediumIsBorrowedException {
         Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);

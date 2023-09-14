@@ -4,6 +4,7 @@ import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -73,4 +74,11 @@ public interface IInventoryService {
      */
     void deleteMediaSeries(Long mediaSeriesId) throws MediaSeriesNotEmptyException;
 
+    /**
+     * Search medium by serialnumber.
+     *
+     * @param serialNr SerialNumber of Medium.
+     * @return List containing every medium that matches with serialNr.
+     */
+    List<Medium> getMediumBySerialNr(String serialNr);
 }

@@ -65,6 +65,24 @@ public class InventoryController {
         }
     }
 
+
+    /**
+     * Get medium by serialnumber.
+     * @param serialNr serialnumber
+     * @return List witch every medium that matched search via serialNr.
+     */
+    @GetMapping(path = "serialNr")
+    public ResponseEntity<List<MediumResponse>> getMediumBySerialNr(@RequestParam String serialNr){
+        try {
+            List<Medium> mediaList = inventoryService.getMediumBySerialNr(serialNr);
+            List<MediumResponse> response = mediaList.stream().map(this::convertToDTO).toList();
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * Get a specific MediaSeries by its id
      * @param seriesID the id of the MediaSeries
