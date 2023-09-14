@@ -31,6 +31,9 @@ public class LoanService implements ILoanService {
         this.loanHistoryRepository = loanHistoryRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Borrower loanUnloanMedium(Long borrowerID, Long mediumID) throws MediumIsBorrowedException {
         Borrower borrower;
@@ -52,12 +55,21 @@ public class LoanService implements ILoanService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LoanHistory> getLoanHistories(Long mediumID) {
         return loanHistoryRepository.findAllLoanHistoryByMediumMediumID(mediumID);
     }
 
 
+    /**
+     * Helper-Method to unloan a medium loaned by a borrower
+     * @param borrower The borrower to unloan from
+     * @param medium The medium to take back
+     * @return The updated Borrower
+     */
     private Borrower unloanFromBorrower(Borrower borrower, Medium medium) {
         medium.setStatus(Status.AVAILABLE);
         medium.setBorrower(null);
@@ -69,6 +81,12 @@ public class LoanService implements ILoanService {
         return  borrower;
     }
 
+    /**
+     * Helper-Method to loan a medium to borrower
+     * @param borrower The borrower to loan to
+     * @param medium The medium to be loaned
+     * @return The updated Borrower
+     */
     private Borrower loanToBorrower(Borrower borrower, Medium medium) {
         medium.setStatus(Status.RENT);
         medium.setBorrower(borrower);

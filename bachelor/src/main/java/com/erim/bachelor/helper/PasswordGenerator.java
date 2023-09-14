@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 
 public class PasswordGenerator {
 
-
     /**
      * Generates 8 Char long String containing only numbers
      * @return 8 Char long String containing only numbers
@@ -22,7 +21,6 @@ public class PasswordGenerator {
         final String chars ="0123456789";
         SecureRandom random = new SecureRandom();
         StringBuilder builder = new StringBuilder();
-
 
         for(int i=0; i<len; i++){
             int randomIndex = random.nextInt(chars.length());

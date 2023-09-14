@@ -14,7 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-
+/**
+ * Helper-Class for parsing CSV files to Borrower-Entity and vise versa
+ */
 public class CSVHelper {
     public static String TYPE = "text/csv";
 
@@ -22,6 +24,15 @@ public class CSVHelper {
         return TYPE.equals(file.getContentType());
     }
 
+    /**
+     * Returns a CSV-File with Borrowers.
+     * CSV-File Headers: <br>
+     *
+     * | Nr | FirstName | LastName | DateOfBirth | email |
+     *
+     * @param borrowers List of borrowers.
+     * @return A CSV-File containing all borrowers except those which are deactivated.
+     */
     public static ByteArrayInputStream usersToCSV(List<Borrower> borrowers){
         CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
 
@@ -56,6 +67,17 @@ public class CSVHelper {
         }
     }
 
+    /**
+     * CSV File to List of Borrowers.
+     * Accepted delimiters: ; and ,
+     * StandardCharsets.UTF_8
+     *
+     * CSV-Headers:
+     * | Nr/ID | FirstName | LastName | Group | dateOfBirth | email |
+     *
+     * @param is inputStream
+     * @return List with Borrowers.
+     */
     public static List<Borrower> csvToUsers(InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             char delimiter;

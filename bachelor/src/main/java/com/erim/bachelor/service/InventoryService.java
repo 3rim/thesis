@@ -26,8 +26,7 @@ public class InventoryService implements IInventoryService {
     }
 
     /**
-     * Returns an empty List or all MediaSeries
-     * @return List with all MediaSeries stored in database
+     * {@inheritDoc}
      */
     @Override
     public List<MediaSeries> getInventoryOverview() {
@@ -36,8 +35,8 @@ public class InventoryService implements IInventoryService {
 
 
     /**
-     * Add new Medium to inventory if id does not exist already otherwise return null
-     *
+     * Add new Medium to inventory if id does not exist already otherwise return null.
+     *{@inheritDoc}
      * @param medium The new Medium to be added
      * @return null or the added Medium
      */
@@ -56,11 +55,17 @@ public class InventoryService implements IInventoryService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Medium getMedium(Long id) {
         return mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteMedium(Long id) throws MediumIsBorrowedException {
         Medium medium = mediumRepository.findById(id).orElseThrow(NoSuchElementException::new);
@@ -71,21 +76,36 @@ public class InventoryService implements IInventoryService {
             mediumRepository.deleteById(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MediaSeries createNewMediaSeries(MediaSeries series) {
         return mediaSeriesRepository.save(series);
     }
+
+    /**
+     * {@inheritDoc}
+     * @param id ID of the MediaSeries
+     */
     @Override
     public MediaSeries getMediaSeries(Long id) {
         return mediaSeriesRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param mediaSeriesId ID of MediaSeries
+     */
     @Override
     public List<Medium> getMediaSeriesMedia(Long mediaSeriesId) {
         MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
         return mediaSeries.getMediumList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MediaSeries patchMediaSeries(Long id,MediaSeries mediaSeries) {
         if(id==null)
@@ -97,6 +117,10 @@ public class InventoryService implements IInventoryService {
         mediaSeries.setId(id);
         return mediaSeriesRepository.save(mediaSeries);
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteMediaSeries(Long mediaSeriesId) throws MediaSeriesNotEmptyException {
         MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
