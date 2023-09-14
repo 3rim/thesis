@@ -20,8 +20,8 @@ public class BorrowerDTO {
     private String lastName;
     private String borrowerGroup;
     private List<MediumResponse> mediumList;
-    private boolean leftTheSchool;
     private BorrowerState borrowerState;
+    //date of birth
     private String dob;
     private Set<Role> roles ;
 }

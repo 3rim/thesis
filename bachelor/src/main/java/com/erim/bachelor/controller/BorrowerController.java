@@ -1,7 +1,7 @@
 package com.erim.bachelor.controller;
 
-import com.erim.bachelor.dto.InitBorrowerDTO;
 import com.erim.bachelor.dto.BorrowerDTO;
+import com.erim.bachelor.dto.InitBorrowerDTO;
 import com.erim.bachelor.dto.MediumResponse;
 import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.enums.BorrowerState;
@@ -10,10 +10,8 @@ import com.erim.bachelor.helper.CSVHelper;
 import com.erim.bachelor.service.BorrowerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,10 +19,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,8 +32,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -52,11 +49,6 @@ public class BorrowerController {
         this.modelMapper = modelMapper;
     }
 
-    private final String csvExample = """
-            id,firstName,lastName,group,DateOfBirth,Email
-            1,August,Dowyer,5a,12.06.2000,august.dowyer@schulnetz-gsm.de
-            2,Livia,Truitt,5a,13.06.2000,livia.truitt@schulnetz-gsm.de          
-            """;
 
     /**
      * Get all Borrowers
@@ -168,7 +160,6 @@ public class BorrowerController {
             return new ResponseEntity<>(response,HttpStatus.OK);
 
         }catch (Exception e){
-            System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -156,7 +156,7 @@ public class BorrowerService {
         Borrower borrower = borrowerRepository.findById(id).orElseThrow(NoSuchElementException::new);
         borrower.setRoles(roles);
         borrowerRepository.save(borrower);
-        return borrower;
+        return borrower; //TODO: return value is never used
     }
 
 

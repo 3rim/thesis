@@ -1,12 +1,11 @@
 package com.erim.bachelor.config;
 
+import com.erim.bachelor.entities.Borrower;
 import com.erim.bachelor.entities.MediaSeries;
+import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.BorrowerState;
 import com.erim.bachelor.enums.Role;
 import com.erim.bachelor.enums.Status;
-import com.erim.bachelor.entities.Borrower;
-import com.erim.bachelor.entities.Medium;
-import com.erim.bachelor.repositories.MediumRepository;
 import com.erim.bachelor.repositories.BorrowerRepository;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import io.swagger.v3.oas.models.Components;
@@ -21,39 +20,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.random.RandomGenerator;
 
 @Configuration
 @RequiredArgsConstructor
 public class InitializeConfig {
-
     private static Long ID_COUNTER =0L;
-    int leftLimit = 97; // letter 'a'
-    int rightLimit = 122; // letter 'z'
-    int targetStringLength = 10;
-
-
-
 
     @Bean
-    CommandLineRunner commandLineRunner(MediumRepository mediumRepository, BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){
+    CommandLineRunner commandLineRunner(BorrowerRepository borrowerRepository, MediaSeriesRepository mediaSeriesRepository){
         return args -> {
-
-            ArrayList<MediaSeries> mediaSeries = new ArrayList<>(
-                    Arrays.asList(
-
-                        ));
             //MediaSeries IPAD 7
             MediaSeries ipad7 = MediaSeries
                     .builder()
@@ -118,9 +96,7 @@ public class InitializeConfig {
                             //User
                             Borrower.builder().borrowerID(100L).borrowerNr(100L).email("user")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(new HashSet<Role>(){{
-                                        add(Role.USER);
-                                    }})
+                                    .roles(new HashSet<>())
                                     .firstName("user")
                                     .lastName("user")
                                     .dob(LocalDate.now())
@@ -129,7 +105,7 @@ public class InitializeConfig {
                             //Admin
                             Borrower.builder().borrowerID(101L).borrowerNr(101L).email("admin")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(new HashSet<Role>(){{
+                                    .roles(new HashSet<>(){{
                                         add(Role.ADMIN);
                                     }})
                                     .firstName("admin")
@@ -140,7 +116,7 @@ public class InitializeConfig {
                             //Librarian
                             Borrower.builder().borrowerID(102L).borrowerNr(102L).email("librarian")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(new HashSet<Role>(){{
+                                    .roles(new HashSet<>(){{
                                         add(Role.LIBRARIAN);
                                     }})
                                     .firstName("Librarian")
@@ -151,7 +127,7 @@ public class InitializeConfig {
                             //Inventory_Helper
                             Borrower.builder().borrowerID(103L).borrowerNr(103L).email("inventoryHelper")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(new HashSet<Role>(){{
+                                    .roles(new HashSet<>(){{
                                         add(Role.INVENTORY_HELPER);
                                     }})
                                     .firstName("inventoryHelper")
@@ -162,7 +138,7 @@ public class InitializeConfig {
 
                             Borrower.builder().borrowerID(104L).borrowerNr(104L).email("loanHelper")
                                     .password("$2a$12$QdF4EsO1zP3wbJVCFCTn6ec.6QrTuJQnZf555ojikHW8910/KcFne")
-                                    .roles(new HashSet<Role>(){{
+                                    .roles(new HashSet<>(){{
                                         add(Role.LOAN_HELPER);
                                     }})
                                     .firstName("loanHelper")
@@ -215,7 +191,7 @@ public class InitializeConfig {
     public OpenAPI customizeOpenAPI() {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
-                .info(new Info().title("REST-API: Media-Loaning-Serverice ")
+                .info(new Info().title("REST-API: Media-Loaning-Service ")
                         .description("Thesis Project")
                         .version("1.0").contact(new Contact()
                                 .name("Erim Medi")
