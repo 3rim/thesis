@@ -178,7 +178,7 @@
     <!--ErrorMessage-->
     <div v-if="err"
         class=" flex flex-col flex-1 items-center">
-        <p class="flex items-center bg-red-200 px-2 py-4 rounded" >{{ errorMessage }}</p>
+        <p class="flex items-center bg-red-200 px-2 py-4 rounded" >Die CSV-Datei konnte nicht verarbeitet werden. Prüfen sie die Datei auf korrektheit.</p>
     </div>
 
     <!--Modal from HeadlessUI Framework-->
@@ -324,6 +324,7 @@ function postFile() {
   })
   .catch(function (response) {
     //handle error
+    console.log(response)
     success.value= false;
     showPreview.value =false;
     noChange.value = false;
