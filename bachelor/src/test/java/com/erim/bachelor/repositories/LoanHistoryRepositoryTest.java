@@ -27,19 +27,28 @@ class LoanHistoryRepositoryTest {
     BorrowerRepository borrowerRepository;
     @Autowired
     MediumRepository mediumRepository;
+    @Autowired
+    MediaSeriesRepository mediaSeriesRepository;
 
     @BeforeEach
     void setUp() {
         loanHistoryRepository.deleteAll();
 
 
+        MediaSeries mediaSeries = MediaSeries.builder()
+                .title("test")
+                .mediaTyp("testSeries")
+                .mediumList(new ArrayList<>())
+                .build();
 
+        mediaSeriesRepository.save(mediaSeries);
         Borrower borrower = new Borrower(1L,"Erim","Medi");
         borrowerRepository.save(borrower);
 
         Medium medium = Medium.builder()
                 .mediumID(1L)
                 .borrower(borrower)
+                .mediaSeries(mediaSeries)
                 .build();
         mediumRepository.save(medium);
         mediumRepository.flush();
