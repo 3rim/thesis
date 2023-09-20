@@ -4,6 +4,7 @@ package com.erim.bachelor.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class MediaSeries {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) //https://www.baeldung.com/spring-swagger-hide-field
     private Long id;
     private String ISBN_EAN;
+    @NotNull
     private String title;
     private String mediaTyp;
     @ElementCollection // Jahrgänge
