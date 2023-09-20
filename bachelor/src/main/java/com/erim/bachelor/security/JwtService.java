@@ -40,7 +40,7 @@ public class JwtService {
                 .setHeaderParam("typ","JWT")
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 3* HOUR))
+                .setExpiration(new Date(System.currentTimeMillis() + 12* HOUR))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
