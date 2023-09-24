@@ -203,7 +203,8 @@ public class InventoryController {
     @Operation(summary = "Delete Medium by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - Cannot delete borrowed medium",content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "406", description = "Bad Request - Cannot delete borrowed medium",content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found - The Medium was not found",content = @Content)
     })
     @DeleteMapping(path = "{mediumID}")
@@ -212,7 +213,7 @@ public class InventoryController {
             inventoryService.deleteMedium(mediumID);
             return new ResponseEntity<>("Medium deleted", HttpStatus.OK);
         } catch (MediumIsBorrowedException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_ACCEPTABLE);
         }catch (NoSuchElementException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
