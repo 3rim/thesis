@@ -106,6 +106,10 @@ const addMedium = () =>{
                         if(error.response.status === 400){
                         errorMessage.value ="Anfrage konnte nicht verarbeitet werden"
                         }
+                        if(error.response.status === 404){
+                            console.log(error)
+                            errorMessage.value =error.response.data.message
+                        }
                         if(error.response.status === 406){
                             console.log(error)
                             errorMessage.value =error.response.data.message
