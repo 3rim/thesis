@@ -2,8 +2,6 @@
     <div class="container">
         <div class=" pt-4 mb-8  flex">
             <font-awesome-icon class="py-2 px-1" icon="fa-solid fa fa-barcode" size="2x" />
-            <div>
-            </div>
             <div class="w-full">
                 <input type="number"  placeholder="Mediencode einscannen oder tippen" v-model="mediaID"
                     @keyup.enter="loanMedia" class="py-2 px-1 w-full bg-transparent border-b [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none
@@ -63,8 +61,17 @@ const loanMedia = async () => {
         await axios.post('/api/v1/loan', null, config)
             .catch(function (error) {
                 if (error) {
+                    console.log(error.response.status)
                     err.value = true;
-                    errorMessage.value = error.response.data.message
+                    if(error.response.status === 404){
+                        errorMessage.value ="MediumID:"+mediaID.value+" nicht gefunden"
+                    }
+                    if(error.response.status === 400){
+                        errorMessage.value ="Anfrage konnte nicht verarbeitet werden"
+                    }
+                    if(error.response.status === 500){
+                        errorMessage.value ="Server fehler... Versuchen Sie es erneut"
+                    }
                 }
             });
         forceRerender();
