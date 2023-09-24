@@ -1,5 +1,4 @@
 <template>
-    <!--Todo: remove the last blank line in deactivateUsers-->
     <div
     v-if="showPreview">
 
