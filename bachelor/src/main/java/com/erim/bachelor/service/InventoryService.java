@@ -3,6 +3,7 @@ package com.erim.bachelor.service;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
+import com.erim.bachelor.exceptions.MediumIdExistsException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.repositories.MediumRepository;
@@ -41,18 +42,19 @@ public class InventoryService implements IInventoryService {
      * @return null or the added Medium
      */
     @Override
-    public Medium addNewMedium(Medium medium,Long mediaSeriesId){
+    public Medium addNewMedium(Medium medium,Long mediaSeriesId) throws MediumIdExistsException {
         MediaSeries mediaSeries = mediaSeriesRepository.findById(mediaSeriesId).orElseThrow(NoSuchElementException::new);
 
-        if(!mediumRepository.existsById(medium.getMediumID())){
+        if(mediumRepository.existsById(medium.getMediumID())){
+            throw new MediumIdExistsException("MediumId already taken");
+        }
+        else{
             medium.setMediaSeries(mediaSeries);
             mediaSeries.getMediumList().add(medium);
             mediaSeriesRepository.save(mediaSeries);
             return medium;
         }
-        else {
-            return null;
-        }
+
     }
 
     /**

@@ -3,6 +3,7 @@ package com.erim.bachelor.service;
 import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
+import com.erim.bachelor.exceptions.MediumIdExistsException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import org.springframework.data.jpa.repository.Query;
 
@@ -22,7 +23,7 @@ public interface IInventoryService {
      * @param mediaSeriesId ID of MediaSeries
      * @return added Medium
      */
-    Medium addNewMedium(Medium medium,Long mediaSeriesId);
+    Medium addNewMedium(Medium medium,Long mediaSeriesId) throws MediumIdExistsException;
 
     /**
      * Get a Medium by its ID

@@ -246,7 +246,6 @@ public class BorrowerController {
     })
     @PostMapping()
     public ResponseEntity<List<InitBorrowerDTO>> importCSV(
-            @Parameter(example = "Vatsal")
             @RequestParam("file")  MultipartFile file){
         if(CSVHelper.hasCSVFormat(file)){
             try{

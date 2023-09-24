@@ -3,6 +3,7 @@ package com.erim.bachelor.entities;
 import com.erim.bachelor.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class Medium {
 
     @ManyToOne
     @JoinColumn(name = "media_series_id")
+    @NotNull
     private MediaSeries mediaSeries;
 
     @OneToMany(mappedBy = "medium",cascade=CascadeType.ALL)

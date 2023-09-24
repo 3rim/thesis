@@ -5,6 +5,7 @@ import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
+import com.erim.bachelor.exceptions.MediumIdExistsException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.service.IInventoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -158,18 +159,17 @@ public class InventoryController {
             @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
     })
     @PostMapping(path = "series/{seriesID}/media" ,consumes = "application/json", produces = "application/json")
-    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesID){
+    public ResponseEntity<MediumResponse> addMedium(@RequestBody MediumRequest mediumRequest, @PathVariable Long seriesID) {
         Medium newMedium;
+        Medium medium = null;
         try {
-            Medium medium = convertToMedium(mediumRequest);
-            newMedium = inventoryService.addNewMedium(medium,seriesID);
-            if(newMedium == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID() +" already exists");
-            }else {
-                return new ResponseEntity<>(convertToDTO(newMedium), HttpStatus.OK);
-            }
+            medium = convertToMedium(mediumRequest);
+            newMedium = inventoryService.addNewMedium(medium, seriesID);
+            return new ResponseEntity<>(convertToDTO(newMedium), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "mediaSeries: " +seriesID+" not found");
+        } catch (MediumIdExistsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID()+ " already exists");
         }
     }
 
