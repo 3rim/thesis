@@ -51,9 +51,9 @@ public class BorrowerController {
 
 
     /**
-     * Get all Borrowers
-     *
-     * @return A List which is either empty or contains all Borrowers
+     * Get Borrowers by Page. Pageindex starts at 0.
+     * Code reference: <a href="https://www.bezkoder.com/spring-boot-pagination-filter-jpa-pageable/">bezkoder</a>
+     * @return Page of Borrowers
      */
     @Operation(summary = "Get Pageable borrowers",description = """
             Get borrowers in small chunks(by Page).
@@ -108,7 +108,7 @@ public class BorrowerController {
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int pageSize,
+            @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "borrowerID,desc")String[] sort
             ){
         try {
