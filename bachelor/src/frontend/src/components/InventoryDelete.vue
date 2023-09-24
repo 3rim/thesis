@@ -70,7 +70,12 @@ const deleteMedium = (ID) =>{
                     if(error.response){
                         err.value = true;
                         success.value = false;
-                        errorMessage.value = error.response.data
+                        if(error.response.status == 404)
+                            errorMessage.value = "Medien ID existiert nicht"
+                        if(error.response.status == 400)
+                            errorMessage.value = "Eingabe nicht verarbeitbar"
+                        else
+                        errorMessage.value = "Server fehler... Probieren Sie es später erneut"
                     }
                 });
 
