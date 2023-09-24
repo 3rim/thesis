@@ -168,7 +168,7 @@ public class InventoryController {
             newMedium = inventoryService.addNewMedium(medium, seriesID);
             return new ResponseEntity<>(convertToDTO(newMedium), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "mediaSeries: " +seriesID+" nicht gefunden");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "mediaSeries: " +seriesID+" nicht gefunden");
         } catch (MediumIdExistsException e) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Medium ID: " +medium.getMediumID()+ " bereits belegt");
         }
