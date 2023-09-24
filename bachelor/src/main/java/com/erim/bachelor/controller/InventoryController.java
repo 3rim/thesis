@@ -155,7 +155,8 @@ public class InventoryController {
     @Operation(summary = "Add new Medium to a MediaSeries", description = "Returns added Medium")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully added"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - MediumID already exists",content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request "),
+            @ApiResponse(responseCode = "406", description = "Bad Request - MediumID already exists",content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found - The mediaSeries was not found",content = @Content)
     })
     @PostMapping(path = "series/{seriesID}/media" ,consumes = "application/json", produces = "application/json")
@@ -167,9 +168,9 @@ public class InventoryController {
             newMedium = inventoryService.addNewMedium(medium, seriesID);
             return new ResponseEntity<>(convertToDTO(newMedium), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "mediaSeries: " +seriesID+" not found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "mediaSeries: " +seriesID+" nicht gefunden");
         } catch (MediumIdExistsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Medium ID: " +medium.getMediumID()+ " already exists");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Medium ID: " +medium.getMediumID()+ " bereits belegt");
         }
     }
 
