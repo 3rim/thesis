@@ -83,7 +83,7 @@ public class BorrowerService {
                 }
             }
             //Remaining borrowers will be deactivated
-            softDelete(allActiveUsers); //TODO: Use thread for better performance?
+            softDelete(allActiveUsers);
         }
         catch (IOException e) {
             throw new RuntimeException("fail to store csv data "+e.getMessage());
@@ -156,7 +156,7 @@ public class BorrowerService {
         Borrower borrower = borrowerRepository.findById(id).orElseThrow(NoSuchElementException::new);
         borrower.setRoles(roles);
         borrowerRepository.save(borrower);
-        return borrower; //TODO: return value is never used
+        return borrower;
     }
 
 

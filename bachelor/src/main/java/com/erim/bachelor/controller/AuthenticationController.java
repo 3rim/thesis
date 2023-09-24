@@ -48,7 +48,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "New password has been set"),
             @ApiResponse(responseCode = "400", description = "BadCredentials"),
     })
-    @PostMapping("/initialLogin")//TODO: define response
+    @PostMapping("/initialLogin")
     public ResponseEntity<String> changeInitialPassword(@RequestBody PasswordChangeDTO request){
         try {
             authenticationService.changeInitialPassword(request);

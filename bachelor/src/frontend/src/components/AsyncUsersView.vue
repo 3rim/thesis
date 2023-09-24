@@ -60,7 +60,7 @@
                         <button 
                         class="ml-5 bg-blue-500 hover:bg-blue-700 px-2 text-white text-xs font-bold rounded"
                         @click="editRoles(borrower.id)">
-                            Rolen bearbeiten
+                            Rollen bearbeiten
                         </button>
                     </td>
                 </tr>

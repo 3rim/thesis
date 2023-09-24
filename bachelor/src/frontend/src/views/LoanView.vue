@@ -2,13 +2,12 @@
     <div class="container">
         <div class=" pt-4 mb-8  flex">
             <font-awesome-icon class="py-2 px-1" icon="fa-solid fa fa-barcode" size="2x" />
-            <div>
-            </div>
             <div class="w-full">
-                <input type="text"  placeholder="Mediencode einscannen oder tippen" v-model="mediaID"
-                    @keyup.enter="loanMedia" class="py-2 px-1 w-full bg-transparent border-b
+                <input type="number"  placeholder="Mediencode einscannen oder tippen" v-model="mediaID"
+                    @keyup.enter="loanMedia" class="py-2 px-1 w-full bg-transparent border-b [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none
                 focus:border-b-gray-600 
                 focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]" />
+                
             </div>
             <div>
                 <button @click="loanMedia" type="submit"
@@ -33,6 +32,10 @@ import { ref } from 'vue';
 import axios from "axios";
 import { useRoute } from "vue-router";
 import authHeader from '../services/authHeader';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
+
+const inputRules = yup.number();
 
 const err = ref(false);
 const errorMessage = ref("");
@@ -58,8 +61,22 @@ const loanMedia = async () => {
         await axios.post('/api/v1/loan', null, config)
             .catch(function (error) {
                 if (error) {
+                    console.log(error.response.status)
                     err.value = true;
-                    errorMessage.value = error.response.data.message
+                    if(error.response.status === 400){
+                        errorMessage.value ="Anfrage konnte nicht verarbeitet werden"
+                    }
+                    if(error.response.status === 404){
+                        errorMessage.value ="MediumID:"+mediaID.value+" nicht gefunden"
+                    }
+                    if(error.response.status === 406){
+                        console.log(error)
+                        errorMessage.value =error.response.data.message
+                    }
+                    
+                    if(error.response.status === 500){
+                        errorMessage.value ="Server fehler... Versuchen Sie es erneut"
+                    }
                 }
             });
         forceRerender();

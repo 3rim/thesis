@@ -7,7 +7,7 @@
                 <p><strong>Nachname: </strong>{{ user.lastName }}</p>
             </div>
             <div class="w-1/2">
-                <p><strong>Geburtstag: </strong>{{ user.dob }}</p>
+                <p><strong>Geburtstag: </strong>{{ $dateStringToGermanFormat(user.dob) }}</p>
                 <p><strong>Gruppe: </strong>{{ user.borrowerGroup }}</p>
                 <p><strong>Status: </strong>{{ user.borrowerState }}</p>
             </div>

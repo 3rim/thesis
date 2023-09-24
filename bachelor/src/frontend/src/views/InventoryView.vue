@@ -3,10 +3,11 @@
         <div class=" container pt-4 mb-8  flex" v-show="$route.path === '/inventory'">
             <font-awesome-icon class="py-2 px-1" icon="fa-solid fa fa-barcode" size="2x" />
             <div v-if="!searchBySerialNr" class="w-full">
-                <input type="text" placeholder="Mediencode einscannen oder tippen" v-model="mediaID" @keyup.enter="getMedia(mediaID)"
+                <input type="number" placeholder="Mediencode einscannen oder tippen" v-model="mediaID" @keyup.enter="getMedia(mediaID)"
                     class="py-2 px-1 w-full bg-transparent border-b
                     focus:border-b-gray-600
-                    focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]" />
+                    focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]
+                    [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"/>
             </div>
             <!--search by serialNr input field -->
             <div v-else class="w-full">

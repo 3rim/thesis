@@ -65,7 +65,8 @@ public class LoanController {
                             Returns List of Medium loaned by borrower""")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully loaned/unloaned"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - Medium is already borrowed by another borrower",content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "406", description = "Bad Request - Medium is already borrowed by another borrower",content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found - Borrower/Medium not found",content = @Content)
     })
     @PostMapping
@@ -81,7 +82,7 @@ public class LoanController {
 
             return new ResponseEntity<>(borrowerLoanedMedia, HttpStatus.OK);
         } catch (MediumIsBorrowedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,e.getMessage());
         }
         catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
