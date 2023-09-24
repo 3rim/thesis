@@ -102,6 +102,7 @@ public class BorrowerController {
                     }),
     })
     @GetMapping()
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Map<String,Object >> getPageableBorrowers(
             @RequestParam(required = false) BorrowerState borrowerState,
             @RequestParam(required = false) String firstName,

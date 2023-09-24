@@ -61,6 +61,7 @@ public class SecurityFilterConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/borrowers/**").hasAuthority(ADMIN)
                 //Configure Inventory endpoints
                 .requestMatchers( "/api/v1/inventory/**").hasAnyAuthority(ADMIN,LIBRARIAN,INVENTORY_HELPER)
+                .requestMatchers( "/api/v1/loan/histories/*").hasAnyAuthority(INVENTORY_HELPER,ADMIN,LIBRARIAN,LOAN_HELPER)
                 .requestMatchers( "/api/v1/loan/**").hasAnyAuthority(ADMIN,LIBRARIAN,LOAN_HELPER)
 
                 .anyRequest()
