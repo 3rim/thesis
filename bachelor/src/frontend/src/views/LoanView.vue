@@ -63,12 +63,17 @@ const loanMedia = async () => {
                 if (error) {
                     console.log(error.response.status)
                     err.value = true;
-                    if(error.response.status === 404){
-                        errorMessage.value ="MediumID:"+mediaID.value+" nicht gefunden"
-                    }
                     if(error.response.status === 400){
                         errorMessage.value ="Anfrage konnte nicht verarbeitet werden"
                     }
+                    if(error.response.status === 404){
+                        errorMessage.value ="MediumID:"+mediaID.value+" nicht gefunden"
+                    }
+                    if(error.response.status === 406){
+                        console.log(error)
+                        errorMessage.value =error.response.data.message
+                    }
+                    
                     if(error.response.status === 500){
                         errorMessage.value ="Server fehler... Versuchen Sie es erneut"
                     }

@@ -45,7 +45,7 @@ public class LoanService implements ILoanService {
         if(medium.isBorrowed()){
             //Borrower != medium.getBorrower
             if(!Objects.equals(medium.getBorrower().getBorrowerID(), borrower.getBorrowerID()))
-                throw new MediumIsBorrowedException("medium with id:"+mediumID+ " already loaned to "+medium.getBorrower().getFullName());
+                throw new MediumIsBorrowedException("MediumID:"+mediumID+ " ist bereits verliehen an "+medium.getBorrower().getFullName());
             else // Medium is already loan to this borrower ==> take it back from him
                 return unloanFromBorrower(borrower,medium);
         }
