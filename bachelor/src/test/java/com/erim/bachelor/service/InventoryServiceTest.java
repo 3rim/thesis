@@ -5,6 +5,7 @@ import com.erim.bachelor.entities.MediaSeries;
 import com.erim.bachelor.entities.Medium;
 import com.erim.bachelor.enums.Status;
 import com.erim.bachelor.exceptions.MediaSeriesNotEmptyException;
+import com.erim.bachelor.exceptions.MediumIdExistsException;
 import com.erim.bachelor.exceptions.MediumIsBorrowedException;
 import com.erim.bachelor.repositories.MediaSeriesRepository;
 import com.erim.bachelor.repositories.MediumRepository;
@@ -96,7 +97,7 @@ class InventoryServiceTest {
     }
 
     @Test
-    void addNewMedium() {
+    void addNewMedium() throws MediumIdExistsException {
         when(mediaSeriesRepository.findById(any())).thenReturn(Optional.ofNullable(mediaSeriesIPad));
         inventoryService.addNewMedium(medium1,mediaSeriesIPad.getId());
         verify(mediaSeriesRepository,times(1)).save(any());
